@@ -17,29 +17,11 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 
-## Primary supplemental PDF (figures and tables)
-
-Please provide a single PDF that contains:
-
-    All supplemental figures, titles, and legends
-    Any supplemental table that can fit onto three 8.5" x 11" pages; also include titles for these tables, including "related to" information, in the PDF (legends are optional)
-    Supplemental references
-
-Please do not include the title or author list in the PDF; we will add a coversheet with this information.
-
-The final size of the PDF can be up to 50 MB to accommodate high-resolution figures.
-
-
-
-
-The final size of the PDF can be up to 50 MB to accommodate high-resolution figures. 
-
-
 ## Abstract (prophetic)
 
 Cell Summary (no longer than 150 words)
 
-The *Cannabis sativa* L. genome has evolved with human culture as a source of food, fiber, and therapeutic oil.
+The *Cannabis sativa* L. genome has coevolved with human culture over thousands of years as a source of food, fiber, and therapeutic compounds.
 The ~700 Mbp genome is organized into nine pairs of autosomes and as pair of sex chromosomes where genes are predominantly located near the ends of each chromosome.
 The majority of each chromosome is occupied by complete and fragmented repetitive elements occupying ~70% of the genome, a level comparable to maize.
 Predominant among the intact repetitive elements are Gypsy long terminal repeat elements.
@@ -54,6 +36,7 @@ Within this expanse of repetitive sequences, each chromosome includes a metacent
 - Terpenes
 - Disease ressistance
 - Chemotype: THCAS, THCAS:CBDAS, CBDAS, CBG, cannabinoid free
+- Chromosome/Genome length variability
 - PanGenome
   - Diversity of gene classes (cannabinoids, terpenes, disease resistance)?
 
