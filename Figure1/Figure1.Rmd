@@ -130,7 +130,7 @@ genes <- gff[grep("gene", gff$type), ]
 
 
 ```{r}
-chrlen <- read.csv("../FigureS1/chrom_lengths.csv", row.names = 1)
+chrlen <- read.csv("chrom_lengths.csv", row.names = 1)
 #chrlens[1:3, ]
 ```
 
