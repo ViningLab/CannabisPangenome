@@ -29,6 +29,9 @@ Within this expanse of repetitive sequences, each chromosome includes a metacent
 
 
 
+
+
+
 - Gene density
 - LTRs, gypsy
 - Cannabinoids
@@ -42,7 +45,7 @@ Within this expanse of repetitive sequences, each chromosome includes a metacent
 
 
 
-## Circlize plot
+## Data management
 
 
 ```{r}
@@ -126,11 +129,26 @@ genes <- gff[grep("gene", gff$type), ]
 ```
 
 
-```{r, fig.width=10, fig.height=10, message=FALSE, fig.cap="**Figure 1. Genomic architecture of** ***Cannabis sativa*** **strain ERBxHO40_23, haplotype a.** (A) Gene density, the background of each panel is colored by GC content (legend in lower left corner). (B) Density of the motif 'CG' (also referred to as 'CpG', a motif associated with methylation). (C) *Cannabis* centromere motif density (370bp motif, blastn hits). "}
+```{r}
+chrlen <- read.csv("../FigureS1/chrom_lengths.csv", row.names = 1)
+#chrlens[1:3, ]
+```
+
+
+## Circlize plot
+
+
+```{r, fig.width=10, fig.height=10, message=FALSE, fig.cap="**Figure 1. Genomic architecture of** ***Cannabis sativa*** **strain ERBxHO40_23, haplotype a.** (Panel A) Circular representation of the ERBxHO40_23 haplotype A geneome. (A) Gene density, the background of each panel is colored by GC content (legend in lower left corner). (B) Density of the motif 'CG' (also referred to as 'CpG', a motif associated with methylation). (C) *Cannabis* centromere motif density (370bp motif, blastn hits). (Panel B) Ideogram of the hemp genome. Chromosomes are named according to the CBDRx assembly (NCBI: GCF_900626175.2_cs10). Each autosomal ideogram summarized the length of 69 autosomal assemblies. The ideogram for the X chromosome summarizes the length of 65 X chromosomal assemblies. The Y chromosomal ideogram summarizes the length of 4 Y chromosomal assemblies. (Panel C) A Y chromosome panel? The strain ERBxHO40 resulted from a cross between strains ERB (type III or CBD dominant) and HO40 (type I or THC dominant; a genetically female plant (XX) that was chemically masculinized to produce pollen flowers to facilitate the cross)."}
+
 
 suppressPackageStartupMessages(library(circlize))
 
 #png(filename = "gdplot.png", width = 6.5, height = 6.5, units = "in", res = 300)
+
+layout(
+  matrix( c(1, 1, 2, 3), nrow = 2, ncol = 2, byrow = TRUE),
+  widths = 1, heights = c(0.7, 0.3)
+  )
 
 # circos.clear()
 
@@ -248,7 +266,7 @@ circos.yaxis( side = "left", at = c(0, 0.5, 1), labels = c("", "B", ""), sector.
 #circos.yaxis( side = "left", at = c(0, 1000, 2000), labels = c("", "C", ""), sector.index =  "EH23a.chr1", track.index = 4)
 circos.yaxis( side = "left", at = c(0, 0.5, 1), labels = c("", "C", ""), sector.index =  "EH23a.chr1", track.index = 4)
 
-
+text(-1, 1, "A", font = 2, cex = 2)
 myLeg <- rep("", times = 10)
 myLeg[c(2, 9)] <- c("High GC%", "Low GC%")
 
@@ -264,6 +282,39 @@ title( main = "EH23a", line = -1 )
 
 
 circos.clear()
+
+#####
+
+plot(1, 1, type = "n", xlim = c(1, 11), ylim = c(0, 110), 
+     xlab = "", ylab = "", axes = FALSE, frame.plot = FALSE)
+abline( h = seq( 0, 200, by = 10), lty = 3, col = "#808080")
+
+for( i in 1:nrow(chrlen) ){
+  rect( xleft  = 1:11 - 0.2, ybottom = -chrlen[i, ]/2/1e6 + 60, 
+        xright = 1:11 + 0.2, ytop    =  chrlen[i, ]/2/1e6 + 60, 
+        density = NULL, angle = 45,
+        col = "#1E90FF20",
+#        col = "#1E90FF22",
+#        col = "#1E90FF66",
+        border = NA #, lty = par("lty"), lwd = par("lwd")
+  )
+}
+
+axis( side = 1, at = 1:11, labels = colnames(chrlen), lty = 0, las = 3 )
+axis( side = 2 )
+title( ylab = "Chromosome\nlength (Mbp)", line = 2 )
+mtext(text = "B", side = 3, line = -1.2, adj = -0.18, cex = 1.4, font = 2)
+
+#####
+
+plot(1, 1, type = "n", xlim = c(1, 11), ylim = c(0, 110), 
+     xlab = "", ylab = "", axes = FALSE, 
+     frame.plot = TRUE)
+
+text(5, 50, "Y chromosome plot?")
+mtext(text = "C", side = 3, line = 0, adj = 0, cex = 1.4, font = 2)
+
+#par( mfrow = c(1, 1) )
 
 #dev.off()
 ```
