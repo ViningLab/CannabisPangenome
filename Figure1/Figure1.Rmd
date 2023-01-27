@@ -128,6 +128,22 @@ genes <- gff[grep("gene", gff$type), ]
 
 ```
 
+```{r}
+gff2 <- read.table("EH23a.unmasked.fasta.mod.EDTA.intact.gff3", sep = "\t", quote = "\"")
+colnames(gff2) <- c("seqid","source","type","start","end","score","strand","phase","attributes")
+#
+gff2[1:3, 1:8]
+genes2 <- gff2[grep("Gypsy", gff2$type), ]
+#
+
+ltri <- as.numeric(sub("ltr_identity=", "", unlist(lapply(strsplit(genes2$attributes, split = ";"), function(x){grep("ltr_identity=", x, value = TRUE)}))))
+hist(ltri)
+genes2 <- genes2[ltri >= 0.98, ]
+nrow(genes2)
+
+```
+
+
 
 ```{r}
 chrlen <- read.csv("chrom_lengths.csv", row.names = 1)
@@ -138,7 +154,7 @@ chrlen <- read.csv("chrom_lengths.csv", row.names = 1)
 ## Circlize plot
 
 
-```{r, fig.width=10, fig.height=10, message=FALSE, fig.cap="**Figure 1. Genomic architecture of** ***Cannabis sativa*** **strain ERBxHO40_23, haplotype a.** (Panel A) Circular representation of the ERBxHO40_23 haplotype A geneome. (A) Gene density, the background of each panel is colored by GC content (legend in lower left corner). (B) Density of the motif 'CG' (also referred to as 'CpG', a motif associated with methylation). (C) *Cannabis* centromere motif density (370bp motif, blastn hits). (Panel B) Ideogram of the hemp genome. Chromosomes are named according to the CBDRx assembly (NCBI: GCF_900626175.2_cs10). Each autosomal ideogram summarized the length of 69 autosomal assemblies. The ideogram for the X chromosome summarizes the length of 65 X chromosomal assemblies. The Y chromosomal ideogram summarizes the length of 4 Y chromosomal assemblies. (Panel C) A Y chromosome panel? The strain ERBxHO40 resulted from a cross between strains ERB (type III or CBD dominant) and HO40 (type I or THC dominant; a genetically female plant (XX) that was chemically masculinized to produce pollen flowers to facilitate the cross)."}
+```{r, fig.width=10, fig.height=10, message=FALSE, fig.cap="**Figure 1. Genomic architecture of the** ***Cannabis sativa*** **genome.** (Panel A) Circular representation of the strain ERBxHO40_23 haplotype 'a' assembly. (A) Gene density, the background of each panel is colored by GC content (legend in lower left corner). (B) Density of the motif 'CG' (also referred to as 'CpG', a motif associated with methylation). (C) *Cannabis* centromere motif density (370bp motif, blastn hits). (Panel B) Ideogram of the hemp genome. Chromosomes are named according to the CBDRx assembly (NCBI: GCF_900626175.2_cs10). Each autosomal ideogram summarizes the length of assemblies from 69 strains. The ideogram for the X chromosome summarizes the length of X chromosomal assemblies from 65 strains. The Y chromosomal ideogram summarizes the length of Y chromosomal assemblies from 4 strains. (Panel C) A Y chromosome panel? The strain ERBxHO40 resulted from a cross between strains ERB (type III or CBD dominant) and HO40 (type I or THC dominant; a genetically female plant (XX) that was chemically masculinized to produce pollen flowers to facilitate the cross)."}
 
 
 suppressPackageStartupMessages(library(circlize))
@@ -183,6 +199,15 @@ circos.trackHist(
   border = NA,
   breaks = seq(0, 1e9, by = 2e6) )
 
+circos.trackHist( 
+  sectors = as.factor(genes2$seqid),
+  x = genes2$start,
+  track.height = 0.2,
+  bg.border = "#FFFFFF",
+  bg.col = myBed$cols,
+  col = "#808080",
+  border = NA,
+  breaks = seq(0, 1e9, by = 2e6) )
 
 circos.track( 
     ylim = c(0, 1),
