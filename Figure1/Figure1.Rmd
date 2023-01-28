@@ -26,9 +26,10 @@ The ~700 Mbp genome is organized into nine pairs of autosomes and as pair of sex
 The majority of each chromosome is occupied by complete and fragmented repetitive elements occupying ~70% of the genome, a level comparable to maize.
 Predominant among the intact repetitive elements are Gypsy long terminal repeat elements.
 Within this expanse of repetitive sequences, each chromosome includes a metacentric or acrocentric chromosome.
-<span style="color: red;">Understanding the genomic landscape within *Cannabis* that has evolved along with human culture may help us to better appreciate these cultural ties as well as guide it's agronomic future</span>.
+<span style="color: #B22222;">Understanding the genomic landscape within *Cannabis* that has evolved along with human culture may help us to better appreciate these cultural ties as well as guide it's agronomic future</span>.
 
-**Keywords:** *Cannabis*, Cannabinoid, hemp, Long Terminal Repeat (LTR) retrotransposon.
+
+**Keywords:** *Cannabis*, Cannabinoid synthase, hemp, Long Terminal Repeat (LTR) retrotransposon.
 
 <br> 
 
@@ -50,12 +51,15 @@ We would also like to acknowledge that an alternate terminology may be more appr
 - Cannabinoids
 - Sex chromosome
 - Terpenes
-- Disease ressistance
+- Disease ressistance (powdery mildew)
 - Chemotype: THCAS, THCAS:CBDAS, CBDAS, CBG, cannabinoid free
 - Chromosome/Genome length variability
 - PanGenome
   - Diversity of gene classes (cannabinoids, terpenes, disease resistance)?
+- Short day / day neutral
 
+
+https://docs.google.com/document/d/1UgVz-371WdZd8vIktbA-0B1vjk5-FMuknOBho78pEBU/edit?usp=sharing
 
 
 ## Data management
