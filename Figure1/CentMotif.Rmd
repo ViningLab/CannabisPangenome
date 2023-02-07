@@ -1,0 +1,144 @@
+---
+title: "CentMotif"
+output: 
+  html_document:
+    code_folding: hide
+date: "2023-01-28"
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+
+nucs <- read.csv("EH23a.softmasked_nuccomp.csv")
+
+wins <- read.csv("EH23a.softmasked_wins1e6.csv")
+#wins <- read.csv("EH23a.softmasked_wins1e7.csv")
+wins$CGs <- 0
+for( i in unique(wins$Id) ){
+  wins$CGs[ wins$Id == i] <- wins$CG[ wins$Id == i] - min(wins$CG[ wins$Id == i], na.rm = TRUE)
+  wins$CGs[ wins$Id == i] <- wins$CGs[ wins$Id == i]/max(wins$CGs[ wins$Id == i], na.rm = TRUE)
+}
+wins$win_num <- 1:nrow(wins)
+#wins[1:3, ]
+
+blst <- read.csv("EH23a_blastn.csv", header = FALSE)
+colnames(blst) <- c('qseqid','qlen','sseqid','slen','qstart',
+                    'qend','sstart','send','evalue','bitscore',
+                    'score','length','pident','nident','mismatch',
+                    'positive','gapopen','gaps','ppos','sstrand',
+                    #'staxids','sblastnames','salltitles',
+                    'sseq')#[1:21]
+
+#
+blst$sseqid <- factor(blst$sseqid, levels = c("EH23a.chr1", "EH23a.chr2", "EH23a.chr3", "EH23a.chr4", "EH23a.chr5", "EH23a.chr6", "EH23a.chr7", "EH23a.chr8", "EH23a.chr9", "EH23a.chrX"))
+
+#table(blst$qseqid)
+#
+knitr::kable(table(blst$sseqid, blst$qseqid), caption = "Counts of blastn hits per chromosome.")
+
+#
+#blst[1:3, 1:10]
+```
+
+
+```{r, include=FALSE}
+hist(blst$sstart[ blst$sseqid == "EH23a.chr1" ])
+range(blst$sstart[ blst$sseqid == "EH23a.chr1" ])
+nucs$Length[ nucs$Id == "EH23a.chr1" ]
+max(blst$sstart[ blst$sseqid == "EH23a.chr1" ]) <= nucs$Length[ nucs$Id == "EH23a.chr1" ]
+```
+
+
+
+```{r, fig.width=10, fig.height=10, fig.cap="**Figure X.** Location of blast hits within each chromosome."}
+# table(blst$qseqid)
+
+tmp <- blst[ blst$qseqid == "CsatSD_centromere_370bp", ]
+#tmp <- blst[ blst$qseqid == "CsatSD_centromere_237bp", ]
+
+par( mfrow = c(5, 2) )
+#for(i in 1:10){
+for(i in levels(tmp$sseqid)){
+  hist(tmp$sstart[tmp$sseqid == i]/1e6,
+  xlim = c(1, nucs$Length[nucs$Id == i]/1e6),
+#  hist(blst$sstart[blst$sseqid == levels(blst$sseqid)[i]]/1e6,
+#       blst$sstart[blst$sseqid == unique(blst$sseqid)[i]]/1e6,
+       main = i, xlab = "Position (Mbp)")
+#       main = unique(blst$sseqid)[i], xlab = "Position (Mbp)")
+}
+title( main = "CsatSD_centromere_370bp", outer = TRUE )
+par( mfrow = c(1, 1))
+par( oma = c(0, 0, 0, 0) )
+```
+
+
+```{r, fig.width=10, fig.height=10, fig.cap="**Figure X.** Location of blast hits within each chromosome."}
+# table(blst$qseqid)
+
+#tmp <- blst[ blst$qseqid == "CsatSD_centromere_370bp", ]
+tmp <- blst[ blst$qseqid == "CsatSD_centromere_237bp", ]
+
+par( mfrow = c(5, 2) )
+par( oma = c(0, 0, 1, 0) )
+#for(i in 1:10){
+for(i in levels(tmp$sseqid)){
+  tmp2 <- tmp$sstart[tmp$sseqid == i]
+  if( length(tmp2) > 0 ){
+    hist(tmp2/1e6,
+      xlim = c(1, nucs$Length[nucs$Id == i]/1e6),
+      main = i, xlab = "Position (Mbp)")
+  } else {
+    plot.default(1, 1, type = "n", main = i)
+  }
+}
+title( main = "CsatSD_centromere_237bp", outer = TRUE )
+par( mfrow = c(1, 1))
+par( oma = c(0, 0, 0, 0) )
+
+```
+
+
+```{r, fig.width=10, fig.height=10}
+
+# Windowize centromere queries.
+wins$cent370 <- 0
+wins$cent237 <- 0
+#wins[1:3, ]
+
+for(i in 1:nrow(blst)){
+  if( blst$qseqid[i] == "CsatSD_centromere_370bp" ){
+    my_col = "cent370"
+  }
+  if( blst$qseqid[i] == "CsatSD_centromere_237bp" ){
+    my_col = "cent237"
+  }
+  wins[wins$Id == blst[i, ]$sseqid & 
+         blst[i, ]$sstart >= wins$Start & 
+         blst[i, ]$sstart <= wins$End, my_col] <- 
+  wins[wins$Id == blst[i, ]$sseqid &
+         blst[i, ]$sstart >= wins$Start & 
+         blst[i, ]$sstart <= wins$End, my_col] + 1
+}
+
+
+```
+
+
+
+
+
+```{r, fig.width=10, include=FALSE}
+plot( wins$win_num, wins$CGs, type = 'h', col = "#B22222", 
+      xlab = "Position", ylab = "Density" )
+title( main = "'CG' motif")
+#points( wins$win_num, wins$cent370, type = 'h', col = "#1E90FF66"  )
+abline( h = 0.3, lty = 3, col = "#808080")
+```
+
+
