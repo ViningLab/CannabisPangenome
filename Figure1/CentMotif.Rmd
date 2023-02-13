@@ -142,3 +142,47 @@ abline( h = 0.3, lty = 3, col = "#808080")
 ```
 
 
+
+```{r}
+myimg <- png::readPNG("AH3MXY_plot.png")
+rasterImage( myimg, xleft = 0, ybottom = 0, xright = 1, ytop = 1 )
+```
+
+
+## Chromosome lengths
+
+
+```{r}
+my_data <- readr::read_csv("chrom_lengths.csv")
+names(my_data)[1] <- "Sample"
+my_data$Sample <- as.factor( my_data$Sample )
+my_data
+
+library(tidyr)
+data_long <- my_data %>%
+  pivot_longer( cols = !Sample, names_to = "Chrom", values_to = "Length")
+data_long$Length <- data_long$Length / 1e6
+data_long
+
+
+library(ggplot2)
+p <- ggplot( data = data_long, aes( x = Chrom, y = Length) )
+#p <- p + geom_histogram( binwidth = 1e6 )
+#p <- p + geom_boxplot()
+p <- p + geom_violin( fill = "#C0C0C0" )
+p <- p + geom_dotplot(binaxis='y', stackdir='center', dotsize=1, binwidth = 0.4, fill = "#C0C0C022")
+# p <- p + geom_dotplot(binaxis='y', stackdir='center',
+#                  position=position_dodge(1))
+p <- p + xlab("Chromosome")
+p <- p + ylab("Length (Mbp)")
+
+p <- p + theme_bw()
+p
+
+
+```
+
+
+
+
+
