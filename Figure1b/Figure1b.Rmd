@@ -128,15 +128,58 @@ vars[1:3, ]
 vars$ERBallele <- as.numeric(unlist(lapply(strsplit(vars$Allele_counts, split = ","), function(x){x[1]})))
 vars$HO40allele <- as.numeric(unlist(lapply(strsplit(vars$Allele_counts, split = ","), function(x){x[2]})))
 
+vars$ERBallele <- vars$ERBallele / (vars$n * 2)
+vars$HO40allele <- vars$HO40allele / (vars$n * 2)
+
+
 my_chrom <- "chr_1e"
 plot( vars$POS[ vars$CHROM == my_chrom ], vars$ERBallele[ vars$CHROM == my_chrom ],
-      pch = 20, col = "#C0C0C066")
+      pch = 20, col = "#C0C0C066", ylim = c(0, 1))
+
+points( vars$POS[ vars$CHROM == my_chrom ], vars$HO40allele[ vars$CHROM == my_chrom ],
+      pch = 20, col = "#4682B4")
+
 
 vars$chrn <- sub("chr_", "", vars$CHROM)
 vars$chrn <- sub("e$", "", vars$chrn)
 vars$chrn[ vars$chrn == "X" ] <- 10
 vars$chrn <- as.numeric(vars$chrn)
 table(vars$chrn)
+
+library(ggplot2)
+ggplot(vars, aes(x=chrn, y=POS, group=CHROM)) +
+  geom_point()
+  
+
+my_cols1 <- paste(RColorBrewer::brewer.pal( n = 12, name = "Set3"), "08", sep="")
+#my_cols1 <- paste(RColorBrewer::brewer.pal( n = 12, name = "Paired"), "08", sep="")
+
+hist(vars$ERBallele[vars$chrn == 2], xlim = c(0, 1))
+
+hist(vars$HO40allele[vars$chrn == 2], xlim = c(0, 1))
+
+p <- ggplot(vars, aes(x=chrn+ERBallele-0.5, y=POS, group=CHROM)) +
+  geom_point( aes( color = CHROM ) )
+p <- p + scale_color_manual(values=my_cols1)
+#p <- p + geom_point( data = vars, aes(x = chrn-HO40allele, y=POS), color = vars$chrn)
+#
+p <- p + geom_point( data = vars, aes(x = chrn+HO40allele-0.5, y=POS), color = my_cols1[vars$chrn])
+#p <- p + geom_point( data = vars, aes(x = chrn-0, y=POS), color = my_cols1[vars$chrn])
+#p <- p + scale_color_manual(values=my_cols1)
+p <- p + theme_bw()
+p <- p + theme(legend.position='none')
+p <- p + scale_x_continuous(breaks=seq(1, 10, 1))
+p <- p + xlab("Chromosome")
+p
+
+
+
+
+#p + scale_color_brewer(palette="Dark2")
+#p + scale_color_brewer(palette="Set3")
+#  geom_point( aes( color = CHROM, alpha = 1/10 ) )
+#  geom_point( aes( alpha = 1/10 ) )
+
 
 ```
 
