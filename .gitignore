@@ -39,3 +39,4 @@ vignettes/*.pdf
 .Renviron
 
 FigureS1
+.DS_Store
