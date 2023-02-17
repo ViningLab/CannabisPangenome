@@ -242,6 +242,10 @@ cann_blst$name <- sub("^.+_", "", cann_blst$qseqid)
 cann_blst <- cann_blst[ cann_blst$gaps <= 0, ]
 cann_blst <- cann_blst[ cann_blst$mismatch <= 10, ]
 
+# write.table(cann_blst, file = "cann_3dom_EH23a_tblastn_filter.csv",
+#             sep = ",", row.names = FALSE, col.names = FALSE, quote = FALSE)
+# system("~/gits/hempy/bin/blast_to_gff.py cann_3dom_EH23a_tblastn_filter.csv")
+
 cann_blst$chrn <- as.numeric(sub(".+chr", "", cann_blst$sseqid))
 
 #table(cann_blst$qseqid)
@@ -251,7 +255,11 @@ cann_blst$chrn <- as.numeric(sub(".+chr", "", cann_blst$sseqid))
 
 knitr::kable(cann_blst[, c(1, 2, 3, 7, 13:15, 18, 23)], caption = "**Table 1. Cannabinoid synthase genes.**")
 
+#nrow(cann_blst)
+
 ```
+
+
 
 
 ```{r}
@@ -280,6 +288,7 @@ cent <- blst[grep("CsatSD_centromere_237bp", blst$qseqid), ]
 knitr::kable(subt[1:3, c(1, 2, 3, 7, 13:15, 18, 22)], caption = "**Table X. Blast.**")
 
 ```
+
 
 
 
@@ -373,6 +382,15 @@ plot_ideo <- function() {
     color = "#228B22"
     #color = NA
     )
+  #p
+  
+
+  p <- p + annotate(geom="text", x=7.5, y=11.3e6, label="THCAS1",
+              color="#228B22", size = 3)
+  p <- p + annotate(geom="text", x=7.5, y=12.1e6, label="CBDAS2",
+              color="#0000FF", size = 3)
+  p <- p + annotate(geom="text", x=7.5, y=30.7e6, label="CBCAS",
+              color="#B22222", bg = "#ffffff", size = 3)
   #p
   
   stwidth <- 0.40
