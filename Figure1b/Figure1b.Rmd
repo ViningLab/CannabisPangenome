@@ -27,7 +27,8 @@ nucs$GC <- nucs$GC * 100
 
 ```{r}
 gff <- read.table("../Figure1/EH23a.primary_high_confidence.gff3.gz", sep = "\t", quote = "\"")
-#gff[1:3, 1:8]
+#
+gff[1:3, 1:8]
 genes <- gff[ gff[, 3] == "gene", ]
 ```
 
@@ -118,9 +119,11 @@ my_index <- round( wins$gcntsc * 100 )
 #my_index <- 100 - my_index
 my_index[ my_index <= 0] <- 1
 wins$gcol <- heat.colors(n=100)[ my_index ]
+wins$gcol <- colorRampPalette(c("blue", "#98FB98", "red"))( 100 )[ my_index ]
 
 wins$chr <- sub("^.+chr", "chr", wins$Id)
-#wins[1:3, ]
+#
+wins[1:3, ]
 
 ```
 
