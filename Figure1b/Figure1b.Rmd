@@ -3,6 +3,7 @@ title: "Figure1"
 output: 
   html_document:
     code_folding: hide
+    toc: true
 date: "2023-02-12"
 editor_options: 
   chunk_output_type: console
@@ -45,7 +46,10 @@ gff$classification <- sub("^LTR/Copia", "Ty1", gff$classification)
 gff$classification <- sub("^LTR/Gypsy", "Ty3", gff$classification)
 #
 gff[1:8, c(1:8, 10)]
+
+# Ty3
 Ty3 <- gff[ gff$classification == "Ty3", ]
+Ty3 <- gff[ gff$V3 == "Gypsy_LTR_retrotransposon", ]
 Ty3[1:8, c(1:8, 10:11)]
 
 #table(gff$classification, gff$V1)
@@ -93,6 +97,97 @@ cwins$cent <- cwins$Start + cwins$Win_length/2
 ```
 
 
+### Variant data
+
+
+```{r, include=FALSE}
+# my_files <- list.files("/media/knausb/Vining_lab/knausb/GENOMES_NRQ_2267/ERBxHO40_hapERB/het_wins/", full.names = TRUE, pattern = "csv.gz$")
+# 
+# variants <- read.table(my_files[1], sep = ",", header = TRUE)
+# names(variants) <- c("CHROM", "POS", "n", "Allele_counts", "He", "Ne", "0/0", "0/1", "1/1", NA)
+# for(i in 2:length(my_files)){
+#   tmp <- read.table(my_files[i], sep = ",", header = TRUE)
+#   names(tmp) <- c("CHROM", "POS", "n", "Allele_counts", "He", "Ne", "0/0", "0/1", 
+# "1/1", NA)
+#   variants <- rbind(variants, tmp)
+# }
+# names(variants) <- c("CHROM", "POS", "n", "Allele_counts", "He", "Ne", "REFhom", "HET", "ALThom", "Missing")
+# variants <- variants[variants$Missing <= 10, ]
+# variants[1:3, ]
+# nrow(variants)
+# #write.table(x = variants, file = "ERBxHO40vars.csv", quote = TRUE, sep = ",")
+```
+
+
+```{r}
+vars <- read.table("ERBxHO40vars.csv.gz", header = TRUE, sep = ",")
+nrow(vars)
+vars <- vars[vars$Missing == 0, ]
+nrow(vars)
+vars[1:3, ]
+
+vars$ERBallele <- as.numeric(unlist(lapply(strsplit(vars$Allele_counts, split = ","), function(x){x[1]})))
+vars$HO40allele <- as.numeric(unlist(lapply(strsplit(vars$Allele_counts, split = ","), function(x){x[2]})))
+
+vars$ERBallele <- vars$ERBallele / (vars$n * 2)
+vars$HO40allele <- vars$HO40allele / (vars$n * 2)
+
+
+my_chrom <- "chr_1e"
+plot( vars$POS[ vars$CHROM == my_chrom ], vars$ERBallele[ vars$CHROM == my_chrom ],
+      pch = 20, col = "#C0C0C066", ylim = c(0, 1))
+
+points( vars$POS[ vars$CHROM == my_chrom ], vars$HO40allele[ vars$CHROM == my_chrom ],
+      pch = 20, col = "#4682B4")
+
+
+vars$chrn <- sub("chr_", "", vars$CHROM)
+vars$chrn <- sub("e$", "", vars$chrn)
+vars$chrn[ vars$chrn == "X" ] <- 10
+vars$chrn <- as.numeric(vars$chrn)
+table(vars$chrn)
+
+library(ggplot2)
+ggplot(vars, aes(x=chrn, y=POS, group=CHROM)) +
+  geom_point()
+  
+
+my_cols1 <- paste(RColorBrewer::brewer.pal( n = 12, name = "Set3"), "08", sep="")
+#my_cols1 <- paste(RColorBrewer::brewer.pal( n = 12, name = "Paired"), "08", sep="")
+
+hist(vars$ERBallele[vars$chrn == 2], xlim = c(0, 1))
+
+hist(vars$HO40allele[vars$chrn == 2], xlim = c(0, 1))
+
+p <- ggplot(vars, aes(x=chrn+ERBallele-0.5, y=POS, group=CHROM)) +
+  geom_point( aes( color = CHROM ) )
+p <- p + scale_color_manual(values=my_cols1)
+#p <- p + geom_point( data = vars, aes(x = chrn-HO40allele, y=POS), color = vars$chrn)
+#
+p <- p + geom_point( data = vars, aes(x = chrn+HO40allele-0.5, y=POS), color = my_cols1[vars$chrn])
+#p <- p + geom_point( data = vars, aes(x = chrn-0, y=POS), color = my_cols1[vars$chrn])
+#p <- p + scale_color_manual(values=my_cols1)
+p <- p + theme_bw()
+p <- p + theme(legend.position='none')
+p <- p + scale_x_continuous(breaks=seq(1, 10, 1))
+p <- p + xlab("Chromosome")
+p
+
+
+
+
+#p + scale_color_brewer(palette="Dark2")
+#p + scale_color_brewer(palette="Set3")
+#  geom_point( aes( color = CHROM, alpha = 1/10 ) )
+#  geom_point( aes( alpha = 1/10 ) )
+
+
+```
+
+
+
+
+
 ### Windowize
 
 
@@ -118,8 +213,14 @@ wins$gcntsc <- wins$gcntsc / max(wins$gcntsc)
 my_index <- round( wins$gcntsc * 100 )
 #my_index <- 100 - my_index
 my_index[ my_index <= 0] <- 1
-wins$gcol <- heat.colors(n=100)[ my_index ]
-wins$gcol <- colorRampPalette(c("blue", "#98FB98", "red"))( 100 )[ my_index ]
+
+#wins$gcol <- heat.colors(n=100)[ my_index ]
+#wins$gcol <- colorRampPalette(c("yellow", "orange", "red"))( 100 )[ my_index ]
+#
+wins$gcol <- colorRampPalette(c("red", "orange", "yellow"))( 100 )[ my_index ]
+#wins$gcol <- colorRampPalette(c("#0000FF", "#228B22", "#A0522D"))( 100 )[ my_index ]
+#wins$gcol <- colorRampPalette(c("#87CEEB", "#3CB371", "#228B22", "#A0522D"))( 100 )[ my_index ]
+
 
 wins$chr <- sub("^.+chr", "chr", wins$Id)
 #
@@ -145,6 +246,10 @@ cann_blst$name <- sub("^.+_", "", cann_blst$qseqid)
 cann_blst <- cann_blst[ cann_blst$gaps <= 0, ]
 cann_blst <- cann_blst[ cann_blst$mismatch <= 10, ]
 
+# write.table(cann_blst, file = "cann_3dom_EH23a_tblastn_filter.csv",
+#             sep = ",", row.names = FALSE, col.names = FALSE, quote = FALSE)
+# system("~/gits/hempy/bin/blast_to_gff.py cann_3dom_EH23a_tblastn_filter.csv")
+
 cann_blst$chrn <- as.numeric(sub(".+chr", "", cann_blst$sseqid))
 
 #table(cann_blst$qseqid)
@@ -154,7 +259,11 @@ cann_blst$chrn <- as.numeric(sub(".+chr", "", cann_blst$sseqid))
 
 knitr::kable(cann_blst[, c(1, 2, 3, 7, 13:15, 18, 23)], caption = "**Table 1. Cannabinoid synthase genes.**")
 
+#nrow(cann_blst)
+
 ```
+
+
 
 
 ```{r}
@@ -183,6 +292,7 @@ cent <- blst[grep("CsatSD_centromere_237bp", blst$qseqid), ]
 knitr::kable(subt[1:3, c(1, 2, 3, 7, 13:15, 18, 22)], caption = "**Table X. Blast.**")
 
 ```
+
 
 
 
@@ -276,6 +386,15 @@ plot_ideo <- function() {
     color = "#228B22"
     #color = NA
     )
+  #p
+  
+
+  p <- p + annotate(geom="text", x=7.5, y=11.3e6, label="THCAS1",
+              color="#228B22", size = 3)
+  p <- p + annotate(geom="text", x=7.5, y=12.1e6, label="CBDAS2",
+              color="#0000FF", size = 3)
+  p <- p + annotate(geom="text", x=7.5, y=30.7e6, label="CBCAS",
+              color="#B22222", bg = "#ffffff", size = 3)
   #p
   
   stwidth <- 0.40
@@ -488,22 +607,25 @@ library(ggplot2)
 p <- ggplot(wins, aes(x=gcnt, y=ty3cnt))
 #p <- p + geom_point(size=2, color = "#C0C0C0")
 #p <- p + geom_point(size=2, color = "#77889966")
+#
 p <- p + geom_point(size=2, color = "#70809044")
+#p <- p + geom_point(size=2)
 
 #p <- p + geom_smooth(method=lm)
-p <- p + geom_smooth(method=lm, se=FALSE, linewidth = 1)
+p <- p + geom_smooth(method=lm, se=FALSE, linewidth = 2)
 
 p <- p + geom_text(x=100, y=90, label="y = (-0.4)x + 56.7", size = 4)
 
 p <- p + theme_bw()
-p <- p + theme(legend.title = element_blank()) 
+p <- p + theme(legend.position = "none")
+#p <- p + theme(legend.title = element_blank()) 
 #p <- p + scale_color_brewer(palette="Dark2")
 #p <- p + scale_color_brewer(palette="Paired")
 p <- p + scale_color_manual(values=my_pal)
 #p <- p + scale_color_brewer(palette="Set3")
 p <- p + xlab("Genes per window")
 p <- p + ylab("Ty3 elements per window")
-#p <- p + theme(legend.position = "none")
+
 
 p3 <- p
 p3
@@ -531,8 +653,10 @@ summary(lm2)
 ```
 
 
+---
 
-## Composite plot
+
+## Figure 1 (Composite plot)
 
 
 ```{r, fig.height=8, fig.width=8, message=FALSE, fig.cap="**Figure 1. Genomic architecture of the** ***Cannabis sativa*** **genome.**"}
@@ -554,12 +678,22 @@ ggarrange(
 
 
 **Figure 1. Genomic architecture of the** ***Cannabis sativa*** **genome.** 
-(A) Ideogram of the ERBxHO40_23 haplotype A genome.
+**(A)** Ideogram of the ERBxHO40_23 haplotype A genome.
 Each chromosome is divided into 1 Mbp windows where each window's width is proportional to the inverse abundance of the motif 'CG' and each window is colored according to gene density.
-The strain ERBxHO40 resulted from a cross between strains ERB (type III or CBD dominant) and HO40 (type I or THC dominant; a genetically female plant (XX) that was chemically masculinized to produce pollen flowers to facilitate the cross).
-(B) The abundances of genes and Ty3 LTRs are inversely related.
+Windows with high 'CG' abundance are narrow and windows with high gene counts are yellow.
+The plant ERBxHO40_23 resulted from a cross between strains ERB (chemotype III or CBD dominant) and HO40 (chemotype I or THC dominant). The genetically female plant HO40 (XX) was chemically masculinized to produce pollen flowers to facilitate the cross.
+Subtelomeric repeat motifs are marked with blue horizontal lines.
+Cannabinoid synthase genes are marked with green horizontal lines on chromosome seven.
+**(B)** The abundances of genes and Ty3 LTRs are inversely related.
+Each dot represents a 1 Mbp window from the ERBxHO40_23 haplotype A assembly, organized by the number of genes and Ty3 LTR elements contained in each window.
 Windows with high quantities of genes have low Ty3 LTR counts.
-(C) Long chromosomes have more genes, however some chromosomes differ in chromosome content.
+The genes in ERBxHO40 are predominantly near the ends of each chromosome, while the central portion of each chromosome appears populated by Ty3 LTR elements.
+**(C)** Long chromosomes have more genes, however some chromosomes demonstrate exceptional gene content.
+Chromosome Y is the longest chromosome but includes a number of genes that is comparable to other chromosomes.
+Each dot represents a chromosome from phased and assembled haplotypes (n = 69; X = 65; Y = 4).
+Chromosome 1 is of average length but contains more genes than other chromosomes of a similar length.
+Chromosomes X and 8 also have more genes than chromosomes of similar length.
+Chromosome 7, where the cannabinoid synthases (CBCAS, CBDAS, THCAS) are found, has the lowest number of genes.
 
 
 
