@@ -72,12 +72,22 @@ my_mat2
 ```
 
 
+```{r, eval=FALSE}
+my_cmd <- c("~/gits/hempy/bin/fast_win.py --win_size 1000000 /media/knausb/E737-9B48/releases/EH23a/EH23a.softmasked.fasta")
+my_cmd
+system(my_cmd)
+x <- read.table("EH23a.softmasked_wins.csv", header = T, sep = ",")
+#x[1:80, ]
+
+```
+
+
 
 ```{r}
 #wins <- read.csv("EH23a.softmasked_wins1e5.csv")
-#
-wins <- read.csv("EH23a.softmasked_wins1e6.csv")
+#wins <- read.csv("EH23a.softmasked_wins1e6.csv")
 #wins <- read.csv("EH23a.softmasked_wins1e7.csv")
+wins <- read.csv("EH23a.softmasked_wins.csv")
 wins$CGs <- 0
 for( i in unique(wins$Id) ){
   wins$CGs[ wins$Id == i] <- wins$CG[ wins$Id == i] - min(wins$CG[ wins$Id == i], na.rm = TRUE)
@@ -214,10 +224,12 @@ my_index <- round( wins$gcntsc * 100 )
 my_index[ my_index <= 0] <- 1
 #wins$gcol <- heat.colors(n=100)[ my_index ]
 #wins$gcol <- colorRampPalette(c("yellow", "orange", "red"))( 100 )[ my_index ]
-#
-wins$gcol <- colorRampPalette(c("red", "orange", "yellow"))( 100 )[ my_index ]
+#wins$gcol <- colorRampPalette(c("red", "orange", "yellow"))( 100 )[ my_index ]
 #wins$gcol <- colorRampPalette(c("#0000FF", "#228B22", "#A0522D"))( 100 )[ my_index ]
 #wins$gcol <- colorRampPalette(c("#87CEEB", "#3CB371", "#228B22", "#A0522D"))( 100 )[ my_index ]
+
+#wins$gcol <- viridisLite::plasma(n = 100, alpha = 1, begin = 0.1, end = 1)[ my_index ]
+wins$gcol <- viridisLite::magma(n = 100, alpha = 1, begin = 0.2, end = 1.00)[ my_index ]
 
 wins$chr <- sub("^.+chr", "chr", wins$Id)
 #wins[1:3, ]
@@ -474,12 +486,14 @@ plot_ideo <- function() {
   p <- p + ggplot2::theme_bw() + 
     ggplot2::theme( panel.grid.minor.x = ggplot2::element_blank(), 
            axis.text.x = element_text(angle = 60, hjust = 1),
+           axis.title.x=element_blank(),
            panel.grid.major.y = ggplot2::element_line( linewidth = 0.4, color = "#C0C0C0", linetype = 1 ),
            panel.grid.minor.y = ggplot2::element_line( linewidth = 0.4, color = "#C0C0C0", linetype = 3 )
            #panel.grid.major.y = ggplot2::element_line( size = 0.4, color = "#C0C0C0", linetype = 1 ),
            #panel.grid.minor.y = ggplot2::element_line( size = 0.4, color = "#C0C0C0", linetype = 3 )
           )
 #  p <- p + ggplot2::xlab("Chromosome")
+
   #p <- p + ylab("Distance (cM)")
   #p <- p + ggplot2::ylab("Location (cM)")
   p <- p + ggplot2::ylab("Position (bp)")
