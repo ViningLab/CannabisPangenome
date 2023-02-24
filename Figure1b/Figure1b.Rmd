@@ -31,6 +31,7 @@ gff <- read.table("../Figure1/EH23a.primary_high_confidence.gff3.gz", sep = "\t"
 #
 gff[1:3, 1:8]
 genes <- gff[ gff[, 3] == "gene", ]
+genes[1:3, 1:8]
 ```
 
 ```{r}
@@ -83,7 +84,6 @@ x <- read.table("EH23a.softmasked_wins.csv", header = T, sep = ",")
 ```
 
 
-
 ```{r}
 #wins <- read.csv("EH23a.softmasked_wins1e5.csv")
 #wins <- read.csv("EH23a.softmasked_wins1e6.csv")
@@ -101,10 +101,49 @@ wins$ATs <- 1 - wins$CGs
 #wins[1:3, ]
 
 cwins <- wins[wins$CGs == 1 & !is.na(wins$CGs) , ]
-cwins <- cwins[ !duplicated( cwins$Id ), ]
-cwins$cent <- cwins$Start + cwins$Win_length/2
+#cwins <- cwins[ !duplicated( cwins$Id ), ]
+#cwins$cent <- cwins$Start + cwins$Win_length/2
 
 ```
+
+
+Centromere genes
+
+```{r}
+gff <- read.table("../Figure1/EH23a.primary_high_confidence.gff3.gz", sep = "\t", quote = "\"")
+#gff[gff$V3 == "remark", ]
+#genes[ genes$V1 == cwins$Id[i] & genes$V4 >= cwins$Start[i] & genes$V5 <= cwins$End[i], ]
+i <- 1
+gff2 <- gff[ gff$V1 == cwins$Id[i] & gff$V4 >= cwins$Start[i] & gff$V5 <= cwins$End[i], ]
+for( i in 2:nrow(cwins) ){
+#  gff2 <- gff[ gff$V1 == cwins$Id[i] & gff$V4 >= cwins$Start[i] & gff$V5 <= cwins$End[i], ]
+  gff2 <- rbind(gff2, gff[ gff$V1 == cwins$Id[i] & gff$V4 >= cwins$Start[i] & gff$V5 <= cwins$End[i], ])
+}
+
+#cbind(1:nrow(gff2), gff2[, 1:8])
+#table(gff2$V3)
+
+#gff2[gff2$V3 == "CDS", ]
+#gff2[gff2$V3 == "gene", ]
+gff2 <- gff2[gff2$V3 == "mRNA", ]
+
+#unlist(lapply(strsplit(gff2$V9, split = ";"), function(x){ grep("desc", x, value = TRUE) }))
+
+```
+
+
+
+```{r}
+lndmrk <- read.csv("csat_landmark_EH23a_blastn.csv", header = FALSE)
+names(lndmrk) <- c("qseqid","qlen","sseqid","slen","qstart","qend","sstart","send","evalue","bitscore","score","length","pident","nident","mismatch","positive","gapopen","gaps","ppos","sstrand")
+lndmrk$chrn <- sub("^.+chr", "", lndmrk$sseqid)
+lndmrk$chrn[ lndmrk$chrn == "X" ] <- 10
+lndmrk$chrn[ lndmrk$chrn == "Y" ] <- 11
+lndmrk$chrn <- as.numeric(lndmrk$chrn)
+
+lndmrk[1:3, ]
+```
+
 
 
 ### Variant data
@@ -149,8 +188,10 @@ plot( vars$POS[ vars$CHROM == my_chrom ], vars$ERBallele[ vars$CHROM == my_chrom
 
 points( vars$POS[ vars$CHROM == my_chrom ], vars$HO40allele[ vars$CHROM == my_chrom ],
       pch = 20, col = "#4682B4")
+```
 
 
+```{r}
 vars$chrn <- sub("chr_", "", vars$CHROM)
 vars$chrn <- sub("e$", "", vars$chrn)
 vars$chrn[ vars$chrn == "X" ] <- 10
@@ -193,7 +234,6 @@ p
 
 
 ```
-
 
 
 
@@ -517,6 +557,217 @@ plot_ideo <- function() {
 p1 <- plot_ideo()
 p1
 ```
+
+
+## Add 
+
+
+```{r}
+#lndmrk[1:3, ]
+#nrow(lndmrk)
+#table(lndmrk$qseqid)
+
+pmildew <- "PNW39_LH3804_locus"
+lgrp <- system( 'grep "^>" ../csat_landmark_dna.fa', intern = TRUE )
+lgrp <- sub("^>", "", lgrp)
+#lgrp
+
+# Cann
+my_regex <- sub("[[:space:]].+", "", lgrp[1:6])
+my_regex <- paste(my_regex, collapse="|")
+lndmrk2 <- lndmrk[grep(my_regex, lndmrk$qseqid), ]
+```
+
+
+```{r}
+# Cent, subTelo
+#lgrp[7:9]
+my_regex <- sub("[[:space:]].+", "", lgrp[7:9])
+my_regex <- paste(my_regex, collapse="|")
+lndmrk2 <- lndmrk[grep(my_regex, lndmrk$qseqid), ]
+table(lndmrk2$qseqid)
+
+chrom_wid <- 0.46
+tmp <- data.frame( 
+  xmin = lndmrk2$chrn - chrom_wid, 
+  xmax = lndmrk2$chrn + chrom_wid, 
+  ymin = lndmrk2$sstart, 
+  ymax = lndmrk2$send
+  )
+
+p1 + ggplot2::geom_rect( 
+  data = tmp, 
+      ggplot2::aes( 
+        xmin = xmin,
+        xmax = xmax,
+        ymin = ymin, 
+        ymax = ymax
+        ),
+      fill = "#DCDCDC",
+#      color = "#CD853F",
+      color = "#F08080",
+#      color = "#000000"
+      linewidth = 2
+      ) + ggtitle("Sub-telo, centromeric motifs")
+
+
+```
+
+
+```{r}
+# P mildew
+#lgrp[10:10]
+my_regex <- sub("[[:space:]].+", "", lgrp[10:10])
+my_regex <- paste(my_regex, collapse="|")
+lndmrk2 <- lndmrk[grep(my_regex, lndmrk$qseqid), ]
+
+chrom_wid <- 0.46
+tmp <- data.frame( 
+  xmin = lndmrk2$chrn - chrom_wid, 
+  xmax = lndmrk2$chrn + chrom_wid, 
+  ymin = lndmrk2$sstart, 
+  ymax = lndmrk2$send
+  )
+
+p1 + ggplot2::geom_rect( 
+  data = tmp, 
+      ggplot2::aes( 
+        xmin = xmin,
+        xmax = xmax,
+        ymin = ymin, 
+        ymax = ymax
+        ),
+      fill = "#DCDCDC",
+#      color = "#CD853F",
+      color = "#F08080",
+#      color = "#000000"
+      linewidth = 2
+      ) + ggtitle("Powdery mildew")
+
+```
+
+
+```{r}
+# CENP
+grep("NC_044371.1:c59909808-59908167 Cannabis sativa chromosome 1, cs10, whole genome shotgun sequence", lgrp):grep("NC_044371.1:c74285628-74284242 Cannabis sativa chromosome 1, cs10, whole genome shotgun sequence", lgrp)
+#lgrp[11:26]
+my_regex <- sub("[[:space:]].+", "", lgrp[11:26])
+my_regex <- paste(my_regex, collapse="|")
+lndmrk2 <- lndmrk[grep(my_regex, lndmrk$qseqid), ]
+
+chrom_wid <- 0.46
+tmp <- data.frame( 
+  xmin = lndmrk2$chrn - chrom_wid, 
+  xmax = lndmrk2$chrn + chrom_wid, 
+  ymin = lndmrk2$sstart, 
+  ymax = lndmrk2$send
+  )
+
+p1 + ggplot2::geom_rect( 
+  data = tmp, 
+      ggplot2::aes( 
+        xmin = xmin,
+        xmax = xmax,
+        ymin = ymin, 
+        ymax = ymax
+        ),
+      fill = "#DCDCDC",
+#      color = "#CD853F",
+      color = "#F08080",
+#      color = "#000000"
+      linewidth = 2
+      ) + ggtitle("CENP")
+
+```
+
+
+```{r}
+# rRNA
+grep("NC_044375.1:87745002-87745120 Cannabis sativa chromosome 2, cs10, whole genome shotgun sequence", lgrp):grep("NC_026562.1:100368-101858 Cannabis sativa cultivar Carmagnola chloroplast, complete genome", lgrp)
+#lgrp[27:55]
+my_regex <- sub("[[:space:]].+", "", lgrp[27:55])
+my_regex <- paste(my_regex, collapse="|")
+lndmrk2 <- lndmrk[grep(my_regex, lndmrk$qseqid), ]
+
+tbl2 <- table(lndmrk2$chrn, lndmrk2$qseqid)
+tbl2[, colSums(as.matrix(tbl2)) > 1e3]
+#tbl2['8',]
+
+#tbl2[, grep("^NW", colnames(tbl2))]
+
+table(lndmrk2$chrn)
+
+# OAS
+#lgrp[56:57]
+#my_regex <- sub("[[:space:]].+", "", lgrp[56:57])
+#my_regex <- paste(my_regex, collapse="|")
+#lndmrk2 <- lndmrk[grep(my_regex, lndmrk$qseqid), ]
+
+
+#tmp <- data.frame( xmin = 1:4, xmax = 2:5, ymin = rep(10, times = 4), ymax = rep(10000000, times = 4))
+
+chrom_wid <- 0.46
+tmp <- data.frame( 
+  xmin = lndmrk2$chrn - chrom_wid, 
+  xmax = lndmrk2$chrn + chrom_wid, 
+  ymin = lndmrk2$sstart, 
+  ymax = lndmrk2$send
+  )
+
+p1 + ggplot2::geom_rect( 
+  data = tmp, 
+      ggplot2::aes( 
+        xmin = xmin,
+        xmax = xmax,
+        ymin = ymin, 
+        ymax = ymax
+        ),
+      #fill = "#C0C0C0",
+      fill = "#DCDCDC",
+      #fill = "#F5F5F5",
+#      color = "#FFD700"
+#      color = "#DAA520",
+      color = "#CD853F",
+#      color = "#000000"
+      linewidth = 2
+      ) + ggtitle("rRNA")
+
+```
+
+
+```{r}
+
+# OAS
+#lgrp[56:57]
+my_regex <- sub("[[:space:]].+", "", lgrp[56:57])
+my_regex <- paste(my_regex, collapse="|")
+lndmrk2 <- lndmrk[grep(my_regex, lndmrk$qseqid), ]
+
+chrom_wid <- 0.46
+tmp <- data.frame( 
+  xmin = lndmrk2$chrn - chrom_wid, 
+  xmax = lndmrk2$chrn + chrom_wid, 
+  ymin = lndmrk2$sstart, 
+  ymax = lndmrk2$send
+  )
+
+p1 + ggplot2::geom_rect( 
+  data = tmp, 
+      ggplot2::aes( 
+        xmin = xmin,
+        xmax = xmax,
+        ymin = ymin, 
+        ymax = ymax
+        ),
+      fill = "#DCDCDC",
+#      color = "#CD853F",
+      color = "#F08080",
+#      color = "#000000"
+      linewidth = 2
+      ) + ggtitle("OAS")
+
+```
+
 
 
 ## Chrom by genes
