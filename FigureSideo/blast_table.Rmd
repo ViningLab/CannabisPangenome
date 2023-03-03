@@ -1,0 +1,273 @@
+---
+title: "BLAST table"
+output: 
+  html_document:
+    code_folding: hide
+    toc: true
+date: "2023-03-01"
+editor_options: 
+  chunk_output_type: console
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(fig.align = "center")
+```
+
+
+Does softmasked genome affect this???
+No!!!
+
+
+```
+  CMD="$BLAST -query $QUERY \
+              -task megablast \
+              -db $SAMPDB \
+              -evalue 0.001 \
+              -num_alignments 10 \
+              -perc_identity 90 \
+              -qcov_hsp_perc 90 \
+              -num_threads 1 \
+              -mt_mode 1 \
+              -outfmt '10 qseqid qlen sseqid slen qstart qend sstart send evalue bitscore score length pident nident mismatch positive gapopen gaps ppos sstrand' > $OUTF"
+
+```
+
+- -evalue 0.001 \
+- -num_alignments 10 \
+- -perc_identity 90 \
+- -qcov_hsp_perc 90 \
+
+
+
+```{r}
+t1 <- Sys.time()
+#sampd <- list.files(".", pattern = "nuccomp")
+
+# sampd <- list.files("/media/knausb/Vining_lab/knausb/blast_projects/todd_rrna/blastn", 
+#                     full.names = TRUE, pattern = "blastn")
+sampd <- list.files("/media/knausb/Vining_lab/knausb/blast_projects/todd_rrna/blastn_uc/", 
+                    full.names = TRUE, pattern = "blastn")
+
+#sampn <- unlist(lapply(strsplit(sampd, split = "/"), function(x){x[length(x)]}))
+```
+
+
+
+```{r}
+
+blstn <- read.csv( 
+#    paste("/media/knausb/Vining_lab/knausb/blast_projects/todd_rrna/blastn/", sampn, "_blastn.csv", sep = ""),
+    sampd[1],
+    header = FALSE)
+  colnames(blstn) <- c("qseqid","qlen","sseqid","slen","qstart","qend",
+                       "sstart","send","evalue","bitscore","score","length",
+                       "pident","nident","mismatch","positive","gapopen",
+                       "gaps","ppos","sstrand")
+  
+  # blstn <- blstn[blstn$gaps <= 4, ]
+  # blstn <- blstn[blstn$pident >= 95, ]
+  
+  # blstn <- blstn[blstn$gaps <= 10, ]
+  # blstn <- blstn[blstn$pident >= 90, ]
+  # hist(blstn$gaps)
+  # hist(blstn$pident)
+
+tmp <- as.matrix(table(blstn$qseqid, blstn$sseqid))
+tmp <- cbind(tmp[, grep("chr", colnames(tmp))], rowSums(tmp[, grep("chr", colnames(tmp), invert = TRUE)]))
+colnames(tmp)[ ncol(tmp) ] <- "Unplaced"
+#apply(tmp, MARGIN = 2, class)
+#tmp
+
+knitr::kable(tmp)
+barplot(tmp[1:4, -11], las = 3)
+```
+
+
+```{r}
+library(tidyr)
+library(ggplot2)
+
+tmp2 <- as.data.frame(tmp[1:4, ])
+my_upmsg <- paste( format(sum(tmp2$Unplaced), big.mark = ","), "hits to unplaced seqs")
+tmp2 <- tmp2[, grep("Unplaced", colnames(tmp2), invert = TRUE)]
+
+tmp2 <- cbind( rownames(tmp2), tmp2)
+colnames(tmp2)[1] <- "Query"
+tmp2$Query <- factor(tmp2$Query, c("18s_AH3Ma.chr4", "26s_AH3Ma.chr4", "45s_not_separated_AH3Ma.chr4", 
+"5.8s_AH3Ma.chr4"))
+#tmp2
+
+data_long <- pivot_longer( data = tmp2, 
+                           cols = colnames(tmp2)[-1],
+                           names_to = "Chromosome",
+                           values_to = "Hits")
+
+#data_long[1:14,]
+
+#
+p <- ggplot( data = data_long, mapping = aes( x = Chromosome, y = Hits, fill = Query))
+#p <- ggplot( data = data_long, mapping = aes( y = Hits))
+p <- p + geom_bar( stat = "identity" )
+p <- p + theme_bw()
+p <- p + theme( axis.text.x = element_text(angle = 60, hjust = 1) )
+#p <- p + 
+#  p + theme(legend.position="bottom")
+p <- p + theme(legend.position="top", legend.title = element_blank())
+p <- p + ggtitle("Sample:", my_upmsg)
+p
+
+```
+
+
+
+```{python, eval=FALSE}
+from Bio import SeqIO
+import gzip
+my_file="/media/knausb/E737-9B48/releases/scaffolded/AH3Ma/AH3Ma.softmasked.fasta.gz"
+#f = gzip.open( my_file, 'rb' )
+f = gzip.open( my_file, 'rt' )
+record_dict = SeqIO.to_dict(SeqIO.parse(f, "fasta"))
+#print(record_dict["AH3Ma.chr7"]) 
+
+#record_dict["AH3Ma.chr7"].seq[43382134:43382392]
+record_dict["AH3Ma.chr7"].seq[43382133:43382392].upper()
+
+my_file2="/media/knausb/Vining_lab/knausb/blast_projects/todd_rrna/rrna_todd.fa"
+record_dict2 = SeqIO.to_dict(SeqIO.parse(my_file2, "fasta"))
+record_dict2["5S_AH3Ma.chr7:43382134-43382392"].seq
+
+```
+
+
+
+```{r}
+sampd <- list.files("/media/knausb/Vining_lab/knausb/blast_projects/todd_rrna/blastn_uc/", 
+                    full.names = TRUE, pattern = "blastn")
+#sampd <- sampd[1]
+sampd <- sampd[3]
+
+hit_bp <- function( sampd ){
+  
+  sampf <- basename(sampd)
+  sampn <- sub("_blastn.csv", "", sampf)
+
+  blstn <- read.csv(
+    file = sampd,
+#    paste("/media/knausb/Vining_lab/knausb/blast_projects/todd_rrna/blastn/", sampn, "_blastn.csv", sep = ""),
+#    sampd[1],
+    header = FALSE)
+  colnames(blstn) <- c("qseqid","qlen","sseqid","slen","qstart","qend",
+                       "sstart","send","evalue","bitscore","score","length",
+                       "pident","nident","mismatch","positive","gapopen",
+                       "gaps","ppos","sstrand")
+  
+  tmp <- as.matrix(table(blstn$qseqid, blstn$sseqid))
+  tmp <- cbind(tmp[, grep("chr", colnames(tmp))], rowSums(tmp[, grep("chr", colnames(tmp), invert = TRUE)]))
+  colnames(tmp)[ ncol(tmp) ] <- "Unplaced"
+  
+  require(tidyr)
+  require(ggplot2)
+
+#  tmp2 <- as.data.frame(tmp[1:4, ])
+  tmp2 <- as.data.frame(tmp[grep("45s|26s|18s|5.8s", rownames(tmp)), ])
+  
+  my_upmsg <- paste( sampn, ": ", format(sum(tmp2$Unplaced), big.mark = ","), "hits to unplaced seqs")
+  tmp2 <- tmp2[, grep("Unplaced", colnames(tmp2), invert = TRUE)]
+  tmp2 <- cbind( rownames(tmp2), tmp2)
+  colnames(tmp2)[1] <- "Query"
+  tmp2$Query <- factor(tmp2$Query, c("18s_AH3Ma.chr4", "26s_AH3Ma.chr4", "45s_not_separated_AH3Ma.chr4", 
+"5.8s_AH3Ma.chr4"))
+  #tmp2
+
+  data_long <- pivot_longer( data = tmp2, 
+                             cols = colnames(tmp2)[-1],
+                             names_to = "Chromosome",
+                             values_to = "Hits")
+  #table(data_long$Query)
+
+  p <- ggplot( data = data_long, mapping = aes( x = Chromosome, y = Hits, fill = Query))
+  p <- p + geom_bar( stat = "identity" )
+  p <- p + theme_bw()
+  p <- p + theme( axis.text.x = element_text(angle = 60, hjust = 1) )
+  p <- p + theme(legend.position="top", legend.title = element_blank())
+#                 legend.text = element_text(c("a", "b", "c", "d")))
+#  p <- p + ggtitle("Sample:", my_upmsg)
+  p <- p + ggtitle(my_upmsg)
+  p <- p + scale_fill_manual( 
+    values = c("red", "blue", "green", "purple"), 
+    labels = levels(data_long$Query),
+    drop = FALSE)
+  #p
+
+  return(p)
+}
+```
+
+
+
+```{r, results='hide', message=FALSE}
+sampd <- list.files("/media/knausb/Vining_lab/knausb/blast_projects/todd_rrna/blastn_uc/", 
+                    full.names = TRUE, pattern = "blastn")
+#sampd <- sampd[1:4]
+
+plist <- vector( mode = "list", length = length(sampd) )
+for( i in 1:length(sampd) ){
+  message("Processing sample ", i, " of ", length(sampd), ".")
+  plist[[i]] <- hit_bp( sampd[i] )
+}
+# plist[[1]]
+# plist[[2]]
+# plist[[3]]
+# plist[[4]]
+```
+
+
+
+```{r, fig.height=10, fig.width=12, fig.cap="**Figure X.** Summary of the genome."}
+library(ggpubr)
+
+my_ps <- 1:4
+#ggarrange( plotlist = plist[my_ps], ncol = 2, nrow = 3, labels = c("A", "B", "C", "D", "E", "F"))
+
+
+for(i in 1:ceiling(length(plist)/4) ){
+  my_ps <- 1:4
+  my_ps <- my_ps + (i - 1) * 4
+  if( my_ps[length(my_ps)] > length(plist) ){
+    my_ps <- my_ps[1]:length(plist)
+  }
+  print(ggarrange( plotlist = plist[my_ps], ncol = 2, nrow = 2,
+                   labels = c("A", "B", "C", "D")))
+}
+
+
+# for(i in 1:(length(plist)/6) ){
+#   my_ps <- 1:6
+#   my_ps <- my_ps + (i - 1) * 6
+#   if( my_ps[length(my_ps)] > length(plist) ){
+#     my_ps <- my_ps[1]:length(plist)
+#   }
+#   print(ggarrange( plotlist = plist[my_ps], ncol = 2, nrow = 3, labels = c("A", "B", "C", "D", "E", "F")))
+# }
+
+
+
+
+
+```
+
+
+
+
+
+
+
+```{r}
+t99 <- Sys.time()
+t99 - t1
+
+```
+
+
