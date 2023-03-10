@@ -927,13 +927,22 @@ hist(wins$ty3cnt)
 ```{r}
 #plot(wins$gcnt, wins$ty3cnt)
 #plot(wins$gcnt, wins$ty1cnt)
-#
-wins[1:3, ]
+# wins[1:3, ]
+# table(wins$Id)
+
+# my_pal <- RColorBrewer::brewer.pal(n=12, name = "Paired")
+# #my_pal[11] <- "#B15928"
+# my_pal[11] <- "#C71585"
+# #my_pal <- paste(my_pal, "66", sep = "")
 
 my_pal <- RColorBrewer::brewer.pal(n=12, name = "Paired")
 #my_pal[11] <- "#B15928"
 my_pal[11] <- "#C71585"
-my_pal <- paste(my_pal, "66", sep = "")
+my_pal <- paste(my_pal, "88", sep = "")
+
+lm1 <- lm( wins$ty3cnt ~ wins$gcnt )
+summary(lm1)
+my_coefs <- round(lm1$coefficients, digits = 3)
 
 #wins[1:3, ]
 
@@ -941,17 +950,19 @@ library(ggplot2)
 # Basic scatter plot
 #p <- ggplot(wins, aes(x=gcnt, y=ty3cnt, color=Id))
 #p <- ggplot(wins, aes(x=gcnt, y=ty3cnt, color=chr))
-p <- ggplot( data = wins, aes(x=gcnt, y=ty3cnt))
+p <- ggplot( data = wins, aes(x=gcnt, y=ty3cnt, color = Id))
 #p <- p + geom_point(size=2, color = "#C0C0C0")
 #p <- p + geom_point(size=2, color = "#77889966")
+# p <- p + geom_point(size=2, color = "#70809044")
 #
-p <- p + geom_point(size=2, color = "#70809044")
-#p <- p + geom_point(size=2)
+p <- p + geom_point(size=2)
 
 #p <- p + geom_smooth(method=lm)
-p <- p + geom_smooth(method=lm, se=FALSE, linewidth = 2)
+#p <- p + geom_smooth(method=lm, se=FALSE, linewidth = 2)
+p <- p + geom_smooth(method=lm, se=FALSE, linewidth = 1)
 
-p <- p + geom_text(x=100, y=90, label="y = (-0.4)x + 56.7", size = 4)
+#p <- p + geom_text(x=100, y=90, label="y = (-0.4)x + 56.7", size = 4)
+p <- p + geom_text(x=100, y=15, label= paste("y = ", my_coefs[2], " + ", my_coefs[1], sep = ""), color = "#000000", size = 8, parse = F)
 
 p <- p + theme_bw()
 p <- p + theme(legend.position = "none")
@@ -960,17 +971,15 @@ p <- p + theme(legend.position = "none")
 #p <- p + scale_color_brewer(palette="Paired")
 p <- p + scale_color_manual(values=my_pal)
 #p <- p + scale_color_brewer(palette="Set3")
+# p <- p + xlab("Genes per 1 Mbp window")
+# p <- p + ylab("Ty3 elements per 1 Mbp window")
 p <- p + xlab("Genes per window")
-p <- p + ylab("Ty3 elements per window")
-
+p <- p + ylab("Ty3 elements window")
+# p
 
 p3 <- p
 p3
 
-
-
-lm1 <- lm( wins$ty3cnt ~ wins$gcnt )
-summary(lm1)
 
 # lm2 <- lm( wins$ty1cnt ~ wins$gcnt )
 # summary(lm2)
