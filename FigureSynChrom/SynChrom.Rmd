@@ -1,0 +1,394 @@
+---
+title: "SynChrom"
+output: 
+  html_document:
+    toc: true
+    code_folding: hide
+date: "2023-03-14"
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(fig.align = "center")
+```
+
+
+
+## Chroms
+
+
+```{r, results='hide'}
+t1 <- Sys.time()
+EH23a <- read.csv("../FigureSideo/EH23a.softmasked_nuccomp.csv")
+EH23a$chrom_num <- sub(".+chr", "", EH23a$Id)
+EH23a$chrom_num[ EH23a$chrom_num == "X" ] <- 10
+EH23a$chrom_num <- as.numeric(EH23a$chrom_num)
+EH23a[1:3, ]
+
+EH23b <- read.csv("../FigureSideo/EH23b.softmasked_nuccomp.csv")
+EH23b$chrom_num <- sub(".+chr", "", EH23b$Id)
+EH23b$chrom_num[ EH23b$chrom_num == "X" ] <- 10
+EH23b$chrom_num <- as.numeric(EH23b$chrom_num)
+EH23b[1:3, ]
+```
+
+## wins
+
+
+```{r}
+#source("../FigureSideo/Rfunctions.R")
+#EH23a_wins <- get_wins("../FigureSideo/")
+#EH23b_wins <- get_wins("../FigureSideo/EH23b.softmasked_wins.csv")
+
+```
+
+
+
+
+## Syri
+
+```{r, results='hide'}
+syri <- read.table("/media/knausb/E737-9B48/knausb/mm2_maps/EH23a_EH23b/EH23a_EH23brcsyri.out", sep = "\t")
+syri[1:3, ]
+syn <- syri[syri[, 11] == "SYN", ]
+names(syn) <- c("ref_chrom", "ref_start", "ref_end", "ref_seq", "query_seq", "query_chrom", "query_start", "query_end", "unique_ID", "parent_ID", "Annotation_Type", "Copy_Status")
+syn$ref_start <- as.numeric(syn$ref_start)
+syn$ref_end <- as.numeric(syn$ref_end)
+syn$query_start <- as.numeric(syn$query_start)
+syn$query_end <- as.numeric(syn$query_end)
+syn[1:3, ]
+```
+
+
+
+## gribbon
+
+
+```{r}
+# nrow(syn)
+# x <- syn[1:1000, ]
+# nsmooth <- 10
+# min_len <- 1e5
+
+
+gribbon <- function(x, nsmooth = 10, min_len = 1e5){
+  
+  x <- x[(x$ref_end - x$ref_start) >= min_len, ]
+  x <- x[(x$query_end - x$query_start) >= min_len, ]
+  if( nrow(x) <= 0 ){
+    return("No rows")
+  }
+  
+  
+  x$ref_chrom_num <- sub(".+chr", "", x$ref_chrom)
+  x$ref_chrom_num[ x$ref_chrom_num == "X" ] <- 10
+  x$ref_chrom_num[ x$ref_chrom_num == "Y" ] <- 11
+  x$ref_chrom_num <- as.numeric(x$ref_chrom_num)
+  x$ref_chrom_num <- x$ref_chrom_num - 0.2
+  x$query_chrom_num <- sub(".+chr", "", x$query_chrom)
+  x$query_chrom_num[ x$query_chrom_num == "X" ] <- 10
+  x$query_chrom_num[ x$query_chrom_num == "Y" ] <- 11
+  x$query_chrom_num <- as.numeric(x$query_chrom_num)
+  x$query_chrom_num <- x$query_chrom_num + 0.2
+  
+#  nrow(x)
+  my_x <- seq( from = -4, to = 4, length.out = nsmooth)
+  my_y <- 1/( 1 + exp(1)^-my_x)
+  my_x <- (my_x + 4)/8
+  # plot(my_x, my_y)
+  
+#  my_x  <- c(my_x, rev(my_x))
+  my_polys <- data.frame( 
+    ID = rep(x$unique_ID, each = nsmooth * 2),
+    ref_chrom_num = rep(x$ref_chrom_num, each = nsmooth * 2),
+#    ref_start = rep(NA, each = nsmooth * 2),
+#    ref_end = rep(NA, each = nsmooth * 2),
+    query_chrom_num = rep(x$query_chrom_num, each = nsmooth * 2),
+#    query_start = rep(NA, each = nsmooth * 2),
+#    query_end = rep(NA, each = nsmooth * 2)
+     poly_xs = rep(NA, each = nsmooth * 2),
+     poly_ys = rep(NA, each = nsmooth * 2)
+  )
+  my_polys[1:3, ]
+  
+  my_vs <- seq(1, nrow(my_polys) + 1, by = nsmooth * 2)
+#  for( i in seq(1, nrow(my_polys), by = nsmooth * 2) ){
+  for( i in 1:nrow(x) ){
+    my_index <- my_vs[i]:(my_vs[i+1] - 1)
+    xmins <- seq( x$ref_chrom_num[i], x$query_chrom_num[i], length.out = nsmooth)
+    
+#    my_y * (x$query_end[i] - x$query_start[i]) + x$query_start[i]
+    
+    ymins <- my_y * (x$query_start[i] - x$ref_start[i]) + x$ref_start[i]
+    ymaxs <- my_y * (x$query_end[i] - x$ref_end[i]) + x$ref_end[i]
+    
+    my_polys$poly_xs[my_index]    <- c(xmins, rev(xmins))
+    my_polys$poly_ys[my_index] <- c(ymins, rev(ymaxs))
+    #x$ref_start[ my_index ] <- seq(x$ref_chrom[i], x$query_chrom[i], length.out = nsmooth)
+    
+  }
+#  my_polys[1:3, ]
+  return( my_polys )  
+}
+
+```
+
+
+
+```{r}
+#poly_coords <- gribbon(syn[1:1000, ])
+#poly_coords <- gribbon(syn, min_len = 1e5)
+#poly_coords <- gribbon(syn, min_len = 1e4)
+#
+poly_coords <- gribbon(syn, min_len = 1e3)
+# poly_coords <- gribbon(syn, nsmooth = 40, min_len = 1e3)
+# poly_coords <- gribbon(syn, min_len = 1e1)
+length(unique(poly_coords$ID))
+```
+
+
+## get_wins
+
+```{r, eval=FALSE}
+cmd <- "~/gits/hempy/bin/fast_win.py /media/knausb/Vining_lab/knausb/mm2_maps/EH23a_EH23b_v2/EH23b.rc458X.softmasked.fasta.gz --win_size 1000000"
+#system(cmd)
+
+```
+
+
+
+```{r}
+sampn <- "EH23b"
+
+get_wins <- function( sampn ){
+#  sampd <- "../FigureSideo/EH23a.softmasked_wins.csv"
+  wins_dir <- "../FigureSideo/"
+  gffs_dir <- "/media/knausb/E737-9B48/releases/scaffolded/"
+  
+#  sampn <- unlist(lapply(strsplit(sampd, split = "/"), function(x){x[length(x)]}))
+#  sampn <- unlist(lapply(strsplit(sampd, split = "//"), function(x){x[length(x)]}))
+#  sampn <- sub(".softmasked_wins.csv", "", sampn)
+#  sub(paste(sampn, ".softmasked_wins.csv", sep = ""), "", sampd)
+  
+  if( sampn == "EH23b" ){
+    wins <- read.csv( "EH23b.rc458X.softmasked_wins.csv" )
+    wins$Id <- sub("EH23a", "EH23b", wins$Id)
+  } else {
+    wins <- read.csv( paste( wins_dir, sampn, ".softmasked_wins.csv", sep = "") )
+  }
+#  wins <- read.csv( paste( sampn, ".softmasked_wins.csv", sep = "") )
+#  wins <- read.csv( sampd )
+#  wins <- wins[ grep( paste(sampn, ".chr", sep = ""), wins$Id ), ]
+  wins$chrn <- sub(".+chr", "", wins$Id)
+  wins$chrn[ wins$chrn == "X" ] <- 10
+  wins$chrn[ wins$chrn == "Y" ] <- 11
+  wins$chrn <- as.numeric(wins$chrn)
+  #wins[1:3, ]
+  
+  # Scale and center.
+  # Scaline of CG windows (chromosome width) is on a per chromosome basis.
+  #  wins$CGs <- 0
+  wins$CGs <- wins$CG / wins$Win_length * 100
+  #  wins$notCG <- (wins$Win_length / 1) - wins$CG
+  #  wins$notCGs <- 0
+  for( j in unique(wins$Id) ){
+    wins$CGs[ wins$Id == j] <- wins$CGs[ wins$Id == j] - min(wins$CGs[ wins$Id == j], na.rm = TRUE)
+    wins$CGs[ wins$Id == j] <- wins$CGs[ wins$Id == j] / max(wins$CGs[ wins$Id == j], na.rm = TRUE)
+    #
+    # wins$CGs[ wins$Id == j] <- wins$CG[ wins$Id == j] - min(wins$CG[ wins$Id == j], na.rm = TRUE)
+    # wins$CGs[ wins$Id == j] <- wins$CGs[ wins$Id == j]/max(wins$CGs[ wins$Id == j], na.rm = TRUE)
+    #
+    # wins$notCGs[ wins$Id == j] <- wins$notCG[ wins$Id == j] - min(wins$notCG[ wins$Id == j], na.rm = TRUE)
+    # wins$notCGs[ wins$Id == j] <- wins$notCGs[ wins$Id == j]/max(wins$notCGs[ wins$Id == j], na.rm = TRUE)
+  }
+  wins$iCGs <- 1 - wins$CGs
+  
+  #wins$ATs <- 1 - wins$CGs
+  #wins$ATs <- wins$Win_length/1e6 - wins$CGs
+  
+  # genes <- read.table( 
+  #   paste(sampd, "/", sampn, ".primary_high_confidence.gff3.gz", sep = "" ), 
+  #   sep = "\t" )
+  genes <- read.table( 
+    paste(gffs_dir, sampn, "/", sampn, ".primary_high_confidence.gff3.gz", sep = "" ), 
+    sep = "\t" )
+  genes <- genes[genes[, 3] == "gene", ]
+  
+  if( sampn == "EH23b" ){
+    # Column 4 is starts.
+    genes[ genes[, 1] == "EH23b.chr4", 4] <- EH23b$Length[ EH23b$Id == "EH23b.chr4" ] - genes[ genes[, 1] == "EH23b.chr4", 4]
+    genes[ genes[, 1] == "EH23b.chr4", 5] <- EH23b$Length[ EH23b$Id == "EH23b.chr4" ] - genes[ genes[, 1] == "EH23b.chr4", 5]
+    
+        genes[ genes[, 1] == "EH23b.chr5", 4] <- EH23b$Length[ EH23b$Id == "EH23b.chr5" ] - genes[ genes[, 1] == "EH23b.chr5", 4]
+    genes[ genes[, 1] == "EH23b.chr5", 5] <- EH23b$Length[ EH23b$Id == "EH23b.chr5" ] - genes[ genes[, 1] == "EH23b.chr5", 5]
+    
+        genes[ genes[, 1] == "EH23b.chr8", 4] <- EH23b$Length[ EH23b$Id == "EH23b.chr8" ] - genes[ genes[, 1] == "EH23b.chr8", 4]
+    genes[ genes[, 1] == "EH23b.chr8", 5] <- EH23b$Length[ EH23b$Id == "EH23b.chr8" ] - genes[ genes[, 1] == "EH23b.chr8", 5]
+    
+        genes[ genes[, 1] == "EH23b.chrX", 4] <- EH23b$Length[ EH23b$Id == "EH23b.chrX" ] - genes[ genes[, 1] == "EH23b.chrX", 4]
+    genes[ genes[, 1] == "EH23b.chrX", 5] <- EH23b$Length[ EH23b$Id == "EH23b.chrX" ] - genes[ genes[, 1] == "EH23b.chrX", 5]
+    
+  }
+  
+  genes[1:3, ]
+  
+  
+  # Windowize
+  wins$gcnt <- 0
+  for(i in 1:nrow(wins)){
+    # if( sampn == "EH23b" ){
+    #   wins$Id <- sub("EH23a", "EH23b", wins$Id)
+    # }
+    tmp <- genes[genes$V1 == wins$Id[i] & genes$V4 >= wins$Start[i] & genes$V5 < wins$End[i], ]
+    wins$gcnt[i] <- nrow(tmp)
+  }
+  
+  # Scaling of gene count windows is on a per assembly basis.
+  wins$gcntsc <- wins$gcnt - min(wins$gcnt)
+  wins$gcntsc <- wins$gcntsc / max(wins$gcntsc)
+  my_index <- round( wins$gcntsc * 100 )
+  my_index[ my_index <= 0] <- 1
+  
+  # Color ramp.
+  #wins$gcol <- heat.colors(n=100)[ my_index ]
+  #wins$gcol <- colorRampPalette(c("yellow", "orange", "red"))( 100 )[ my_index ]
+  #wins$gcol <- colorRampPalette(c("red", "orange", "yellow"))( 100 )[ my_index ]
+  #wins$gcol <- colorRampPalette(c("#0000FF", "#228B22", "#A0522D"))( 100 )[ my_index ]
+  #wins$gcol <- colorRampPalette(c("#87CEEB", "#3CB371", "#228B22", "#A0522D"))( 100 )[ my_index ]
+  
+  #wins$gcol <- viridisLite::plasma(n = 100, alpha = 1, begin = 0.1, end = 1)[ my_index ]
+  wins$gcol <- viridisLite::magma(n = 100, alpha = 1, begin = 0.2, end = 1.00)[ my_index ]
+  
+  return(wins)
+}
+```
+
+
+```{r, results='hide'}
+EH23a_wins <- get_wins("EH23a")
+EH23a_wins[1:3, ]
+EH23b_wins <- get_wins("EH23b")
+EH23b_wins[1:3, ]
+```
+
+
+
+
+## Plot
+
+
+```{r}
+library(ggplot2)
+
+chrom_wid <- 0.05
+p <- ggplot2::ggplot()
+p <- p + theme_bw()
+p <- p + ggplot2::geom_rect( 
+  data = EH23a, 
+  ggplot2::aes( xmin = chrom_num - chrom_wid - 0.2,
+                xmax = chrom_num + chrom_wid - 0.2,
+                ymin = 1, ymax = Length),
+  fill = "#DCDCDC",
+  color = "#000000"
+)
+
+p <- p + ggplot2::geom_rect( 
+  data = EH23b, 
+  ggplot2::aes( xmin = chrom_num - chrom_wid + 0.2,
+                xmax = chrom_num + chrom_wid + 0.2,
+                ymin = 1, ymax = Length),
+  fill = "#DCDCDC",
+  color = "#000000"
+)
+
+# Theme
+p <- p + ggplot2::scale_x_continuous( 
+  breaks = EH23a$chrom_num,
+  limits = c(0.6, 10.4),
+#  limits = c(0.5, 10.5),
+#  labels = EH23a$Id
+  labels = sub("a.chr", ".chr", EH23a$Id)
+)
+  
+p <- p + scale_y_continuous(
+  breaks = seq( 0, 120e6, by = 10e6), 
+  labels = seq( 0, 120, by = 10)
+)
+  
+#  p <- p + ggplot2::theme_bw() + 
+p <- p + ggplot2::theme( 
+      #      panel.grid.minor.x = ggplot2::element_blank(), 
+    panel.grid.minor.x = ggplot2::element_line( linewidth = 0.4, color = "#C0C0C0", linetype = 3 ),
+    axis.text.x = element_text(angle = 60, hjust = 1),
+    axis.title.x=element_blank(),
+    panel.grid.major.y = ggplot2::element_line( linewidth = 0.4, color = "#C0C0C0", linetype = 1 ),
+    panel.grid.minor.y = ggplot2::element_line( linewidth = 0.4, color = "#C0C0C0", linetype = 3 )
+  )
+  
+p <- p + ggplot2::ylab("Position (Mbp)")
+p <- p + ggtitle( "EH23" )
+
+p
+
+
+
+#p <- p + theme(legend.position='none')
+p <- p + geom_polygon( 
+  data = poly_coords, 
+  aes(x = poly_xs, y = poly_ys, fill = ID, group = ID), #, fill = col),
+  alpha = 2/5,
+  show.legend = FALSE,
+  #color = NA,
+  color = "#80808022",
+  #color = "#000000",
+#  linewidth = 0.1,
+#            fill = ID
+#  fill = "#C0C0C044"
+  fill = "#808080"
+  )
+
+p
+
+thinw <- 0.28
+p <- p + ggplot2::geom_rect( 
+  data = EH23a_wins, 
+  ggplot2::aes(
+    xmin = chrn - iCGs * thinw - 0.2,
+    #xmax = chrn + iCGs * thinw,
+    xmax = chrn - 0.2,
+    ymin = Start, 
+    ymax = End),
+  fill = EH23a_wins$gcol,
+  color = NA
+)
+
+p <- p + ggplot2::geom_rect( 
+  data = EH23b_wins, 
+  ggplot2::aes(
+    #xmin = chrn - iCGs * thinw - 0.2,
+    xmin = chrn + 0.2,
+    xmax = chrn + iCGs * thinw + 0.2,
+    #xmax = chrn - 0.2,
+    ymin = Start, 
+    ymax = End),
+  fill = EH23b_wins$gcol,
+  color = NA
+)
+```
+
+
+```{r, fig.width=10}
+p
+```
+
+
+
+
+```{r}
+t99 <- Sys.time()
+t99 - t1
+```
+
+
