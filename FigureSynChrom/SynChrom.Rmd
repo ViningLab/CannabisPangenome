@@ -160,7 +160,7 @@ cmd <- "~/gits/hempy/bin/fast_win.py /media/knausb/Vining_lab/knausb/mm2_maps/EH
 
 
 ```{r}
-sampn <- "EH23b"
+# sampn <- "EH23b"
 
 get_wins <- function( sampn ){
 #  sampd <- "../FigureSideo/EH23a.softmasked_wins.csv"
@@ -274,6 +274,57 @@ EH23b_wins[1:3, ]
 ```
 
 
+## BLAST
+
+
+```{r}
+
+sampn <- "EH23a"
+ablstn <- read.csv(
+    paste("/media/knausb/Vining_lab/knausb/blast_projects/todd_rrna/blastn_uc/", sampn, "_blastn.csv", sep = ""),
+    header = FALSE)
+colnames(ablstn) <- c("qseqid","qlen","sseqid","slen","qstart","qend",
+                     "sstart","send","evalue","bitscore","score","length",
+                     "pident","nident","mismatch","positive","gapopen",
+                     "gaps","ppos","sstrand")
+ablstn <- ablstn[grep("chr", ablstn$sseqid), ]
+ablstn$chrn <- sub(".*chr", "", ablstn$sseqid)
+ablstn$chrn[ablstn$chrn == "X"] <- 10
+ablstn$chrn[ablstn$chrn == "Y"] <- 11
+ablstn$chrn <- as.numeric(ablstn$chrn)
+
+
+sampn <- "EH23b"
+bblstn <- read.csv(
+    paste("/media/knausb/Vining_lab/knausb/blast_projects/todd_rrna/blastn_uc/", sampn, "_blastn.csv", sep = ""),
+    header = FALSE)
+colnames(bblstn) <- c("qseqid","qlen","sseqid","slen","qstart","qend",
+                     "sstart","send","evalue","bitscore","score","length",
+                     "pident","nident","mismatch","positive","gapopen",
+                     "gaps","ppos","sstrand")
+bblstn <- bblstn[grep("chr", bblstn$sseqid), ]
+bblstn$chrn <- sub(".*chr", "", bblstn$sseqid)
+bblstn$chrn[bblstn$chrn == "X"] <- 10
+bblstn$chrn[bblstn$chrn == "Y"] <- 11
+bblstn$chrn <- as.numeric(bblstn$chrn)
+
+my_chrom <- "EH23b.chr4"
+bblstn$sstart[ bblstn$sseqid == my_chrom ] <- EH23b$Length[ EH23b$Id == my_chrom ] - bblstn$sstart[ bblstn$sseqid == my_chrom ]
+bblstn$send[ bblstn$sseqid == my_chrom ] <- EH23b$Length[ EH23b$Id == my_chrom ] - bblstn$send[ bblstn$sseqid == my_chrom ]
+my_chrom <- "EH23b.chr5"
+bblstn$sstart[ bblstn$sseqid == my_chrom ] <- EH23b$Length[ EH23b$Id == my_chrom ] - bblstn$sstart[ bblstn$sseqid == my_chrom ]
+
+bblstn$send[ bblstn$sseqid == my_chrom ] <- EH23b$Length[ EH23b$Id == my_chrom ] - bblstn$send[ bblstn$sseqid == my_chrom ]
+my_chrom <- "EH23b.chr8"
+bblstn$sstart[ bblstn$sseqid == my_chrom ] <- EH23b$Length[ EH23b$Id == my_chrom ] - bblstn$sstart[ bblstn$sseqid == my_chrom ]
+bblstn$send[ bblstn$sseqid == my_chrom ] <- EH23b$Length[ EH23b$Id == my_chrom ] - bblstn$send[ bblstn$sseqid == my_chrom ]
+my_chrom <- "EH23b.chrX"
+bblstn$sstart[ bblstn$sseqid == my_chrom ] <- EH23b$Length[ EH23b$Id == my_chrom ] - bblstn$sstart[ bblstn$sseqid == my_chrom ]
+bblstn$send[ bblstn$sseqid == my_chrom ] <- EH23b$Length[ EH23b$Id == my_chrom ] - bblstn$send[ bblstn$sseqid == my_chrom ]
+
+sampn <- "EH23b"
+```
+
 
 
 ## Plot
@@ -306,7 +357,7 @@ p <- p + ggplot2::geom_rect(
 # Theme
 p <- p + ggplot2::scale_x_continuous( 
   breaks = EH23a$chrom_num,
-  limits = c(0.6, 10.4),
+#  limits = c(0.6, 10.4),
 #  limits = c(0.5, 10.5),
 #  labels = EH23a$Id
   labels = sub("a.chr", ".chr", EH23a$Id)
@@ -382,6 +433,124 @@ p <- p + ggplot2::geom_rect(
 ```{r, fig.width=10}
 p
 ```
+
+
+
+```{r}
+
+# Cannabinoids
+my_rows <- grep("AB2|LY|NC_044376.1:c427", ablstn$qseqid)
+blstw <- 0.48
+p <- p + ggplot2::geom_rect( 
+    data = ablstn[my_rows, ], 
+    ggplot2::aes( 
+      xmin = chrn - blstw,
+      xmax = chrn + 0 - 0.14,
+      ymin = sstart, 
+      ymax = send),
+    fill = "#228B22",
+    color = '#228B22'
+  )
+my_rows <- grep("AB2|LY|NC_044376.1:c427", bblstn$qseqid)
+blstw <- 0.48
+p <- p + ggplot2::geom_rect( 
+    data = bblstn[my_rows, ], 
+    ggplot2::aes( 
+      xmin = chrn + 0.14,
+      xmax = chrn + blstw,
+      ymin = sstart, 
+      ymax = send),
+    fill = "#228B22",
+    color = '#228B22'
+  )
+
+# 5S
+my_rows <- grep("5S_", ablstn$qseqid)
+blstw <- 0.48
+p <- p + ggplot2::geom_rect( 
+  data = ablstn[my_rows, ], 
+  ggplot2::aes( 
+    xmin = chrn - blstw,
+    xmax = chrn - 0.1,
+    ymin = sstart, 
+    ymax = send),
+  fill = "#000000",
+  color = '#000000'
+)
+my_rows <- grep("5S_", bblstn$qseqid)
+blstw <- 0.48
+p <- p + ggplot2::geom_rect( 
+  data = bblstn[my_rows, ], 
+  ggplot2::aes( 
+    xmin = chrn + 0.1,
+    xmax = chrn + blstw,
+    ymin = sstart, 
+    ymax = send),
+  fill = "#000000",
+  color = '#000000'
+)
+
+# 45S
+my_rows <- grep("45s_|26s_|5.8s_|18s_", ablstn$qseqid)
+blstw <- 0.48
+p <- p + ggplot2::geom_rect( 
+  data = ablstn[my_rows, ], 
+  ggplot2::aes( 
+    xmin = chrn - blstw,
+    xmax = chrn - 0.1,
+    ymin = sstart, 
+    ymax = send),
+  fill = "#B22222",
+  linewidth = 2,
+  #    linewidth = 4,
+  color = '#B22222'
+)
+my_rows <- grep("45s_|26s_|5.8s_|18s_", bblstn$qseqid)
+blstw <- 0.48
+p <- p + ggplot2::geom_rect( 
+  data = bblstn[my_rows, ], 
+  ggplot2::aes( 
+    xmin = chrn + 0.1,
+    xmax = chrn + blstw,
+    ymin = sstart, 
+    ymax = send),
+  fill = "#B22222",
+  linewidth = 2,
+  #    linewidth = 4,
+  color = '#B22222'
+)
+
+# Cent, subteol
+my_rows <- grep("AH3Ma_CS-237_satelite|CsatSD_centromere_237bp|CsatSD_centromere_370bp", ablstn$qseqid)
+#  blstw <- 0.48
+p <- p + ggplot2::geom_rect( 
+  data = ablstn[my_rows, ], 
+  ggplot2::aes( 
+    xmin = chrn - 0.5,
+    xmax = chrn - 0.2,
+    ymin = sstart, 
+    ymax = send),
+  fill = "#1E90FF",
+  color = '#1E90FF'
+)
+my_rows <- grep("AH3Ma_CS-237_satelite|CsatSD_centromere_237bp|CsatSD_centromere_370bp", bblstn$qseqid)
+p <- p + ggplot2::geom_rect( 
+  data = bblstn[my_rows, ], 
+  ggplot2::aes( 
+    xmin = chrn + 0.2,
+    xmax = chrn + 0.5,
+    ymin = sstart, 
+    ymax = send),
+  fill = "#1E90FF",
+  color = '#1E90FF'
+)
+```
+
+
+```{r, fig.width=10}
+p
+```
+
 
 
 
