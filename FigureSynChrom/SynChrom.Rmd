@@ -360,6 +360,40 @@ EH23b_wins[1:3, ]
 ```
 
 
+
+Windowize SNPs
+
+
+```{r win_snps}
+EH23a_wins[1:3, ]
+
+snps <- syri[syri$Annotation_Type == "SNP", ]
+nrow(snps)
+snps[1:3, ]
+
+EH23a_wins$snps <- 0
+
+for(i in 1:nrow(EH23a_wins)){
+  tmp <- snps[ snps$ref_chrom == EH23a_wins$Id[i] & snps$ref_start >= EH23a_wins$Start[i] & snps$ref_end <= EH23a_wins$End[i], ]
+  EH23a_wins$snps[i] <- nrow(tmp)
+}
+EH23a_wins$snpssc <- (EH23a_wins$snps - min(EH23a_wins$snps))/max(EH23a_wins$snps)
+
+hist(EH23a_wins$snps)
+hist(EH23a_wins$snps[ EH23a_wins$Id == "EH23a.chr4" ])
+my_hist <- hist(EH23a_wins$snpssc * 9 + 1, plot = F)
+
+#barplot(my_hist$density, space = 0, col = gray.colors(n=10))
+#axis(side=1)
+barplot(my_hist$density ~ my_hist$breaks[-10], space = 0, col = gray.colors(n=10))
+
+
+
+```
+
+
+
+
 ## BLAST
 
 
@@ -438,6 +472,21 @@ p <- p + ggplot2::geom_rect(
                 ymin = 1, ymax = Length),
   fill = "#DCDCDC",
   color = "#000000"
+)
+
+# EH23a_wins[1:3, ]
+
+my_cols <- gray.colors(n=10, start = 0.3, end = 0.9)[round(EH23a_wins$snpssc * 9 + 1)]
+#my_cols <- gray.colors(n=100, start = 0.3, end = 0.9)[round(EH23a_wins$snpssc * 99 + 1)]
+#p <- 
+p + ggplot2::geom_rect( 
+  data = EH23a_wins, 
+  ggplot2::aes( xmin = chrn - 0.5,
+                xmax = chrn - 0.25,
+                ymin = Start, ymax = End),
+#  fill = "#DCDCDC",
+  fill = my_cols,
+#  color = "#000000"
 )
 
 # Theme
@@ -771,6 +820,7 @@ coalesce_rows <- function(syn){
 
 
 ```{r}
+table(EH23a.chrX_AH3Ma_syri$Annotation_Type)
 EH23a.chrX_AH3Ma_syn <- EH23a.chrX_AH3Ma_syri[EH23a.chrX_AH3Ma_syri$Annotation_Type == "SYN", ]
 EH23a.chrX_AH3Ma_syn <- coalesce_rows(EH23a.chrX_AH3Ma_syn)
 #EH23a.chrX_AH3Ma_syn[1:3, ]
@@ -817,10 +867,32 @@ AH3Mb_BCMb_inv_poly_coords$poly_xs <- AH3Mb_BCMb_inv_poly_coords$poly_xs + 2
 
 
 
+```{r}
+dup <- EH23a.chrX_AH3Ma_syri[EH23a.chrX_AH3Ma_syri$Annotation_Type == "DUP", ]
+dup_poly_coords <- gribbon(dup, min_len = 1e1, coalesce = 0, invert = FALSE)
+dup_poly_coords$poly_xs <- (dup_poly_coords$poly_xs - 9.8)/0.4 + 1
+dup_poly_coords$poly_xs <- dup_poly_coords$poly_xs + 0
+EH23a.chrX_AH3Ma_dup_poly_coords <- dup_poly_coords
+
+dup <- AH3Ma.chrX_AH3Mb.chrY_syri[AH3Ma.chrX_AH3Mb.chrY_syri$Annotation_Type == "DUP", ]
+dup_poly_coords <- gribbon(dup, min_len = 1e1, coalesce = 0, invert = FALSE)
+dup_poly_coords$poly_xs <- (dup_poly_coords$poly_xs - 9.8)/0.4 + 1
+dup_poly_coords$poly_xs <- dup_poly_coords$poly_xs + 1
+AH3Ma_AH3Mb_dup_poly_coords <- dup_poly_coords
+
+dup <- AH3Mb.chrYrevcomp_BCMb.chrY_syri[AH3Mb.chrYrevcomp_BCMb.chrY_syri$Annotation_Type == "DUP", ]
+dup_poly_coords <- gribbon(dup, min_len = 1e1, coalesce = 0, invert = FALSE)
+dup_poly_coords$poly_xs <- (dup_poly_coords$poly_xs - 9.8)/0.4 + 1
+dup_poly_coords$poly_xs <- dup_poly_coords$poly_xs + 2
+AH3Mb_BCMb_dup_poly_coords <- dup_poly_coords
+
+```
+
 
 
 
 ```{r}
+library(ggplot2)
 chrom_wid <- 0.05
 p <- ggplot2::ggplot()
 p <- p + theme_bw()
@@ -876,10 +948,22 @@ p <- p + geom_polygon(
   show.legend = FALSE,
 #  color = "#696969",
 #  linewidth = 0.4,
+  color = "#FFA500",
   fill = "#FFA500"
 #  fill = "#808080"
 )
 
+p <- p + geom_polygon( 
+  data = EH23a.chrX_AH3Ma_dup_poly_coords, 
+  aes(x = poly_xs, y = poly_ys, fill = ID, group = ID),
+  alpha = 2/5,
+  show.legend = FALSE,
+  color = "#1E90FF44",
+#  color = "#696969",
+  linewidth = 0.1,
+  fill = "#1E90FF"
+#  fill = "#808080"
+)
 
 p <- p + geom_polygon( 
   data = AH3Ma_AH3Mb_syn_poly_coords, 
@@ -898,7 +982,20 @@ p <- p + geom_polygon(
   show.legend = FALSE,
 #  color = "#696969",
 #  linewidth = 0.4,
+  color = "#FFA500",
   fill = "#FFA500"
+#  fill = "#808080"
+)
+
+p <- p + geom_polygon( 
+  data = AH3Ma_AH3Mb_dup_poly_coords, 
+  aes(x = poly_xs, y = poly_ys, fill = ID, group = ID),
+  alpha = 2/5,
+  show.legend = FALSE,
+  color = "#1E90FF44",
+#  color = "#696969",
+  linewidth = 0.1,
+  fill = "#1E90FF"
 #  fill = "#808080"
 )
 
@@ -920,11 +1017,24 @@ p <- p + geom_polygon(
   show.legend = FALSE,
 #  color = "#696969",
 #  linewidth = 0.4,
+  color = "#FFA500",
   fill = "#FFA500"
 #  fill = "#808080"
 )
 
+p <- p + geom_polygon( 
+  data = AH3Mb_BCMb_dup_poly_coords, 
+  aes(x = poly_xs, y = poly_ys, fill = ID, group = ID),
+  alpha = 2/5,
+  show.legend = FALSE,
+  color = "#1E90FF44",
+#  color = "#696969",
+  linewidth = 0.1,
+  fill = "#1E90FF"
+#  fill = "#808080"
+)
 
+#p
 sex_chr <- p
 sex_chr
 ```
@@ -1022,6 +1132,188 @@ ggarrange(
                             labels = c("B", "C"))
                   ),
   labels = c("A", ""),
+  ncol = 1, nrow = 2, 
+  widths = 1, heights = c(2, 1))
+    
+```
+
+
+
+
+## Allele frequencies
+
+
+```{r}
+afreq <- read.csv("/media/knausb/Vining_lab/knausb/GENOMES_NRQ_2267/ERBxHO40_hapERB/het_wins/allele_freqs.csv")
+unique(afreq$CHROM)
+
+tmp <- afreq
+afreq <- tmp[tmp$CHROM == "chr_1e", ]
+afreq <- rbind( afreq, tmp[tmp$CHROM == "chr_2e", ])
+afreq <- rbind( afreq, tmp[tmp$CHROM == "chr_3e", ])
+afreq <- rbind( afreq, tmp[tmp$CHROM == "chr_4e", ])
+afreq <- rbind( afreq, tmp[tmp$CHROM == "chr_5e", ])
+afreq <- rbind( afreq, tmp[tmp$CHROM == "chr_6e", ])
+afreq <- rbind( afreq, tmp[tmp$CHROM == "chr_7e", ])
+afreq <- rbind( afreq, tmp[tmp$CHROM == "chr_8e", ])
+afreq <- rbind( afreq, tmp[tmp$CHROM == "chr_9e", ])
+afreq <- rbind( afreq, tmp[tmp$CHROM == "chr_Xe", ])
+rm(tmp)
+#table(afreq$CHROM)
+
+#hist(afreq$countNA)
+#afreq <- afreq[afreq$countNA <= 2, ]
+#
+afreq <- afreq[afreq$countNA <= 0, ]
+afreq[1:3, ]
+```
+
+
+```{r}
+nuccomp <- read.csv("../FigureSideo/EH23a.softmasked_nuccomp.csv")
+#
+nuccomp <- nuccomp[sort.int(nuccomp$Id, index.return = TRUE)$ix, ]
+nuccomp$chrom_num <- sub(".+chr", "", nuccomp$Id)
+nuccomp$chrom_num[ nuccomp$chrom_num == "X" ] <- 10
+nuccomp$chrom_num <- as.numeric(nuccomp$chrom_num)
+nuccomp[1:3, ]
+
+nuccomp[, 1:2]
+
+nuccomp$mids <- floor(nuccomp$Length/2)
+nuccomp$Length2 <- 0
+nuccomp$mids2 <- 0
+
+nuccomp$Length2[1] <- nuccomp$Length[1]
+nuccomp$mids2[1] <- nuccomp$mids[1]
+
+for(i in 2:nrow(nuccomp)){
+  nuccomp$Length2[i] <- nuccomp$Length2[ i-1 ] + nuccomp$Length[ i ]
+  nuccomp$mids2[i] <- nuccomp$Length2[ i-1 ] + nuccomp$mids[i]
+}
+nuccomp$CHROM <- sub("^EH23a.", "", nuccomp$Id)
+nuccomp$CHROM <- sub("chr", "chr_", nuccomp$CHROM)
+nuccomp$CHROM <- paste(nuccomp$CHROM, "e", sep = "")
+
+nuccomp[1:3, ]
+```
+
+### rePOS
+
+
+```{r}
+afreq$POS2 <- 0
+
+for( i in 1:nrow(nuccomp) ){
+#  afreq$POS2[ afreq$CHROM == EH23a$Id[i] ] <- afreq$POS[ afreq$CHROM == EH23a$Id[i] ] + (EH23a$Length2[i] - EH23a$Length[i])
+  afreq$POS2[ afreq$CHROM == nuccomp$CHROM[i] ] <- afreq$POS[ afreq$CHROM == nuccomp$CHROM[i] ] + (nuccomp$Length2[i] - nuccomp$Length[i])
+}
+# EH23a$Id
+# EH23a$Length2 - EH23a$Length
+afreq[1:3, ]
+```
+
+
+
+```{r}
+EH23a <- afreq[, c("CHROM", "POS", "n", "Allele_counts", "He", "Ne", "count0.0", 
+"count0.1", "count1.1", "countNA", "ERBcount", "HO40count", "ERBfreq", 
+"HO40freq", "He2", "POS2")]
+EH23a$Frequency <- EH23a$ERBfreq
+EH23a$facet1 <- "EH23a"
+
+EH23b <- afreq[, c("CHROM", "POS", "n", "Allele_counts", "He", "Ne", "count0.0", 
+"count0.1", "count1.1", "countNA", "ERBcount", "HO40count", "ERBfreq", 
+"HO40freq", "He2", "POS2")]
+EH23b$Frequency <- EH23a$HO40freq
+EH23b$facet1 <- "EH23b"
+
+Het <- afreq[, c("CHROM", "POS", "n", "Allele_counts", "He", "Ne", "count0.0", 
+"count0.1", "count1.1", "countNA", "ERBcount", "HO40count", "ERBfreq", 
+"HO40freq", "He2", "POS2")]
+Het$Frequency <- EH23a$He2
+Het$facet1 <- "Het"
+
+afreq <- rbind(EH23a, EH23b, Het)
+
+afreq$facet2 <- afreq$facet1
+afreq$facet2 <- sub("EH23[ab]", "EH23", afreq$facet2)
+afreq$facet2[ afreq$facet2 == "EH23" ] <- "Allele"
+afreq$facet2[ afreq$facet2 == "Het" ] <- "Heterozygosity"
+afreq[1:3, ]
+```
+
+
+
+
+
+```{r}
+library(ggplot2)
+
+#my_pal <- viridisLite::inferno(n = 10, begin = 0.2, end = 0.9, alpha = 0.01)
+my_pal <- viridisLite::inferno(n = 10, begin = 0.2, end = 0.9, alpha = 0.04)
+set.seed(99)
+my_pal <- my_pal[sample(1:length(my_pal), size = length(my_pal))]
+#palette(my_pal)
+
+#as.numeric(as.factor(afreq$CHROM))
+
+#afreq$col2 <- viridisLite::magma( n = 10, alpha = 0.8, begin = 0, end = 1 )[as.numeric(as.factor(afreq$CHROM))]
+
+# range(afreq$POS2)
+
+p <- ggplot( data = afreq, 
+             mapping = aes( x = POS2, 
+                            #y = ERBfreq,
+                            #y = freq,
+                            y = Frequency,
+                            color = CHROM )
+                            #color = col2)
+             )
+p <- p + geom_point( shape = 20, show.legend = FALSE )
+p <- p + theme_bw()
+p <- p + theme( axis.title.x=element_blank(),
+                axis.text.x = element_text(angle = 60, hjust = 1) )
+#p <- p + theme(axis.title.x = element_blank(), 
+#               axis.text.x = element_text( angle = 60, hjust = 1))
+# p + scale_x_discrete(breaks = EH23a$mids2, labels = EH23a$Id)
+# p + scale_x_discrete(breaks = EH23a$mids2)
+p <- p + ggplot2::scale_x_continuous( 
+  breaks = nuccomp$mids2,
+  labels = sub("a.chr", ".chr", nuccomp$Id)
+)
+p <- p + geom_vline( xintercept = nuccomp$Length2, linetype = 1, color = "#808080", linewidth = 0.4 )
+p <- p + geom_vline( xintercept = 0, linetype = 1, color = "#808080", linewidth = 0.4 )
+p <- p + geom_hline( yintercept = 0.5, linetype = 1, color = "#000000", linewidth = 1 )
+#p + scale_color_manual( values = viridisLite::magma( n = 10, alpha = 0.01, begin = 0.2, end = 0.9 ) )
+p <- p + ylim(0.3, 0.7)
+p <- p + scale_color_manual( values = my_pal )
+#
+#p <- 
+p + facet_grid(facet1 ~ .)
+#p <- 
+ahplot <- p + facet_grid(facet2 ~ .)
+#p
+ahplot
+
+
+
+#p + scale_color_manual( values = afreq$col2 )
+#+ scale_color_viridis_b()
+
+```
+
+
+## Figure 1 (Composite plot)
+
+
+```{r, fig.height=8, fig.width=8, message=FALSE, fig.cap="**Figure 1. Genomic architecture of the** ***Cannabis sativa*** **genome.**"}
+
+library("ggpubr")
+
+ggarrange(
+  plotlist = list(pEH23, ahplot),
+  labels = c("A", "B"),
   ncol = 1, nrow = 2, 
   widths = 1, heights = c(2, 1))
     
