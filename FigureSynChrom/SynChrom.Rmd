@@ -1146,6 +1146,7 @@ ggarrange(
 ```{r}
 afreq <- read.csv("/media/knausb/Vining_lab/knausb/GENOMES_NRQ_2267/ERBxHO40_hapERB/het_wins/allele_freqs.csv")
 unique(afreq$CHROM)
+afreq[1:3, ]
 
 tmp <- afreq
 afreq <- tmp[tmp$CHROM == "chr_1e", ]
@@ -1273,19 +1274,24 @@ p <- ggplot( data = afreq,
 p <- p + geom_point( shape = 20, show.legend = FALSE )
 p <- p + theme_bw()
 p <- p + theme( axis.title.x=element_blank(),
-                axis.text.x = element_text(angle = 60, hjust = 1) )
+                axis.text.x = element_text(angle = 60, hjust = 1)
+#                plot.margin = unit(c(0.1,0.1,1,0.1), "cm")
+                )
 #p <- p + theme(axis.title.x = element_blank(), 
 #               axis.text.x = element_text( angle = 60, hjust = 1))
 # p + scale_x_discrete(breaks = EH23a$mids2, labels = EH23a$Id)
 # p + scale_x_discrete(breaks = EH23a$mids2)
 p <- p + ggplot2::scale_x_continuous( 
   breaks = nuccomp$mids2,
+  expand = expansion(mult = 0.01, add = 0.0),
+#  expand = expansion(mult = 0.02, add = 0.0),
   labels = sub("a.chr", ".chr", nuccomp$Id)
 )
 p <- p + geom_vline( xintercept = nuccomp$Length2, linetype = 1, color = "#808080", linewidth = 0.4 )
 p <- p + geom_vline( xintercept = 0, linetype = 1, color = "#808080", linewidth = 0.4 )
 p <- p + geom_hline( yintercept = 0.5, linetype = 1, color = "#000000", linewidth = 1 )
 #p + scale_color_manual( values = viridisLite::magma( n = 10, alpha = 0.01, begin = 0.2, end = 0.9 ) )
+#p <- p + xlim(100, sum(nuccomp$Length))
 p <- p + ylim(0.3, 0.7)
 p <- p + scale_color_manual( values = my_pal )
 #
@@ -1320,6 +1326,73 @@ ggarrange(
 ```
 
 
+```{r}
+n <- 270
+
+#my_data <- data.frame( p = seq(from = 0.5, to = 1.0, by = 0.1) )
+my_data <- data.frame( p = seq(from = 0.5, to = 0.6, by = 0.1) )
+my_data$q <- 1 - my_data$p
+#
+my_data$f <- 0
+#my_data$f <- -0.25
+#my_data$f <- 0.04
+
+my_data$AA <- (my_data$p^2 * (1 - my_data$f)) + (my_data$p * my_data$f)
+my_data$Aa <- 2 * my_data$p * my_data$q * (1 - my_data$f)
+my_data$aa <- (my_data$q^2 * (1 - my_data$f)) + (my_data$q * my_data$f)
+my_data$Hexcess <- my_data$Aa - (2 * my_data$p * my_data$q)
+
+my_data$Hs <- 2 * my_data$p * my_data$q
+my_data$Ho <- my_data$Aa
+my_data$Fis <- (my_data$Hs - my_data$Ho)/my_data$Hs
+
+my_data$nAA <- my_data$AA * n
+my_data$nAa <- my_data$Aa * n
+my_data$naa <- my_data$aa * n
+my_data$nHexcess <- my_data$Hexcess * n
+
+knitr::kable(my_data)
+```
+
+
+```{r}
+n <- 270
+
+#my_data <- data.frame( p = seq(from = 0.5, to = 1.0, by = 0.1) )
+my_data <- data.frame( p = seq(from = 0.5, to = 0.6, by = 0.1) )
+my_data$q <- 1 - my_data$p
+#
+my_data$f <- -0.25
+#my_data$f <- 0.04
+
+my_data$AA <- (my_data$p^2 * (1 - my_data$f)) + (my_data$p * my_data$f)
+my_data$Aa <- 2 * my_data$p * my_data$q * (1 - my_data$f)
+my_data$aa <- (my_data$q^2 * (1 - my_data$f)) + (my_data$q * my_data$f)
+my_data$Hexcess <- my_data$Aa - (2 * my_data$p * my_data$q)
+
+my_data$Hs <- 2 * my_data$p * my_data$q
+my_data$Ho <- my_data$Aa
+my_data$Fis <- (my_data$Hs - my_data$Ho)/my_data$Hs
+
+my_data$nAA <- my_data$AA * n
+my_data$nAa <- my_data$Aa * n
+my_data$naa <- my_data$aa * n
+my_data$nHexcess <- my_data$Hexcess * n
+
+knitr::kable(my_data)
+```
+
+
+- **p** - the frequency of the first allele
+- **q** - the frequency of the second allele
+- **f** - the deviation in HW predicted heterozygotes
+- **AA** - the frequency of the first homozygote
+- **Aa** - the frequency of the heterozygote
+- **aa** - the frequency of the second homozygote
+- **Hexcess** - the proportion heterozygote excess
+- **Hs** - expected HW heterozygosity
+- **Ho** - observed HW heterozygosity (Aa)
+- **Fis** - deviation from HW (inferred)
 
 
 

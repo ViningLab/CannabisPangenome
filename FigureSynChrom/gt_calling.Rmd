@@ -1,0 +1,33 @@
+---
+title: "gt_calling"
+output: html_document
+date: "2023-04-03"
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+my_quantiles <- seq(1, 10, by = 1)
+my_bs <- dnorm(x = my_quantiles, mean = 5, sd = 1)
+plot( x = my_quantiles, y = my_bs, type = 'b', lwd = 4)
+```
+
+
+
+```{r}
+my_quantiles <- seq(1, 20, by = 1)
+my_ds <- dbinom(x = my_quantiles, size = max(my_quantiles), prob = 0.25)
+#my_bs <- pbinom(q = my_quantiles, size = max(my_quantiles), prob = 0.5, lower.tail = TRUE, log.p = FALSE)
+plot( x = my_quantiles, y = my_ds, type = 'h', lwd = 4)
+```
+
+
+
+
+
+
