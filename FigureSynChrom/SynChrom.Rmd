@@ -1589,7 +1589,6 @@ p <- p + scale_color_manual( values = my_pal )
 #p <- p + facet_grid(facet1 ~ .)
 #p <- 
 #ahplot + ylab("")
-ahplot <- ahplot + ylab(NULL)
 
 ahplot <- ahplot + scale_y_continuous( breaks = seq(-1.0, 1.0, by = 0.2),
                   minor_breaks = seq(-1, 1, by = 0.1) )
@@ -1600,7 +1599,7 @@ ahplot <- ahplot + theme( panel.grid.major.y = element_line(color = "#A9A9A9", l
 #ahplot + theme( panel.grid.major.y = element_line(color = "#C0C0C0", linewidth = 0.2, linetype = 1 ) )
 
 #  myPlots[[i]] <- myPlots[[i]] + theme( panel.grid.minor.y=element_line(color = "#C0C0C0", size=0.2) )
-
+ahplot <- ahplot + ylab(NULL)
 
 
 #p
@@ -1624,7 +1623,14 @@ ggarrange(
   labels = c("A", "B"),
   ncol = 1, nrow = 2, 
   widths = 1, heights = c(2, 1))
-    
+
+
+ggsave( filename = "EH23_chroms_freqs.tiff", 
+        device = "tiff", 
+        width = 6.5, height = 9, units = "in", 
+        dpi = 300,
+        compression = "lzw")
+
 ```
 
 
