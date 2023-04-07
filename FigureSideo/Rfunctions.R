@@ -86,10 +86,19 @@ get_wins <- function( sampd ){
   #wins$ATs <- 1 - wins$CGs
   wins$ATs <- wins$Win_length/1e6 - wins$CGs
   
+  #sampd <- "/media/knausb/E737-9B48/releases/scaffolded/AH3Ma/"
+  #sampn <- "AH3Ma"
+  #sampd <- "/media/knausb/E737-9B48/releases/scaffolded/GRMb/"
+  #sampn <- "GRMb"
+  #sampd <- "/media/knausb/E737-9B48/releases/scaffolded/SODLb/"
+  #sampn <- "SODLb"
   genes <- read.table( 
     paste(sampd, "/", sampn, ".primary_high_confidence.gff3.gz", sep = "" ), 
     sep = "\t" )
   genes <- genes[genes[, 3] == "gene", ]
+  # Select chromosomes, omit unplaced sequences.
+  genes <- genes[grep("chr", genes[, 1]), ]
+  #table(genes[, 1])
   
   # Windowize
   wins$gcnt <- 0
@@ -97,9 +106,16 @@ get_wins <- function( sampd ){
     tmp <- genes[genes$V1 == wins$Id[i] & genes$V4 >= wins$Start[i] & genes$V5 < wins$End[i], ]
     wins$gcnt[i] <- nrow(tmp)
   }
+  #hist(wins$gcnt)
+  #
+  wins[ wins$gcnt > 300, ]
+  #hist(wins$gcntsc)
   
   # Scaling of gene count windows is on a per assembly basis.
-  wins$gcntsc <- wins$gcnt - min(wins$gcnt)
+  # wins$gcntsc <- wins$gcnt - min(wins$gcnt)
+  # wins$gcntsc <- wins$gcnt - min(wins$gcnt)
+  wins$gcntsc <- wins$gcnt/wins$Win_length
+  wins$gcntsc <- wins$gcntsc - min(wins$gcntsc)
   wins$gcntsc <- wins$gcntsc / max(wins$gcntsc)
   my_index <- round( wins$gcntsc * 100 )
   my_index[ my_index <= 0] <- 1
