@@ -1,0 +1,81 @@
+---
+title: "SynChrom"
+output: 
+  html_document:
+    toc: true
+    code_folding: hide
+date: "2023-03-14"
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(fig.align = "center")
+```
+
+
+## Methods
+
+
+Chrom plot methods
+
+
+
+Allele frequency methods
+
+
+
+## Results
+
+
+**Organization of the EH23 genome**
+
+The EH23 *Cannabis sativa* genome is organized into 9 autosomes and a pair of sex chromosomes.
+Each pair of chromosomes demonstrated differences in chromosome length but also demonstrated a large degree of synteny among each pair.
+Genes were located predominantly near the ends of each chromosomes, as opposed to being evenly distributed throughout each chromosomes.
+This pattern of gene location near the ends of the chromosomes is consistent with previous reports [https://doi.org/10.1101/gr.242594.118].
+The abundance of the motif 'CpG' (cytosine, phosphate, guanine; a motif thought to be important in the context of methylation) varied throughout each pair of chromosomes.
+This CpG abundance appeared greatest near the centromeres, suggesting it can be used to determine approximate centromere location.
+Each of the 10 pairs of *Cannabis sativa* chromosomes appeared syntenous with an abundance of CpG motifs marking each centromere.
+
+
+**Nonrandom inheritance of SNP markers**
+
+Alleles inherited through a single generation in a population of plants grown in a common garden demonstrated random and nonrandom frequencies of inheritance.
+The parental population consisted of a self-pollinated individual, so allele frequencies at variable (heterozygous) positions were 0.5.
+Our random, or evolutionarily neutral, expectation is that allele frequencies will be maintained from generation to generation.
+That is, the allele frequencies in the parental population (a single individual) should approximate the allele frequencies observed in the progeny population (270 progeny plants).
+Similarly, our random, or evolutionarily neutral, expectation is that these alleles will combine to form genotypes randomly to meet our Hardy-Weinberg expectation (heterozygous genotypes at a rate of 0.5).
+Variants in the EH23 *Cannabis sativa* genome demonstrated both neutral as well as non-random patterns of inheritance, typically at the chromosomal level.
+
+
+Chromosome 5 exhibited our neutral assumptions where the frequency of each allele in the progeny population was at around 0.5, matching the frequencies observed in the parental generation.
+The alleles on chromosome 5 combined to form genotypes at a random, or neutral, rate as well.
+This is indicated by approximately half of the genotypes occurring as heterozygotes and an *F~IS~* near zero.
+Chromosome 2 also exhibits our neutral assumptions where the frequencies of each allele was at 0.5.
+However, these alleles combined to form genotypes in a manner where homozygotes are favored, resulting in a positive *F~IS~*.
+Chromosome 3 demonstrated a deviation in allele frequency from our neutral expectation of 0.5, where one allele was over-represented in the progeny.
+Despite this substantial deviation in allele frequency, these alleles joined together to form genotypes in a neutral manner, resulting in an *F~IS~* near zero and a heterozygote frequency near 0.5.
+Chromosome 4 had a non-neutral deviation in allele frequency that was similar to that of chromosome 3.
+However, on chromosome 4 the alleles joined to form genotypes in a manner where heterozygotes were favored, as indicated by a negative *F~IS~*.
+
+
+Near the ends of the chromosomes, where most of the genes occur and recombination is observed, we tended to observe our neutral expectations.
+For example, much of chromosome 1 demonstrated a deviation from our neutral allele frequency of 0.5 yet the ends of the chromosomes returned to our neutral expectation of 0.5.
+This suggests that the predominantly non-recombining chromosomes behave as a single locus except at the ends where recombination may allow a return to neutrality.
+
+
+Throughout the hemp genome we observed different patterns of evolution.
+What is striking about these results is that different evolutionary scenarios were exhibited on different chromosomes.
+For example, the positive *F~IS~* on chromosome may cause us to interpret it as a result of inbreeding, while the negative *F~IS~* on chromosome 4 may cause us to interpret it as a result of outbreeding.
+These are phenomena we typically discuss as a property of a population or individuals within a population, where in the hemp genome we observe these phenomena to differentiate among chromosomes.
+
+
+## Discussion
+
+prezygotic versus postzygotic
+
+
+
+

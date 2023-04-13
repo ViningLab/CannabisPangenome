@@ -26,6 +26,7 @@ EH23a$chrom_num <- sub(".+chr", "", EH23a$Id)
 EH23a$chrom_num[ EH23a$chrom_num == "X" ] <- 10
 EH23a$chrom_num <- as.numeric(EH23a$chrom_num)
 EH23a[1:3, ]
+EH23a[, 1:2]
 
 EH23b <- read.csv("../FigureSideo/EH23b.softmasked_nuccomp.csv")
 EH23b$chrom_num <- sub(".+chr", "", EH23b$Id)
@@ -1144,7 +1145,10 @@ ggarrange(
 
 
 ```{r}
-afreq <- read.csv("/media/knausb/Vining_lab/knausb/GENOMES_NRQ_2267/ERBxHO40_hapERB/het_wins/allele_freqs.csv")
+#afreq <- read.csv("/media/knausb/Vining_lab/knausb/GENOMES_NRQ_2267/ERBxHO40_hapERB/het_wins/allele_freqs.csv")
+#
+afreq <- read.csv("/media/knausb/Vining_lab/private_data/salk/VCFs/allele_freqs.csv")
+
 unique(afreq$CHROM)
 afreq[1:3, ]
 
@@ -1160,7 +1164,8 @@ afreq <- rbind( afreq, tmp[tmp$CHROM == "chr_8e", ])
 afreq <- rbind( afreq, tmp[tmp$CHROM == "chr_9e", ])
 afreq <- rbind( afreq, tmp[tmp$CHROM == "chr_Xe", ])
 rm(tmp)
-#table(afreq$CHROM)
+#
+table(afreq$CHROM)
 
 #hist(afreq$countNA)
 #afreq <- afreq[afreq$countNA <= 2, ]
@@ -1196,7 +1201,8 @@ afreq[1:3, ]
 
 
 ```{r}
-nuccomp <- read.csv("../FigureSideo/EH23a.softmasked_nuccomp.csv")
+#nuccomp <- read.csv("../FigureSideo/EH23a.softmasked_nuccomp.csv")
+nuccomp <- read.csv("../FigureSideo/EH23b.softmasked_nuccomp.csv")
 #
 nuccomp <- nuccomp[sort.int(nuccomp$Id, index.return = TRUE)$ix, ]
 nuccomp$chrom_num <- sub(".+chr", "", nuccomp$Id)
@@ -1228,15 +1234,15 @@ nuccomp[1:3, ]
 
 
 ```{r}
-afreq$POS2 <- 0
-
-for( i in 1:nrow(nuccomp) ){
-#  afreq$POS2[ afreq$CHROM == EH23a$Id[i] ] <- afreq$POS[ afreq$CHROM == EH23a$Id[i] ] + (EH23a$Length2[i] - EH23a$Length[i])
-  afreq$POS2[ afreq$CHROM == nuccomp$CHROM[i] ] <- afreq$POS[ afreq$CHROM == nuccomp$CHROM[i] ] + (nuccomp$Length2[i] - nuccomp$Length[i])
-}
-# EH23a$Id
-# EH23a$Length2 - EH23a$Length
-afreq[1:3, ]
+# afreq$POS2 <- 0
+# 
+# for( i in 1:nrow(nuccomp) ){
+# #  afreq$POS2[ afreq$CHROM == EH23a$Id[i] ] <- afreq$POS[ afreq$CHROM == EH23a$Id[i] ] + (EH23a$Length2[i] - EH23a$Length[i])
+#   afreq$POS2[ afreq$CHROM == nuccomp$CHROM[i] ] <- afreq$POS[ afreq$CHROM == nuccomp$CHROM[i] ] + (nuccomp$Length2[i] - nuccomp$Length[i])
+# }
+# # EH23a$Id
+# # EH23a$Length2 - EH23a$Length
+# afreq[1:3, ]
 ```
 
 
@@ -1625,11 +1631,11 @@ ggarrange(
   widths = 1, heights = c(2, 1))
 
 
-ggsave( filename = "EH23_chroms_freqs.tiff", 
-        device = "tiff", 
-        width = 6.5, height = 9, units = "in", 
-        dpi = 300,
-        compression = "lzw")
+# ggsave( filename = "EH23_chroms_freqs.tiff", 
+#         device = "tiff", 
+#         width = 6.5, height = 9, units = "in", 
+#         dpi = 300,
+#         compression = "lzw")
 
 ```
 

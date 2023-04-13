@@ -1,0 +1,86 @@
+---
+title: "CHROM wins"
+output: html_document
+date: "2023-04-07"
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+release_dir <- "/media/knausb/E737-9B48/releases/scaffolded/"
+samps <- list.files(release_dir)
+samps <- samps[ -grep("EDTAOutput", samps) ]
+
+# my_chroms <- as.data.frame(matrix( nrow = length(samps), ncol = 11 ))
+# rownames(my_chroms) <- samps
+# colnames(my_chroms) <- paste("chr", c(1:9, "X", "Y"), sep = "")
+# my_chroms[1:3, 1:11]
+```
+
+
+```{r, eval = FALSE}
+wins <- data.frame( start = seq(0, 120e6, by = 1e6) + 1, end = seq(0, 120e6, by = 1e6) + 1e6 )
+wins[1:3, ]
+
+chrom_l <- vector(mode = "list", length = 11)
+names(chrom_l) <- paste("chr", c(1:9, "X", "Y"), sep = "")
+for(i in 1:length(chrom_l)){
+  chrom_l[[i]] <- matrix( nrow = nrow(wins), ncol = length(samps) )
+  colnames(chrom_l[[i]]) <- samps
+}
+
+
+# for( i in 1:length(samps) ){
+#   tmp <- read.table( file = paste(release_dir, "/", samps[i], "/", samps[i], ".primary_high_confidence.gff3.gz", sep = ""),
+#                      header = FALSE, sep = "\t", quote = "\"" )
+#   tmp <- tmp[ tmp[, 3] == "gene", ]
+#   tmp <- tmp[ grep("chr", tmp[,1]), ]
+#   tmp[1:3, 1:8]
+#   for(j in 1:11){
+#     tmp2 <- tmp[ grep(names(chrom_l)[j], tmp[, 1]) , , drop = FALSE ]
+#     for( k in 1:nrow(wins) ){
+#       # Starts in column 4.
+#       tmp3 <- tmp2[ tmp2[, 4] >= wins$start[k] & tmp2[, 4] <= wins$end[k], , drop = FALSE]
+#       chrom_l[[j]][ k, samps[i]] <- nrow(tmp3)
+#     }
+#   }
+# }
+
+
+```
+
+
+```{r}
+#save(chrom_l, file = "chrom_l.RData")
+load(file = "chrom_l.RData")
+```
+
+
+```{r, fig.align='center', fig.width=10, fig.height=11}
+library(vcfR)
+
+for(i in 1:11){
+  heatmap.bp(chrom_l[[i]])
+}
+```
+
+
+```{r}
+
+hist(rowMeans(chrom_l[[6]]))
+chrom_l[[6]][, "GRMb"]
+
+hist(rowMeans(chrom_l[[7]]))
+chrom_l[[7]][, "SODLb"]
+
+
+hist(rowMeans(chrom_l[[11]]))
+chrom_l[[11]][, "GRMa"]
+```
+
+
