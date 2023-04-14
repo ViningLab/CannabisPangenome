@@ -37,7 +37,7 @@ Genes were located predominantly near the ends of each chromosomes, as opposed t
 This pattern of gene location near the ends of the chromosomes is consistent with previous reports [https://doi.org/10.1101/gr.242594.118].
 The abundance of the motif 'CpG' (cytosine, phosphate, guanine; a motif thought to be important in the context of methylation) varied throughout each pair of chromosomes.
 This CpG abundance appeared greatest near the centromeres, suggesting it can be used to determine approximate centromere location.
-Each of the 10 pairs of *Cannabis sativa* chromosomes appeared syntenous with an abundance of CpG motifs marking each centromere.
+Each of the 10 pairs of *Cannabis sativa* chromosomes appeared syntenic with an abundance of CpG motifs marking each centromere.
 
 
 **Nonrandom inheritance of SNP markers**

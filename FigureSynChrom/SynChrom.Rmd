@@ -701,7 +701,7 @@ p <- p + ggplot2::geom_rect(
   color = '#B22222'
 )
 
-# Cent, subteol
+# Centromeres, subtelomeric repeats
 my_rows <- grep("AH3Ma_CS-237_satelite|CsatSD_centromere_237bp|CsatSD_centromere_370bp", ablstn$qseqid)
 #  blstw <- 0.48
 p <- p + ggplot2::geom_rect( 
