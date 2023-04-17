@@ -7,12 +7,12 @@ This is a collaboration among the Vining Lab, OregonCBD (https://oregoncbdseeds.
 
 Color palette:
 
-CBDAS Full:        (0,100,225)
-CBDAS Partial:   (0, 200, 240)
-THCAS Full:        (180, 25, 100)
-THCAS Partial:   (225, 100, 240)
-CBCAS Full:        (225, 120, 0)
-CBCAS Partial:   (255, 215, 0)
+- CBDAS Full:        (0,100,225)
+- CBDAS Partial:   (0, 200, 240)
+- THCAS Full:        (180, 25, 100)
+- THCAS Partial:   (225, 100, 240)
+- CBCAS Full:        (225, 120, 0)
+- CBCAS Partial:   (255, 215, 0)
 
 
 RapidTables RGB Color Codes Chart:
