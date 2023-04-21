@@ -1149,28 +1149,42 @@ ggarrange(
 #
 afreq <- read.csv("/media/knausb/Vining_lab/private_data/salk/VCFs/allele_freqs.csv")
 
+# afreq$CHROM[ afreq$CHROM == "chr_1e" ] <- "chr_1"
+# afreq$CHROM[ afreq$CHROM == "chr_2e" ] <- "chr_5"
+# afreq$CHROM[ afreq$CHROM == "chr_3e" ] <- "chr_2"
+# afreq$CHROM[ afreq$CHROM == "chr_4e" ] <- "chr_3"
+# afreq$CHROM[ afreq$CHROM == "chr_5e" ] <- "chr_4"
+# afreq$CHROM[ afreq$CHROM == "chr_6e" ] <- "chr_7"
+# afreq$CHROM[ afreq$CHROM == "chr_7e" ] <- "chr_8"
+# afreq$CHROM[ afreq$CHROM == "chr_8e" ] <- "chr_9"
+# afreq$CHROM[ afreq$CHROM == "chr_9e" ] <- "chr_6"
+# afreq$CHROM[ afreq$CHROM == "chr_Xe" ] <- "chr_X"
+# afreq$CHROM <- paste(afreq$CHROM, "e", sep = "")
+
 unique(afreq$CHROM)
 afreq[1:3, ]
 
-tmp <- afreq
-afreq <- tmp[tmp$CHROM == "chr_1e", ]
-afreq <- rbind( afreq, tmp[tmp$CHROM == "chr_2e", ])
-afreq <- rbind( afreq, tmp[tmp$CHROM == "chr_3e", ])
-afreq <- rbind( afreq, tmp[tmp$CHROM == "chr_4e", ])
-afreq <- rbind( afreq, tmp[tmp$CHROM == "chr_5e", ])
-afreq <- rbind( afreq, tmp[tmp$CHROM == "chr_6e", ])
-afreq <- rbind( afreq, tmp[tmp$CHROM == "chr_7e", ])
-afreq <- rbind( afreq, tmp[tmp$CHROM == "chr_8e", ])
-afreq <- rbind( afreq, tmp[tmp$CHROM == "chr_9e", ])
-afreq <- rbind( afreq, tmp[tmp$CHROM == "chr_Xe", ])
-rm(tmp)
+# tmp <- afreq
+# afreq <- tmp[tmp$CHROM == "chr_1e", ]
+# afreq <- rbind( afreq, tmp[tmp$CHROM == "chr_2e", ])
+# afreq <- rbind( afreq, tmp[tmp$CHROM == "chr_3e", ])
+# afreq <- rbind( afreq, tmp[tmp$CHROM == "chr_4e", ])
+# afreq <- rbind( afreq, tmp[tmp$CHROM == "chr_5e", ])
+# afreq <- rbind( afreq, tmp[tmp$CHROM == "chr_6e", ])
+# afreq <- rbind( afreq, tmp[tmp$CHROM == "chr_7e", ])
+# afreq <- rbind( afreq, tmp[tmp$CHROM == "chr_8e", ])
+# afreq <- rbind( afreq, tmp[tmp$CHROM == "chr_9e", ])
+# afreq <- rbind( afreq, tmp[tmp$CHROM == "chr_Xe", ])
+# rm(tmp)
 #
 table(afreq$CHROM)
 
 #hist(afreq$countNA)
+nrow(afreq)
 #afreq <- afreq[afreq$countNA <= 2, ]
 #
 afreq <- afreq[afreq$countNA <= 0, ]
+nrow(afreq)
 afreq[1:3, ]
 ```
 
@@ -1210,19 +1224,25 @@ nuccomp$chrom_num[ nuccomp$chrom_num == "X" ] <- 10
 nuccomp$chrom_num <- as.numeric(nuccomp$chrom_num)
 nuccomp[1:3, ]
 
-nuccomp[, 1:2]
+#nuccomp[, 1:2]
 
-nuccomp$mids <- floor(nuccomp$Length/2)
-nuccomp$Length2 <- 0
-nuccomp$mids2 <- 0
-
-nuccomp$Length2[1] <- nuccomp$Length[1]
-nuccomp$mids2[1] <- nuccomp$mids[1]
-
+nuccomp$Starts <- 0
 for(i in 2:nrow(nuccomp)){
-  nuccomp$Length2[i] <- nuccomp$Length2[ i-1 ] + nuccomp$Length[ i ]
-  nuccomp$mids2[i] <- nuccomp$Length2[ i-1 ] + nuccomp$mids[i]
+  nuccomp$Starts[i] <- nuccomp$Starts[ i - 1 ] + nuccomp$Length[ i - 1 ]
 }
+nuccomp$mids <- nuccomp$Starts + nuccomp$Length/2
+
+# nuccomp$mids <- floor(nuccomp$Length/2)
+# nuccomp$Length2 <- 0
+# nuccomp$mids2 <- 0
+
+# nuccomp$Length2[1] <- nuccomp$Length[1]
+# nuccomp$mids2[1] <- nuccomp$mids[1]
+# 
+# for(i in 2:nrow(nuccomp)){
+#   nuccomp$Length2[i] <- nuccomp$Length2[ i-1 ] + nuccomp$Length[ i ]
+#   nuccomp$mids2[i] <- nuccomp$Length2[ i-1 ] + nuccomp$mids[i]
+# }
 nuccomp$CHROM <- sub("^EH23a.", "", nuccomp$Id)
 nuccomp$CHROM <- sub("chr", "chr_", nuccomp$CHROM)
 nuccomp$CHROM <- paste(nuccomp$CHROM, "e", sep = "")
@@ -1234,15 +1254,22 @@ nuccomp[1:3, ]
 
 
 ```{r}
-# afreq$POS2 <- 0
+afreq[1:3, ]
+#afreq$POS2 <- 0
+# nuccomp$CHROM2 <- sub("^.+\\.", "", nuccomp$CHROM)
+# 
+# #afreq$CHROM
 # 
 # for( i in 1:nrow(nuccomp) ){
 # #  afreq$POS2[ afreq$CHROM == EH23a$Id[i] ] <- afreq$POS[ afreq$CHROM == EH23a$Id[i] ] + (EH23a$Length2[i] - EH23a$Length[i])
-#   afreq$POS2[ afreq$CHROM == nuccomp$CHROM[i] ] <- afreq$POS[ afreq$CHROM == nuccomp$CHROM[i] ] + (nuccomp$Length2[i] - nuccomp$Length[i])
+# #  afreq$POS2[ afreq$CHROM == nuccomp$CHROM2[i] ] <- afreq$POS[ afreq$CHROM == nuccomp$CHROM[i] ] + (nuccomp$Length2[i] - nuccomp$Length[i])
+#     afreq$POS2[ afreq$CHROM == nuccomp$CHROM2[i] ] <- afreq$POS[ afreq$CHROM == nuccomp$CHROM2[i] ] + nuccomp$Starts[i]
+# #    [ afreq$CHROM == nuccomp$CHROM[i] ] + (nuccomp$Length2[i] - nuccomp$Length[i])
 # }
 # # EH23a$Id
 # # EH23a$Length2 - EH23a$Length
 # afreq[1:3, ]
+
 ```
 
 
