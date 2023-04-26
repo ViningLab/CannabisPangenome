@@ -29,24 +29,20 @@ In order to visually emphasize the lack of the 'CpG' motif an inverse was taken 
 This value was then multiplied by the scalar 1000 so that it would range from 0 - 1000.
 The count of genes per window was converted to a rate by dividing by each window size.
 This scaled, inverse 'CpG' rate was used for the width of windows while the color of each window was determined by the gene rate and colored using the viridis magma palette [10.5281/zenodo.4679424].
-
 Structural variation among each pair of chromosomes was determined by using minimap2 [https://doi.org/10.1093/bioinformatics/bty191].
 The minimap2 comparisons were annotated using SyRI [doi:10.1186/s13059-019-1911-0].
 The syntenous and inverted regions were plotted using ggplot2::geom_polygon in a manner inspired by plotsr [https://doi.org/10.1093/bioinformatics/btac196].
 
-The location of candidate loci was determined by using BLASTN [https://doi.org/10.1016/S0022-2836(05)80360-2].
-BLASTN was called with the following options: -task megablast -evalue 0.001 -perc_identity 90 -qcov_hsp_perc 90.
 
+The location of candidate loci within EH23 haplotypes A and B were determined using BLASTN [https://doi.org/10.1016/S0022-2836(05)80360-2].
+BLASTN was called with the following options: -task megablast -evalue 0.001 -perc_identity 90 -qcov_hsp_perc 90.
 Query sequences were as follows: cannabichromenic acid synthase (LY658671.1), cannabidiolic acid synthase (AB292682, AB292683, AB292684), tetrahydrocannabinolic acid synthase (AB212829, AB212830), and olivetolic acid cyclase (NC_044376.1:c4279947-4279296, NC_044376.1:c4272107-4271242).
 
-
-
-
-grep "^>" todd_rrna/todd_rrna.fa
 
 **Todd please review**
 
 ```
+bash$ grep "^>" todd_rrna/todd_rrna.fa
 >45s_not_separated_AH3Ma.chr4
 >26s_AH3Ma.chr4
 >5.8s_AH3Ma.chr4
@@ -55,29 +51,17 @@ grep "^>" todd_rrna/todd_rrna.fa
 >5S_AH3Ma.chr7:43382134-43382392
 
 >AH3Ma_CS-237_satelite
+
+# Onofri et al.? [https://doi.org/10.1016/j.phytochem.2015.03.006]
 >CsatSD_centromere_237bp
 >CsatSD_centromere_370bp
-
 ```
 
 
-
-FASTA2nuccomp
-
-motif_counter [no citation???]
-
-Gene density
-
-minimmap2 [https://doi.org/10.1093/bioinformatics/bty191]
-Syri [doi:10.1186/s13059-019-1911-0] inspired by plotsr [https://doi.org/10.1093/bioinformatics/btac196].
-
-BLASTN
-[https://doi.org/10.1016/S0022-2836(05)80360-2]
-
-Onofri [https://doi.org/10.1016/j.phytochem.2015.03.006]
+Tabular results (subject chromosome, subject start of alignment, subject end of alignment) from BLASTN were read into R [https://www.R-project.org/] and plotted on ideograms with ggplot2::geom_rect [https://ggplot2.tidyverse.org].
 
 
-viridis [10.5281/zenodo.4679424]
+
 
 
 **Allele frequency methods**
@@ -116,6 +100,9 @@ Similarly, our random, or evolutionarily neutral, expectation is that these alle
 Variants in the EH23 *Cannabis sativa* genome demonstrated both neutral as well as non-random patterns of inheritance, typically at the chromosomal level.
 
 
+A random, or evolutionarily neutral, pattern of inheritance was observed on chromosome 4.
+
+
 Chromosome 5 exhibited our neutral assumptions where the frequency of each allele in the progeny population was at around 0.5, matching the frequencies observed in the parental generation.
 The alleles on chromosome 5 combined to form genotypes at a random, or neutral, rate as well.
 This is indicated by approximately half of the genotypes occurring as heterozygotes and an *F~IS~* near zero.
@@ -127,7 +114,7 @@ Chromosome 4 had a non-neutral deviation in allele frequency that was similar to
 However, on chromosome 4 the alleles joined to form genotypes in a manner where heterozygotes were favored, as indicated by a negative *F~IS~*.
 
 
-Near the ends of the chromosomes, where most of the genes occur and recombination is observed, we tended to observe our neutral expectations.
+Near the ends of the chromosomes, where most of the genes occur and recombination is observed [https://doi.org/10.1101/gr.242594.118], we tended to observe our neutral expectations.
 For example, much of chromosome 1 demonstrated a deviation from our neutral allele frequency of 0.5 yet the ends of the chromosomes returned to our neutral expectation of 0.5.
 This suggests that the predominantly non-recombining chromosomes behave as a single locus except at the ends where recombination may allow a return to neutrality.
 
@@ -140,8 +127,58 @@ These are phenomena we typically discuss as a property of a population or indivi
 
 ## Discussion
 
+### Chromosomal organization
+
+The nine EH23 automosomes were numbered according to the CBDRx assembly [https://doi.org/10.1111/nph.17243].
+
+
+
+
+
+### Inheritance of alleles
+
 prezygotic versus postzygotic
 
 
+
+## References
+
+
+FASTA2nuccomp
+
+motif_counter [no citation???]
+
+Gene density
+
+minimmap2 [https://doi.org/10.1093/bioinformatics/bty191]
+Syri [doi:10.1186/s13059-019-1911-0] inspired by plotsr [https://doi.org/10.1093/bioinformatics/btac196].
+
+BLASTN
+[https://doi.org/10.1016/S0022-2836(05)80360-2]
+
+Onofri [https://doi.org/10.1016/j.phytochem.2015.03.006]
+
+viridis [10.5281/zenodo.4679424]
+
+
+## Figure captions
+
+
+**Figure 1** Genomic landscape of *Cannabis sativa* strain ERBxHO40.
+**Panel A**
+The nine pairs of autosomes and pair of sex chromosomes (XX).
+One million base pair rectangular windows extend outward from each pair of haplotypes at a width proportion to the absence of the 'CpG' motif.
+Each rectangular window is colored by gene density with yellow and orange indicating high gene density and blue and purple indicating low gene density.
+Each pair of haplotypes is connected by polygons to indicate structural arrangement, with grey indicating syntenous regions and orange connecting inversions.
+Rectangles along each haplotype indicate select loci with 
+light blue indicating centromeric and subtelomeric repeats, 
+firebrick red indicating 45S, 26S, 5.8S, 18S RNA arrays, black indicating 5S RNA arrays,
+and forest green indicating cannabinoids (cannabichromenic acid synthase, cannabidiolic acid synthase, tetrahydrocannabinolic acid synthase, and olivetolic acid cyclase).
+**Panel B** The inheritance of alleles throughout the genome.
+The upper panel presents the frequency of each allele throughout the genome.
+This population (n = 270 plants) is the product of a selfed parent.
+The allele frequencies for heterozygous positions in thre parent should be 0.5 and our random, or evolutionarily neutral, expectation is that this frequency of 0.5 will be observed in the progeny population.
+The lower panel presents *F~IS~* or the deviation from our random, or evolutionarily neutral, expectation of heterozygosity.
+A positive *F~IS~* indicates a deficiency of heterozygotes, a negative *F~IS~* indicates an excess of heterozygotes and an *F~IS~* of zero indicates that our allele frequencies predict heterozygosity.
 
 
