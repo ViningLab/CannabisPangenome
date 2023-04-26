@@ -452,8 +452,70 @@ display: none;
 
 <div id="methods" class="section level2">
 <h2>Methods</h2>
-<p>Chrom plot methods</p>
-<p>Allele frequency methods</p>
+<p><strong>Chrom plot methods</strong></p>
+<p>The genetically female EH23 genome consists of 9 pairs of autosomes
+and a pair of sex chromosomes (XX). Ideograms for each pair of
+chromosomes were created using ggplot2 [<a href="https://ggplot2.tidyverse.org" class="uri">https://ggplot2.tidyverse.org</a>] in R [<a href="https://www.R-project.org/" class="uri">https://www.R-project.org/</a>]. One million base pair
+windows were created for each chromosome where the number of genes and
+the ‘CpG’ motif were counted for each window [unpublished script???].
+The CpG count was converted into a rate by dividing by the window size,
+this also accommodated the last window of each chromosome which was less
+than one million base pairs in size. Each window was scaled by
+subtracting the minimum and dividing by the maximum value for each
+window. In order to visually emphasize the lack of the ‘CpG’ motif an
+inverse was taken by taking one and subtracting the scaled ‘CpG’ rate
+for each window. This value was then multiplied by the scalar 1000 so
+that it would range from 0 - 1000. The count of genes per window was
+converted to a rate by dividing by each window size. This scaled,
+inverse ‘CpG’ rate was used for the width of windows while the color of
+each window was determined by the gene rate and colored using the
+viridis magma palette [10.5281/zenodo.4679424].</p>
+<p>Structural variation among each pair of chromosomes was determined by
+using minimap2 [<a href="https://doi.org/10.1093/bioinformatics/bty191" class="uri">https://doi.org/10.1093/bioinformatics/bty191</a>]. The
+minimap2 comparisons were annotated using SyRI [<a href="doi:10.1186/s13059-019-1911-0" class="uri">doi:10.1186/s13059-019-1911-0</a>]. The syntenous and
+inverted regions were plotted using ggplot2::geom_polygon in a manner
+inspired by plotsr [<a href="https://doi.org/10.1093/bioinformatics/btac196" class="uri">https://doi.org/10.1093/bioinformatics/btac196</a>].</p>
+<p>The location of candidate loci was determined by using BLASTN [<a href="https://doi.org/10.1016/S0022-2836(05)80360-2" class="uri">https://doi.org/10.1016/S0022-2836(05)80360-2</a>]. BLASTN
+was called with the following options: -task megablast -evalue 0.001
+-perc_identity 90 -qcov_hsp_perc 90.</p>
+<p>Query sequences were as follows: cannabichromenic acid synthase
+(LY658671.1), cannabidiolic acid synthase (AB292682, AB292683,
+AB292684), tetrahydrocannabinolic acid synthase (AB212829, AB212830),
+and olivetolic acid cyclase (NC_044376.1:c4279947-4279296,
+NC_044376.1:c4272107-4271242).</p>
+<p>grep “^&gt;” todd_rrna/todd_rrna.fa</p>
+<p><strong>Todd please review</strong></p>
+<pre><code>&gt;45s_not_separated_AH3Ma.chr4
+&gt;26s_AH3Ma.chr4
+&gt;5.8s_AH3Ma.chr4
+&gt;18s_AH3Ma.chr4
+
+&gt;5S_AH3Ma.chr7:43382134-43382392
+
+&gt;AH3Ma_CS-237_satelite
+&gt;CsatSD_centromere_237bp
+&gt;CsatSD_centromere_370bp
+</code></pre>
+<p>FASTA2nuccomp</p>
+<p>motif_counter [no citation???]</p>
+<p>Gene density</p>
+<p>minimmap2 [<a href="https://doi.org/10.1093/bioinformatics/bty191" class="uri">https://doi.org/10.1093/bioinformatics/bty191</a>] Syri [<a href="doi:10.1186/s13059-019-1911-0" class="uri">doi:10.1186/s13059-019-1911-0</a>] inspired by plotsr [<a href="https://doi.org/10.1093/bioinformatics/btac196" class="uri">https://doi.org/10.1093/bioinformatics/btac196</a>].</p>
+<p>BLASTN [<a href="https://doi.org/10.1016/S0022-2836(05)80360-2" class="uri">https://doi.org/10.1016/S0022-2836(05)80360-2</a>]</p>
+<p>Onofri [<a href="https://doi.org/10.1016/j.phytochem.2015.03.006" class="uri">https://doi.org/10.1016/j.phytochem.2015.03.006</a>]</p>
+<p>viridis [10.5281/zenodo.4679424]</p>
+<p><strong>Allele frequency methods</strong></p>
+<p>Genotype data in the VCF format [<a href="https://doi.org/10.1093/bioinformatics/btr330" class="uri">https://doi.org/10.1093/bioinformatics/btr330</a>] was input
+into R [<a href="https://www.R-project.org/" class="uri">https://www.R-project.org/</a>] using vcfR [<a href="https://doi.org/10.1111/1755-0998.12549" class="uri">https://doi.org/10.1111/1755-0998.12549</a>]. Wright’s
+<em>F<sub>IS</sub></em> [<a href="https://doi.org/10.1038/166247a0" class="uri">https://doi.org/10.1038/166247a0</a>] was calculated as
+(<em>H<sub>S</sub></em> - <em>H<sub>O</sub></em>)/<em>H<sub>S</sub></em>
+where <em>H<sub>O</sub></em> is the observed number of heterozygotes
+divided by their number and <em>H<sub>S</sub></em> is the number of
+heterozygotes we expect based on the allele frequencies, calculated as
+the frequency of the first allele multiplied by the frequency of the
+second and then by two. Wright’s <em>F<sub>IS</sub></em> therefore gives
+us the deviation in heterozygosity from our random expectation.
+Scatterplots were generated using ggplot2 [<a href="https://ggplot2.tidyverse.org" class="uri">https://ggplot2.tidyverse.org</a>]. Graphical panels were
+assembled into a single graphic using ggpubr [<a href="https://CRAN.R-project.org/package=ggpubr" class="uri">https://CRAN.R-project.org/package=ggpubr</a>].</p>
 </div>
 <div id="results" class="section level2">
 <h2>Results</h2>
@@ -471,7 +533,7 @@ important in the context of methylation) varied throughout each pair of
 chromosomes. This CpG abundance appeared greatest near the centromeres,
 suggesting it can be used to determine approximate centromere location.
 Each of the 10 pairs of <em>Cannabis sativa</em> chromosomes appeared
-syntenous with an abundance of CpG motifs marking each centromere.</p>
+syntenic with an abundance of CpG motifs marking each centromere.</p>
 <p><strong>Nonrandom inheritance of SNP markers</strong></p>
 <p>Alleles inherited through a single generation in a population of
 plants grown in a common garden demonstrated random and nonrandom

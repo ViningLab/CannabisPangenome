@@ -18,11 +18,77 @@ knitr::opts_chunk$set(fig.align = "center")
 ## Methods
 
 
-Chrom plot methods
+**Chrom plot methods**
+
+The genetically female EH23 genome consists of 9 pairs of autosomes and a pair of sex chromosomes (XX).
+Ideograms for each pair of chromosomes were created using ggplot2 [https://ggplot2.tidyverse.org] in R [https://www.R-project.org/].
+One million base pair windows were created for each chromosome where the number of genes and the 'CpG' motif were counted for each window [unpublished script???].
+The CpG count was converted into a rate by dividing by the window size, this also accommodated the last window of each chromosome which was less than one million base pairs in size.
+Each window was scaled by subtracting the minimum and dividing by the maximum value for each window.
+In order to visually emphasize the lack of the 'CpG' motif an inverse was taken by taking one and subtracting the scaled 'CpG' rate for each window.
+This value was then multiplied by the scalar 1000 so that it would range from 0 - 1000.
+The count of genes per window was converted to a rate by dividing by each window size.
+This scaled, inverse 'CpG' rate was used for the width of windows while the color of each window was determined by the gene rate and colored using the viridis magma palette [10.5281/zenodo.4679424].
+
+Structural variation among each pair of chromosomes was determined by using minimap2 [https://doi.org/10.1093/bioinformatics/bty191].
+The minimap2 comparisons were annotated using SyRI [doi:10.1186/s13059-019-1911-0].
+The syntenous and inverted regions were plotted using ggplot2::geom_polygon in a manner inspired by plotsr [https://doi.org/10.1093/bioinformatics/btac196].
+
+The location of candidate loci was determined by using BLASTN [https://doi.org/10.1016/S0022-2836(05)80360-2].
+BLASTN was called with the following options: -task megablast -evalue 0.001 -perc_identity 90 -qcov_hsp_perc 90.
+
+Query sequences were as follows: cannabichromenic acid synthase (LY658671.1), cannabidiolic acid synthase (AB292682, AB292683, AB292684), tetrahydrocannabinolic acid synthase (AB212829, AB212830), and olivetolic acid cyclase (NC_044376.1:c4279947-4279296, NC_044376.1:c4272107-4271242).
 
 
 
-Allele frequency methods
+
+grep "^>" todd_rrna/todd_rrna.fa
+
+**Todd please review**
+
+```
+>45s_not_separated_AH3Ma.chr4
+>26s_AH3Ma.chr4
+>5.8s_AH3Ma.chr4
+>18s_AH3Ma.chr4
+
+>5S_AH3Ma.chr7:43382134-43382392
+
+>AH3Ma_CS-237_satelite
+>CsatSD_centromere_237bp
+>CsatSD_centromere_370bp
+
+```
+
+
+
+FASTA2nuccomp
+
+motif_counter [no citation???]
+
+Gene density
+
+minimmap2 [https://doi.org/10.1093/bioinformatics/bty191]
+Syri [doi:10.1186/s13059-019-1911-0] inspired by plotsr [https://doi.org/10.1093/bioinformatics/btac196].
+
+BLASTN
+[https://doi.org/10.1016/S0022-2836(05)80360-2]
+
+Onofri [https://doi.org/10.1016/j.phytochem.2015.03.006]
+
+
+viridis [10.5281/zenodo.4679424]
+
+
+**Allele frequency methods**
+
+Genotype data in the VCF format [https://doi.org/10.1093/bioinformatics/btr330] was input into R [https://www.R-project.org/] using vcfR [https://doi.org/10.1111/1755-0998.12549].
+Wright's *F~IS~* [https://doi.org/10.1038/166247a0] was calculated as (*H~S~* - *H~O~*)/*H~S~* where *H~O~* is the observed number of heterozygotes divided by their number and *H~S~* is the number of heterozygotes we expect based on the allele frequencies, calculated as the frequency of the first allele multiplied by the frequency of the second and then by two. 
+Wright's *F~IS~* therefore gives us the deviation in heterozygosity from our random expectation.
+Scatterplots were generated using ggplot2 [https://ggplot2.tidyverse.org].
+Graphical panels were assembled into a single graphic using ggpubr [https://CRAN.R-project.org/package=ggpubr].
+
+
 
 
 
