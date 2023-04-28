@@ -143,22 +143,11 @@ prezygotic versus postzygotic
 
 ## References
 
-
 FASTA2nuccomp
 
 motif_counter [no citation???]
 
-Gene density
-
-minimmap2 [https://doi.org/10.1093/bioinformatics/bty191]
-Syri [doi:10.1186/s13059-019-1911-0] inspired by plotsr [https://doi.org/10.1093/bioinformatics/btac196].
-
-BLASTN
-[https://doi.org/10.1016/S0022-2836(05)80360-2]
-
 Onofri [https://doi.org/10.1016/j.phytochem.2015.03.006]
-
-viridis [10.5281/zenodo.4679424]
 
 
 ## Figure captions
