@@ -1,6 +1,9 @@
 ---
 title: "CHROM wins"
-output: html_document
+output: 
+  html_document:
+    code_folding: hide
+    toc: true
 date: "2023-04-07"
 editor_options: 
   chunk_output_type: console
@@ -9,6 +12,15 @@ editor_options:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
+
+Each chromosome begins at the bottom of each heatmap and extends upward.
+A matrix-like data structure was used so that all chromosomes have the same number of windows, but the upper windows are empty (dark purple) where each chromosome ends.
+The yellow cells have the highest gene density where genes are from "*.primary_high_confidence.gff3.gz" files and include 'gene' in column 3.
+There is a pair of barplots for select windows, the first barplot includes all samples, the second barplot is subset so that the sample name for the highest value is visable.
+The chromosomes are not oriented, this is most evident on chromosome 8 which has a high density of genes at one end of the chromosome but not the other.
+The X chromosome plot has 4 column s that are empty because those haplotypes have Y chromosomes instead.
+The Y chromosome plot has only 4 columns because there were only 4 males.
 
 
 ```{r}
@@ -61,26 +73,187 @@ load(file = "chrom_l.RData")
 ```
 
 
-```{r, fig.align='center', fig.width=10, fig.height=11}
+```{r, fig.align='center', fig.width=10, fig.height=11, eval=FALSE}
 library(vcfR)
 
 for(i in 1:11){
   heatmap.bp(chrom_l[[i]])
+  title( main = paste("Chromosome:", names(chrom_l)[i]) )
 }
 ```
 
 
-```{r}
+## Chromosome 1
 
-hist(rowMeans(chrom_l[[6]]))
-chrom_l[[6]][, "GRMb"]
-
-hist(rowMeans(chrom_l[[7]]))
-chrom_l[[7]][, "SODLb"]
-
-
-hist(rowMeans(chrom_l[[11]]))
-chrom_l[[11]][, "GRMa"]
+```{r, fig.height=10, fig.width=10}
+library(vcfR)
+i <- 1
+heatmap.bp(chrom_l[[i]])
+title( main = paste("Chromosome:", names(chrom_l)[i]) )
 ```
 
+
+```{r, fig.height=4, fig.width=10}
+#heatmap.bp(chrom_l[[i]][56:58, ] )
+#max(chrom_l[[i]])
+win_num <- 57
+barplot(chrom_l[[i]][win_num, ], las = 3)
+title( ylab = "Genes")
+title( main = paste("Chromosome:", names(chrom_l)[i], ", window", win_num - 1, "to", win_num , "Mbp" ) )
+barplot(chrom_l[[i]][57, 30:50], las = 3)
+title( ylab = "Genes")
+title( main = paste("Chromosome:", names(chrom_l)[i], ", window", win_num - 1, "to", win_num , "Mbp" ) )
+```
+
+
+## Chromosome 2
+
+```{r, fig.height=10, fig.width=10}
+library(vcfR)
+i <- 2
+heatmap.bp(chrom_l[[i]])
+title( main = paste("Chromosome:", names(chrom_l)[i]) )
+```
+
+
+```{r, fig.height=4, fig.width=10}
+#heatmap.bp(chrom_l[[i]][46:50, ] )
+#max(chrom_l[[i]])
+
+win_num <- 48
+barplot(chrom_l[[i]][win_num, ], las = 3)
+title( ylab = "Genes")
+title( main = paste("Chromosome:", names(chrom_l)[i], ", window", win_num - 1, "to", win_num , "Mbp" ) )
+barplot(chrom_l[[i]][win_num, 30:50], las = 3)
+title( ylab = "Genes")
+title( main = paste("Chromosome:", names(chrom_l)[i], ", window", win_num - 1, "to", win_num , "Mbp" ) )
+```
+
+
+## Chromosome 3
+
+```{r, fig.height=10, fig.width=10}
+library(vcfR)
+i <- 3
+heatmap.bp(chrom_l[[i]])
+title( main = paste("Chromosome:", names(chrom_l)[i]) )
+```
+
+```{r, fig.height=4, fig.width=10}
+#heatmap.bp(chrom_l[[i]][56:78, ] )
+#max(chrom_l[[i]])
+win_num <- 78
+barplot(chrom_l[[i]][win_num, ], las = 3)
+title( ylab = "Genes")
+title( main = paste("Chromosome:", names(chrom_l)[i], ", window", win_num - 1, "to", win_num , "Mbp" ) )
+barplot(chrom_l[[i]][win_num, 40:60], las = 3)
+title( ylab = "Genes")
+title( main = paste("Chromosome:", names(chrom_l)[i], ", window", win_num - 1, "to", win_num , "Mbp" ) )
+```
+
+
+## Chromosome 4
+
+```{r, fig.height=10, fig.width=10}
+library(vcfR)
+i <- 4
+heatmap.bp(chrom_l[[i]])
+title( main = paste("Chromosome:", names(chrom_l)[i]) )
+#max(chrom_l[[i]])
+```
+
+
+## Chromosome 5
+
+```{r, fig.height=10, fig.width=10}
+library(vcfR)
+i <- 5
+heatmap.bp(chrom_l[[i]])
+title( main = paste("Chromosome:", names(chrom_l)[i]) )
+#max(chrom_l[[i]])
+```
+
+
+## Chromosome 6
+
+```{r, fig.height=10, fig.width=10}
+library(vcfR)
+i <- 6
+heatmap.bp(chrom_l[[i]])
+title( main = paste("Chromosome:", names(chrom_l)[i]) )
+```
+
+```{r, fig.height=4, fig.width=10}
+#heatmap.bp(chrom_l[[i]][56:78, ] )
+#max(chrom_l[[i]])
+win_num <- 1
+barplot(chrom_l[[i]][win_num, ], las = 3)
+title( ylab = "Genes")
+title( main = paste("Chromosome:", names(chrom_l)[i], ", window", win_num - 1, "to", win_num , "Mbp" ) )
+barplot(chrom_l[[i]][win_num, 10:40], las = 3)
+title( ylab = "Genes")
+title( main = paste("Chromosome:", names(chrom_l)[i], ", window", win_num - 1, "to", win_num , "Mbp" ) )
+```
+
+
+## Chromosome 7
+
+```{r, fig.height=10, fig.width=10}
+library(vcfR)
+i <- 7
+heatmap.bp(chrom_l[[i]])
+title( main = paste("Chromosome:", names(chrom_l)[i]) )
+```
+
+```{r, fig.height=4, fig.width=10}
+#heatmap.bp(chrom_l[[i]][56:78, ] )
+#max(chrom_l[[i]])
+win_num <- 1
+barplot(chrom_l[[i]][win_num, ], las = 3)
+title( ylab = "Genes")
+title( main = paste("Chromosome:", names(chrom_l)[i], ", window", win_num - 1, "to", win_num , "Mbp" ) )
+barplot(chrom_l[[i]][win_num, 40:70], las = 3)
+title( ylab = "Genes")
+title( main = paste("Chromosome:", names(chrom_l)[i], ", window", win_num - 1, "to", win_num , "Mbp" ) )
+```
+
+
+## Chromosome 8
+
+```{r, fig.height=10, fig.width=10}
+library(vcfR)
+i <- 8
+heatmap.bp(chrom_l[[i]])
+title( main = paste("Chromosome:", names(chrom_l)[i]) )
+```
+
+
+## Chromosome 9
+
+```{r, fig.height=10, fig.width=10}
+library(vcfR)
+i <- 9
+heatmap.bp(chrom_l[[i]])
+title( main = paste("Chromosome:", names(chrom_l)[i]) )
+```
+
+
+## Chromosome 10 (X)
+
+```{r, fig.height=10, fig.width=10}
+library(vcfR)
+i <- 10
+heatmap.bp(chrom_l[[i]])
+title( main = paste("Chromosome:", names(chrom_l)[i]) )
+```
+
+
+## Chromosome 11 (Y)
+
+```{r, fig.height=10, fig.width=10}
+library(vcfR)
+i <- 11
+heatmap.bp(chrom_l[[i]])
+title( main = paste("Chromosome:", names(chrom_l)[i]) )
+```
 
