@@ -24,15 +24,21 @@ The Y chromosome plot has only 4 columns because there were only 4 males.
 
 
 ```{r}
-release_dir <- "/media/knausb/E737-9B48/releases/scaffolded/"
+#release_dir <- "/media/knausb/E737-9B48/releases/scaffolded/"
+release_dir <- "/media/knausb/E737-9B48/releases/oriented_beds/"
 samps <- list.files(release_dir)
-samps <- samps[ -grep("EDTAOutput", samps) ]
+samps <- sub(".primary_high_confidence_oriented.bed.gz", "", samps)
+samps <- samps[ grep("EDTAOutput", samps, invert = TRUE) ]
+samps <- samps[ grep("orient_beds", samps, invert = TRUE) ]
+samps <- samps[ grep("RStudio", samps, invert = TRUE) ]
 
 # my_chroms <- as.data.frame(matrix( nrow = length(samps), ncol = 11 ))
 # rownames(my_chroms) <- samps
 # colnames(my_chroms) <- paste("chr", c(1:9, "X", "Y"), sep = "")
 # my_chroms[1:3, 1:11]
 ```
+
+Initialize window data structure.
 
 
 ```{r, eval = FALSE}
@@ -45,8 +51,12 @@ for(i in 1:length(chrom_l)){
   chrom_l[[i]] <- matrix( nrow = nrow(wins), ncol = length(samps) )
   colnames(chrom_l[[i]]) <- samps
 }
+```
 
 
+Populate GFF data structure
+
+```{r, eval = FALSE}
 # for( i in 1:length(samps) ){
 #   tmp <- read.table( file = paste(release_dir, "/", samps[i], "/", samps[i], ".primary_high_confidence.gff3.gz", sep = ""),
 #                      header = FALSE, sep = "\t", quote = "\"" )
@@ -62,14 +72,40 @@ for(i in 1:length(chrom_l)){
 #     }
 #   }
 # }
+```
 
+
+Populate BED data structure
+
+```{r, eval = FALSE}
+#i <- 1
+# for( i in 1:length(samps) ){
+#   tmp <- read.table( file = paste(release_dir, "/", samps[i], ".primary_high_confidence_oriented.bed.gz", sep = ""),
+#                      header = FALSE, sep = "\t", quote = "\"" )
+#   tmp <- tmp[ grep("chr", tmp[,1]), ]
+# #  tmp[1:3, 1:6]
+#   for(j in 1:11){
+#     tmp2 <- tmp[ grep(names(chrom_l)[j], tmp[, 1]) , , drop = FALSE ]
+#     for( k in 1:nrow(wins) ){
+#       # GFF starts in column 4.
+#       # BED starts in column 2.
+#       tmp3 <- tmp2[ tmp2[, 2] >= wins$start[k] & tmp2[, 2] <= wins$end[k], , drop = FALSE]
+#       chrom_l[[j]][ k, samps[i]] <- nrow(tmp3)
+#     }
+#   }
+# }
 
 ```
 
 
+
+
 ```{r}
 #save(chrom_l, file = "chrom_l.RData")
+#
 load(file = "chrom_l.RData")
+#save(chrom_l, file = "chrom_l_obed.RData")
+#load(file = "chrom_l_obed.RData")
 ```
 
 

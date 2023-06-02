@@ -473,14 +473,19 @@ chromosome 8 which has a high density of genes at one end of the
 chromosome but not the other. The X chromosome plot has 4 column s that
 are empty because those haplotypes have Y chromosomes instead. The Y
 chromosome plot has only 4 columns because there were only 4 males.</p>
-<pre class="r"><code>release_dir &lt;- &quot;/media/knausb/E737-9B48/releases/scaffolded/&quot;
+<pre class="r"><code>#release_dir &lt;- &quot;/media/knausb/E737-9B48/releases/scaffolded/&quot;
+release_dir &lt;- &quot;/media/knausb/E737-9B48/releases/oriented_beds/&quot;
 samps &lt;- list.files(release_dir)
-samps &lt;- samps[ -grep(&quot;EDTAOutput&quot;, samps) ]
+samps &lt;- sub(&quot;.primary_high_confidence_oriented.bed.gz&quot;, &quot;&quot;, samps)
+samps &lt;- samps[ grep(&quot;EDTAOutput&quot;, samps, invert = TRUE) ]
+samps &lt;- samps[ grep(&quot;orient_beds&quot;, samps, invert = TRUE) ]
+samps &lt;- samps[ grep(&quot;RStudio&quot;, samps, invert = TRUE) ]
 
 # my_chroms &lt;- as.data.frame(matrix( nrow = length(samps), ncol = 11 ))
 # rownames(my_chroms) &lt;- samps
 # colnames(my_chroms) &lt;- paste(&quot;chr&quot;, c(1:9, &quot;X&quot;, &quot;Y&quot;), sep = &quot;&quot;)
 # my_chroms[1:3, 1:11]</code></pre>
+<p>Initialize window data structure.</p>
 <pre class="r"><code>wins &lt;- data.frame( start = seq(0, 120e6, by = 1e6) + 1, end = seq(0, 120e6, by = 1e6) + 1e6 )
 wins[1:3, ]
 
@@ -489,10 +494,9 @@ names(chrom_l) &lt;- paste(&quot;chr&quot;, c(1:9, &quot;X&quot;, &quot;Y&quot;)
 for(i in 1:length(chrom_l)){
   chrom_l[[i]] &lt;- matrix( nrow = nrow(wins), ncol = length(samps) )
   colnames(chrom_l[[i]]) &lt;- samps
-}
-
-
-# for( i in 1:length(samps) ){
+}</code></pre>
+<p>Populate GFF data structure</p>
+<pre class="r"><code># for( i in 1:length(samps) ){
 #   tmp &lt;- read.table( file = paste(release_dir, &quot;/&quot;, samps[i], &quot;/&quot;, samps[i], &quot;.primary_high_confidence.gff3.gz&quot;, sep = &quot;&quot;),
 #                      header = FALSE, sep = &quot;\t&quot;, quote = &quot;\&quot;&quot; )
 #   tmp &lt;- tmp[ tmp[, 3] == &quot;gene&quot;, ]
@@ -507,8 +511,28 @@ for(i in 1:length(chrom_l)){
 #     }
 #   }
 # }</code></pre>
+<p>Populate BED data structure</p>
+<pre class="r"><code>#i &lt;- 1
+# for( i in 1:length(samps) ){
+#   tmp &lt;- read.table( file = paste(release_dir, &quot;/&quot;, samps[i], &quot;.primary_high_confidence_oriented.bed.gz&quot;, sep = &quot;&quot;),
+#                      header = FALSE, sep = &quot;\t&quot;, quote = &quot;\&quot;&quot; )
+#   tmp &lt;- tmp[ grep(&quot;chr&quot;, tmp[,1]), ]
+# #  tmp[1:3, 1:6]
+#   for(j in 1:11){
+#     tmp2 &lt;- tmp[ grep(names(chrom_l)[j], tmp[, 1]) , , drop = FALSE ]
+#     for( k in 1:nrow(wins) ){
+#       # GFF starts in column 4.
+#       # BED starts in column 2.
+#       tmp3 &lt;- tmp2[ tmp2[, 2] &gt;= wins$start[k] &amp; tmp2[, 2] &lt;= wins$end[k], , drop = FALSE]
+#       chrom_l[[j]][ k, samps[i]] &lt;- nrow(tmp3)
+#     }
+#   }
+# }</code></pre>
 <pre class="r"><code>#save(chrom_l, file = &quot;chrom_l.RData&quot;)
-load(file = &quot;chrom_l.RData&quot;)</code></pre>
+#
+load(file = &quot;chrom_l.RData&quot;)
+#save(chrom_l, file = &quot;chrom_l_obed.RData&quot;)
+#load(file = &quot;chrom_l_obed.RData&quot;)</code></pre>
 <pre class="r"><code>library(vcfR)
 
 for(i in 1:11){

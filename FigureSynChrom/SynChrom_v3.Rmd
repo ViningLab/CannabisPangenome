@@ -1193,13 +1193,18 @@ library("ggpubr")
 ggarrange(
   plotlist = list(pEH23, ahplot),
   labels = c("A", "B"),
+  label.x = 0,
+  label.y = c(1, 1.1),
   ncol = 1, nrow = 2, 
   widths = 1, heights = c(2, 1))
 
 
-# ggsave( filename = "EH23_chroms_freqs.tiff", 
-#         device = "tiff", 
-#         width = 6.5, height = 9, units = "in", 
+# ggsave( filename = "EH23_chroms_freqs.tiff",
+#         device = "tiff",
+#         width = 6.5,
+#         height = 6.5,
+#         #height = 9,
+#         units = "in",
 #         dpi = 300,
 #         compression = "lzw")
 
