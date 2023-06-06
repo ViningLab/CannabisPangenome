@@ -102,10 +102,10 @@ Populate BED data structure
 
 ```{r}
 #save(chrom_l, file = "chrom_l.RData")
-#
-load(file = "chrom_l.RData")
+# load(file = "chrom_l.RData")
 #save(chrom_l, file = "chrom_l_obed.RData")
-#load(file = "chrom_l_obed.RData")
+#
+load(file = "chrom_l_obed.RData")
 ```
 
 
@@ -124,6 +124,8 @@ for(i in 1:11){
 ```{r, fig.height=10, fig.width=10}
 library(vcfR)
 i <- 1
+ncol(chrom_l[[i]])
+is.na(chrom_l[[i]][ chrom_l[[i]] == 0 ]) <- TRUE
 heatmap.bp(chrom_l[[i]])
 title( main = paste("Chromosome:", names(chrom_l)[i]) )
 ```
@@ -147,6 +149,7 @@ title( main = paste("Chromosome:", names(chrom_l)[i], ", window", win_num - 1, "
 ```{r, fig.height=10, fig.width=10}
 library(vcfR)
 i <- 2
+is.na(chrom_l[[i]][ chrom_l[[i]] == 0 ]) <- TRUE
 heatmap.bp(chrom_l[[i]])
 title( main = paste("Chromosome:", names(chrom_l)[i]) )
 ```
@@ -171,14 +174,15 @@ title( main = paste("Chromosome:", names(chrom_l)[i], ", window", win_num - 1, "
 ```{r, fig.height=10, fig.width=10}
 library(vcfR)
 i <- 3
+is.na(chrom_l[[i]][ chrom_l[[i]] == 0 ]) <- TRUE
 heatmap.bp(chrom_l[[i]])
 title( main = paste("Chromosome:", names(chrom_l)[i]) )
 ```
 
 ```{r, fig.height=4, fig.width=10}
-#heatmap.bp(chrom_l[[i]][56:78, ] )
+#heatmap.bp(chrom_l[[i]][1:7, ] )
 #max(chrom_l[[i]])
-win_num <- 78
+win_num <- 6
 barplot(chrom_l[[i]][win_num, ], las = 3)
 title( ylab = "Genes")
 title( main = paste("Chromosome:", names(chrom_l)[i], ", window", win_num - 1, "to", win_num , "Mbp" ) )
@@ -188,11 +192,22 @@ title( main = paste("Chromosome:", names(chrom_l)[i], ", window", win_num - 1, "
 ```
 
 
+```{r, fig.height=10, fig.width=10}
+library(vcfR)
+i <- 3
+#is.na(chrom_l[[i]][ chrom_l[[i]] == 0 ]) <- TRUE
+heatmap.bp(chrom_l[[i]][ , colnames(chrom_l[[i]]) != "STHa"])
+title( main = paste("Chromosome:", names(chrom_l)[i]) )
+```
+
+
+
 ## Chromosome 4
 
 ```{r, fig.height=10, fig.width=10}
 library(vcfR)
 i <- 4
+is.na(chrom_l[[i]][ chrom_l[[i]] == 0 ]) <- TRUE
 heatmap.bp(chrom_l[[i]])
 title( main = paste("Chromosome:", names(chrom_l)[i]) )
 #max(chrom_l[[i]])
@@ -204,6 +219,7 @@ title( main = paste("Chromosome:", names(chrom_l)[i]) )
 ```{r, fig.height=10, fig.width=10}
 library(vcfR)
 i <- 5
+is.na(chrom_l[[i]][ chrom_l[[i]] == 0 ]) <- TRUE
 heatmap.bp(chrom_l[[i]])
 title( main = paste("Chromosome:", names(chrom_l)[i]) )
 #max(chrom_l[[i]])
@@ -215,6 +231,7 @@ title( main = paste("Chromosome:", names(chrom_l)[i]) )
 ```{r, fig.height=10, fig.width=10}
 library(vcfR)
 i <- 6
+is.na(chrom_l[[i]][ chrom_l[[i]] == 0 ]) <- TRUE
 heatmap.bp(chrom_l[[i]])
 title( main = paste("Chromosome:", names(chrom_l)[i]) )
 ```
@@ -237,6 +254,7 @@ title( main = paste("Chromosome:", names(chrom_l)[i], ", window", win_num - 1, "
 ```{r, fig.height=10, fig.width=10}
 library(vcfR)
 i <- 7
+is.na(chrom_l[[i]][ chrom_l[[i]] == 0 ]) <- TRUE
 heatmap.bp(chrom_l[[i]])
 title( main = paste("Chromosome:", names(chrom_l)[i]) )
 ```
@@ -259,6 +277,7 @@ title( main = paste("Chromosome:", names(chrom_l)[i], ", window", win_num - 1, "
 ```{r, fig.height=10, fig.width=10}
 library(vcfR)
 i <- 8
+is.na(chrom_l[[i]][ chrom_l[[i]] == 0 ]) <- TRUE
 heatmap.bp(chrom_l[[i]])
 title( main = paste("Chromosome:", names(chrom_l)[i]) )
 ```
@@ -269,6 +288,7 @@ title( main = paste("Chromosome:", names(chrom_l)[i]) )
 ```{r, fig.height=10, fig.width=10}
 library(vcfR)
 i <- 9
+is.na(chrom_l[[i]][ chrom_l[[i]] == 0 ]) <- TRUE
 heatmap.bp(chrom_l[[i]])
 title( main = paste("Chromosome:", names(chrom_l)[i]) )
 ```
@@ -279,6 +299,7 @@ title( main = paste("Chromosome:", names(chrom_l)[i]) )
 ```{r, fig.height=10, fig.width=10}
 library(vcfR)
 i <- 10
+is.na(chrom_l[[i]][ chrom_l[[i]] == 0 ]) <- TRUE
 heatmap.bp(chrom_l[[i]])
 title( main = paste("Chromosome:", names(chrom_l)[i]) )
 ```
@@ -289,7 +310,25 @@ title( main = paste("Chromosome:", names(chrom_l)[i]) )
 ```{r, fig.height=10, fig.width=10}
 library(vcfR)
 i <- 11
+is.na(chrom_l[[i]][ chrom_l[[i]] == 0 ]) <- TRUE
 heatmap.bp(chrom_l[[i]])
 title( main = paste("Chromosome:", names(chrom_l)[i]) )
 ```
+
+
+
+```{r, fig.height=4, fig.width=10}
+#heatmap.bp(chrom_l[[i]][110:121, ] )
+#max(chrom_l[[i]])
+win_num <- 113
+barplot(chrom_l[[i]][win_num, ], las = 3)
+title( ylab = "Genes")
+title( main = paste("Chromosome:", names(chrom_l)[i], ", window", win_num - 1, "to", win_num , "Mbp" ) )
+
+barplot(chrom_l[[i]][win_num, 10:30], las = 3)
+title( ylab = "Genes")
+title( main = paste("Chromosome:", names(chrom_l)[i], ", window", win_num - 1, "to", win_num , "Mbp" ) )
+```
+
+
 

@@ -11,7 +11,9 @@ editor_options:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+#knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(results = "hide")
 knitr::opts_chunk$set(fig.align = "center")
 ```
 
@@ -163,6 +165,77 @@ gchrom
 #        units = "in", dpi = 300, compression = "lzw")
 ```
 
+
+## Gene counts
+
+
+```{r, fig.width=12}
+data_long[1:3, ]
+
+my_lvls <- sort(unique(data_long$Chrom), decreasing = TRUE)
+#dput(unique(data_long$Chrom))
+
+data_long$Chrom <- factor(data_long$Chrom, levels = my_lvls)
+
+p <- ggplot(data_long, aes(x=Sample, y=Count, 
+                           #color=Chrom, 
+                           fill=Chrom)) 
+p <- p + geom_bar(stat="identity")
+p <- p + theme_bw()
+p <- p + theme( axis.text.x = element_text(angle = 60, hjust = 1) )
+#p
+
+p <- p + scale_fill_brewer(palette="Paired")
+p
+
+
+```
+
+
+## Lengths
+
+
+```{r, results='markup'}
+
+data_long[1:3, ]
+range(data_long$Length, na.rm = TRUE)
+
+minchr <- data_long[ data_long$Length == min(data_long$Length, na.rm = TRUE), ]
+minchr <- minchr[!is.na(minchr$Length), ]
+minchr
+
+maxchr <- data_long[ data_long$Length == max(data_long$Length, na.rm = TRUE), ]
+maxchr <- maxchr[!is.na(maxchr$Length), ]
+maxchr
+
+#data_long[ data_long$Length == min(data_long$Length, na.rm = TRUE), ]
+
+
+dlchr1 <- data_long[ data_long$Chrom == "chr1", ]
+dlchr1[1:3, ]
+
+hist(dlchr1$Length, breaks = seq(45, 90, by = 1))
+sort(na.omit(dlchr1$Length))
+
+minchr <- dlchr1[ dlchr1$Length == min(dlchr1$Length, na.rm = TRUE), ]
+minchr <- minchr[!is.na(minchr$Length), ]
+minchr
+
+maxchr <- dlchr1[ dlchr1$Length == max(dlchr1$Length, na.rm = TRUE), ]
+maxchr <- maxchr[!is.na(maxchr$Length), ]
+maxchr
+
+
+dlchrY <- data_long[ data_long$Chrom == "chrY", ]
+dlchrY[1:3, ]
+dlchrY[!is.na(dlchrY$Length), ]
+
+hist(dlchrY$Length, breaks = seq(100, 120, by = 1))
+
+#na.omit(dlchrY$Length)
+sort(na.omit(dlchrY$Length)[1:4])
+
+```
 
 
 
