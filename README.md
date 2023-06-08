@@ -1,3 +1,9 @@
+# Salk Cannabis Pangenome Lines
+
+
+http://salk-tm-pub.s3-website-us-west-2.amazonaws.com/cannabis_sativa/
+
+
 # CannabisPangenome
 
 Cannabis Pangenome materials
