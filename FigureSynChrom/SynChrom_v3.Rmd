@@ -138,6 +138,7 @@ gribbon <- function(
     x$query_end <- tmp
   }
   
+  # Set a chromosome number.
   x$ref_chrom_num <- sub(".+chr", "", x$ref_chrom)
   x$ref_chrom_num[ x$ref_chrom_num == "X" ] <- 10
   x$ref_chrom_num[ x$ref_chrom_num == "Y" ] <- 11
