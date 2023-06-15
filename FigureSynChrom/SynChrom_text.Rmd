@@ -92,20 +92,29 @@ Each of the 10 pairs of *Cannabis sativa* chromosomes appeared largely syntenic 
 
 **Nonrandom inheritance of SNP markers**
 
-Alleles inherited through a single generation in a population of plants grown in a common garden demonstrated random and nonrandom frequencies of inheritance.
-The parental population consisted of a self-pollinated individual, so allele frequencies at variable (heterozygous) positions were 0.5.
+Alleles inherited through a single generation through a controlled cross, in a population of plants grown in a common garden, demonstrated random and nonrandom frequencies of inheritance.
+The parental population consisted of a self-pollinated individual, so allele frequencies at variable (heterozygous) positions were expected to be 0.5.
 Our random, or evolutionarily neutral, expectation is that allele frequencies will be maintained from generation to generation.
 That is, the allele frequencies in the parental population (a single individual) should approximate the allele frequencies observed in the progeny population (270 progeny plants).
-Similarly, our random, or evolutionarily neutral, expectation is that these alleles will combine to form genotypes randomly to meet our Hardy-Weinberg expectation (heterozygous genotypes at a rate of 0.5).
+Similarly, our random, or evolutionarily neutral, expectation is that these alleles will combine to form genotypes randomly to meet our Hardy-Weinberg expectation (heterozygous genotypes at a rate of 2pq = 0.5; *F~IS~* = 0).
 Variants in the EH23 *Cannabis sativa* genome demonstrated both neutral as well as non-random patterns of inheritance, typically at the chromosomal level.
 
 
-A random, or evolutionarily neutral, pattern of inheritance was observed on chromosome 4.
+A random, or evolutionarily neutral, pattern of inheritance was observed on throughout nuch of chromosome 4 (Figure 1B).
+The allele frequencies were near 0.5 for both the major and minor allele, and these alleles combined into genotypes at a rate near our neutral expectation (*F~IS~* = 0).
+Loci on chromosome 2 demonstrated deviations from our neutral expectation.
+The major allele on chromosome 2 was observed at a rate near 0.6 and the minor allele was observed to be near 0.4.
+While the alleles were unequally inherited, they combined to form genotypes in a neutral, or random, manner (*F~IS~* $\approx$ 0).
+The alleles on chromosome 5 were inherited at a rate near our neutral expectation (major and minor allele frequencies near 0.5), but these alleles combined to form an excess of homozygotes relative to our neutral expectation (*F~IS~* > 0).
+The alleles on chromosome 3 were inherted with a major allele frequency of approximately 0.6 and a minor allele near 0.4.
+The alleles on chromosome 3 did not combine to form genotypes in a neutral manner but instead exhibited a heterozygote excess (*F~IS~* < 0).
+Deviations from our neutral expectations were observed throughout each chromosome, where observed, with the exception of the very ends of each chromosome.
 
 
-Chromosome 5 exhibited our neutral assumptions where the frequency of each allele in the progeny population was at around 0.5, matching the frequencies observed in the parental generation.
-The alleles on chromosome 5 combined to form genotypes at a random, or neutral, rate as well.
-This is indicated by approximately half of the genotypes occurring as heterozygotes and an *F~IS~* near zero.
+
+
+
+
 Chromosome 2 also exhibits our neutral assumptions where the frequencies of each allele was at 0.5.
 However, these alleles combined to form genotypes in a manner where homozygotes are favored, resulting in a positive *F~IS~*.
 Chromosome 3 demonstrated a deviation in allele frequency from our neutral expectation of 0.5, where one allele was over-represented in the progeny.
