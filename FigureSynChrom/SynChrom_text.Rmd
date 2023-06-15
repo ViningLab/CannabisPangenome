@@ -81,13 +81,13 @@ Graphical panels were assembled into a single graphic using ggpubr [https://CRAN
 
 **Organization of the EH23 genome**
 
-The EH23 *Cannabis sativa* genome is organized into 9 autosomes and a pair of sex chromosomes.
-Each pair of chromosomes demonstrated differences in chromosome length but also demonstrated a large degree of synteny among each pair.
-Genes were located predominantly near the ends of each chromosomes, as opposed to being evenly distributed throughout each chromosomes.
+The EH23 *Cannabis sativa* genome is organized into 9 pairs of autosomes and a pair of sex chromosomes (Figure 1A).
+Each pair of chromosomes were different in chromosome length and also demonstrated a large degree of synteny among each pair.
+Genes were located predominantly near the ends of each chromosomes, as opposed to being distributed evenly throughout each chromosome.
 This pattern of gene location near the ends of the chromosomes is consistent with previous reports [https://doi.org/10.1101/gr.242594.118].
 The abundance of the motif 'CpG' (cytosine, phosphate, guanine; a motif thought to be important in the context of methylation) varied throughout each pair of chromosomes.
-This CpG abundance appeared greatest near the centromeres, suggesting it can be used to determine approximate centromere location.
-Each of the 10 pairs of *Cannabis sativa* chromosomes appeared syntenic with an abundance of CpG motifs marking each centromere.
+This CpG abundance was associated with centromeric repeats, suggesting it can be used to determine approximate centromeric region.
+Each of the 10 pairs of *Cannabis sativa* chromosomes appeared largely syntenic with an abundance of CpG motifs associated with centromeric regions.
 
 
 **Nonrandom inheritance of SNP markers**
