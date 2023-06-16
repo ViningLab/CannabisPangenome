@@ -133,12 +133,14 @@ title( main = paste("Chromosome:", names(chrom_l)[i]) )
 
 ```{r, fig.height=4, fig.width=10}
 #heatmap.bp(chrom_l[[i]][56:58, ] )
+#heatmap.bp(chrom_l[[i]][8:12, ] )
 #max(chrom_l[[i]])
-win_num <- 57
+#win_num <- 57
+win_num <- 9
 barplot(chrom_l[[i]][win_num, ], las = 3)
 title( ylab = "Genes")
 title( main = paste("Chromosome:", names(chrom_l)[i], ", window", win_num - 1, "to", win_num , "Mbp" ) )
-barplot(chrom_l[[i]][57, 30:50], las = 3)
+barplot(chrom_l[[i]][win_num, 30:50], las = 3)
 title( ylab = "Genes")
 title( main = paste("Chromosome:", names(chrom_l)[i], ", window", win_num - 1, "to", win_num , "Mbp" ) )
 ```
@@ -237,9 +239,10 @@ title( main = paste("Chromosome:", names(chrom_l)[i]) )
 ```
 
 ```{r, fig.height=4, fig.width=10}
-#heatmap.bp(chrom_l[[i]][56:78, ] )
+#heatmap.bp(chrom_l[[i]][76:78, ] )
 #max(chrom_l[[i]])
-win_num <- 1
+#win_num <- 1
+win_num <- 78
 barplot(chrom_l[[i]][win_num, ], las = 3)
 title( ylab = "Genes")
 title( main = paste("Chromosome:", names(chrom_l)[i], ", window", win_num - 1, "to", win_num , "Mbp" ) )
