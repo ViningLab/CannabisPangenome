@@ -241,7 +241,7 @@ window.initializeCodeFolding = function(show) {
     $(this).detach().appendTo(div);
 
     // add a show code button right above
-    var showCodeText = $('<span>' + (showThis ? 'Hide' : 'Code') + '</span>');
+    var showCodeText = $('<span>' + (showThis ? 'Hide' : 'Show') + '</span>');
     var showCodeButton = $('<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm code-folding-btn pull-right float-right"></button>');
     showCodeButton.append(showCodeText);
     showCodeButton
@@ -267,7 +267,7 @@ window.initializeCodeFolding = function(show) {
     //   * Change text
     //   * add a class for intermediate states styling
     div.on('hide.bs.collapse', function () {
-      showCodeText.text('Code');
+      showCodeText.text('Show');
       showCodeButton.addClass('btn-collapsing');
     });
     div.on('hidden.bs.collapse', function () {
@@ -444,6 +444,7 @@ display: none;
 
 <div id="TOC">
 <ul>
+<li><a href="#pag-abstract" id="toc-pag-abstract">PAG abstract</a></li>
 <li><a href="#methods" id="toc-methods">Methods</a></li>
 <li><a href="#results" id="toc-results">Results</a></li>
 <li><a href="#discussion" id="toc-discussion">Discussion</a>
@@ -457,86 +458,88 @@ captions</a></li>
 </ul>
 </div>
 
+<div id="pag-abstract" class="section level2">
+<h2>PAG abstract</h2>
+<p>Hemp genome history.</p>
+<p>EH23</p>
+<p>Organization</p>
+<p>Rgenes</p>
+<p>PK &gt; PK F &gt; JL &gt; CBDRx &gt; CB2 EH23 genome structure:
+genes, recomb, centromeres Cann Syn Rgenes</p>
+<p>Genomics of <em>Cannabis</em> strives to improve our understanding of
+how this plant contributes as an oil crop (e.g., CBCA, CBDA, THCA, and
+others), a grain crop, a fiber crop and as a part of human culture and
+civilization.</p>
+</div>
 <div id="methods" class="section level2">
 <h2>Methods</h2>
-<p><strong>Chromosome plot methods</strong></p>
-<p>The genetically female EH23 genome consisted of 9 pairs of autosomes
-and a pair of sex chromosomes (XX). Ideograms for each pair of
-chromosomes were created using ggplot2 [<a href="https://ggplot2.tidyverse.org" class="uri">https://ggplot2.tidyverse.org</a>] in R [<a href="https://www.R-project.org/" class="uri">https://www.R-project.org/</a>]. The length of each
-chromosome was determined using a custom script [unpublished script???]
-and used with ‘ggplot::geom_rect()’ to initialize the plot. One million
-base pair windows were created for each chromosome where the number of
-genes and the ‘CpG’ motif were counted for each window [unpublished
-script???]. The CpG count was converted into a rate by dividing by the
-window size, this also accommodated the last window of each chromosome
-which was less than one million base pairs in size. In order to visually
-emphasize the lack of the ‘CpG’ motif in the centromeric region, an
-inverse of the CpG rate was taken by taking one and subtracting the
-inverted ‘CpG’ rate for each window. Each window was scaled by
-subtracting the minimum and dividing by the maximum value for each
-window. This value was then multiplied by the scalar 1000 so that it
-would range from 0 - 1000, in accordance with the BED file format that
-this information was output in. The count of genes per window was
-converted to a rate by dividing by each window size. This scaled,
-inverse ‘CpG’ rate was used for the width of windows while the color of
-each window was determined by the gene rate and colored using the
-viridis magma palette [10.5281/zenodo.4679424].</p>
+<p><strong>Ideogram methods</strong></p>
+<p>The genetically female EH23 genome was expected to consist of 9 pairs
+of autosomes and a pair of sex chromosomes (XX). Ideograms for each pair
+of chromosomes were created using ggplot2 [<a href="https://ggplot2.tidyverse.org" class="uri">https://ggplot2.tidyverse.org</a>] in R [<a href="https://www.R-project.org/" class="uri">https://www.R-project.org/</a>]. The length of each
+chromosome was determined using ‘nuccomp.py’ [<a href="https://github.com/knausb/nuccomp" class="uri">https://github.com/knausb/nuccomp</a>] and used with
+‘ggplot::geom_rect()’ to initialize the plot. One million base pair
+windows were created for each chromosome where the number of ‘CpG’
+motifs were counted for each window with the program ‘motif_counter.py’
+[<a href="https://github.com/knausb/nuccomp" class="uri">https://github.com/knausb/nuccomp</a>]. The CpG count was
+converted into a rate by dividing by the window size, this also
+accommodated the last window of each chromosome which was less than one
+million base pairs in size. These rates were scaled by subtracting the
+minimum rate and then dividing by the maximum rate (the maximum rate
+after subtracting the minimum rate), on a per chromosome basis. In order
+to visually emphasize the enrichment of the ‘CpG’ motif in the
+centromeric region, an inverse of the CpG rate was taken by taking one
+and subtracting the ‘CpG’ rate for each window. This scaled, inverse
+‘CpG’ rate was used for the width of each one mbp window and colored
+based on gene density using the viridis magma palette [<a href="https://doi.org/10.5281/zenodo.4679424" class="uri">https://doi.org/10.5281/zenodo.4679424</a>].</p>
 <p>Structural variation among each pair of chromosomes was determined
 using minimap2 [<a href="https://doi.org/10.1093/bioinformatics/bty191" class="uri">https://doi.org/10.1093/bioinformatics/bty191</a>]. The
-minimap2 comparisons were annotated using SyRI [<a href="doi:10.1186/s13059-019-1911-0" class="uri">doi:10.1186/s13059-019-1911-0</a>]. The syntenous and
-inverted regions were plotted using ggplot2::geom_polygon in a manner
-inspired by plotsr [<a href="https://doi.org/10.1093/bioinformatics/btac196" class="uri">https://doi.org/10.1093/bioinformatics/btac196</a>].</p>
+minimap2 comparisons were annotated using SyRI [<a href="https://doi.org/10.1186/s13059-019-1911-0" class="uri">https://doi.org/10.1186/s13059-019-1911-0</a>]. The
+syntenous and inverted regions were plotted using
+ggplot2::geom_polygon() in a manner inspired by plotsr [<a href="https://doi.org/10.1093/bioinformatics/btac196" class="uri">https://doi.org/10.1093/bioinformatics/btac196</a>] but
+implemented in R [<a href="https://github.com/ViningLab/CannabisPangenome" class="uri">https://github.com/ViningLab/CannabisPangenome</a>].</p>
 <p>The location of candidate loci within EH23 haplotypes A and B were
-determined using BLASTN [<a href="https://doi.org/10.1016/S0022-2836(05)80360-2" class="uri">https://doi.org/10.1016/S0022-2836(05)80360-2</a>]. BLASTN
+determined using BLASTN [<a href="https://doi.org/10.1016/S0022-2836(05)80360-2" class="uri">https://doi.org/10.1016/S0022-2836(05)80360-2</a>]. Query
+sequences were as follows: cannabichromenic acid synthase (LY658671.1),
+cannabidiolic acid synthase (AB292682, AB292683, AB292684),
+tetrahydrocannabinolic acid synthase (AB212829, AB212830), and
+olivetolic acid cyclase (NC_044376.1:c4279947-4279296,
+NC_044376.1:c4272107-4271242). These sequences were combined with
+centromeric, telomeric and rRNA sequences in the file
+‘blastn_queries_rrna_cann.fasta’ [<a href="https://github.com/ViningLab/CannabisPangenome" class="uri">https://github.com/ViningLab/CannabisPangenome</a>]. BLASTN
 was called with the following options: -task megablast -evalue 0.001
--perc_identity 90 -qcov_hsp_perc 90. Query sequences were as follows:
-cannabichromenic acid synthase (LY658671.1), cannabidiolic acid synthase
-(AB292682, AB292683, AB292684), tetrahydrocannabinolic acid synthase
-(AB212829, AB212830), and olivetolic acid cyclase
-(NC_044376.1:c4279947-4279296, NC_044376.1:c4272107-4271242).</p>
-<p><strong>Todd please review</strong></p>
-<pre><code>bash$ grep &quot;^&gt;&quot; todd_rrna/todd_rrna.fa
-&gt;45s_not_separated_AH3Ma.chr4
-&gt;26s_AH3Ma.chr4
-&gt;5.8s_AH3Ma.chr4
-&gt;18s_AH3Ma.chr4
-
-&gt;5S_AH3Ma.chr7:43382134-43382392
-
-&gt;AH3Ma_CS-237_satelite
-
-# Onofri et al.? [https://doi.org/10.1016/j.phytochem.2015.03.006]
-&gt;CsatSD_centromere_237bp
-&gt;CsatSD_centromere_370bp</code></pre>
-<p>Tabular results (subject chromosome, subject start of alignment,
-subject end of alignment) from BLASTN were read into R [<a href="https://www.R-project.org/" class="uri">https://www.R-project.org/</a>] and plotted on ideograms
+-perc_identity 90 -qcov_hsp_perc 90. Tabular results (subject
+chromosome, subject start of alignment, subject end of alignment) from
+BLASTN were read into R [<a href="https://www.R-project.org/" class="uri">https://www.R-project.org/</a>] and plotted on ideograms
 with ggplot2::geom_rect() [<a href="https://ggplot2.tidyverse.org" class="uri">https://ggplot2.tidyverse.org</a>].</p>
 <p><strong>Allele frequency methods</strong></p>
 <p>Genotype data in the VCF format [<a href="https://doi.org/10.1093/bioinformatics/btr330" class="uri">https://doi.org/10.1093/bioinformatics/btr330</a>] was input
 into R [<a href="https://www.R-project.org/" class="uri">https://www.R-project.org/</a>] using vcfR [<a href="https://doi.org/10.1111/1755-0998.12549" class="uri">https://doi.org/10.1111/1755-0998.12549</a>]. Allele and
 heterozygote counts were made with vcfR [<a href="https://doi.org/10.1111/1755-0998.12549" class="uri">https://doi.org/10.1111/1755-0998.12549</a>]. Wright’s
-<em>F<sub>IS</sub></em> [<a href="https://doi.org/10.1038/166247a0" class="uri">https://doi.org/10.1038/166247a0</a>] was calculated as
+<em>F<sub>IS</sub></em> [<a href="https://doi.org/10.1038/166247a0" class="uri">https://doi.org/10.1038/166247a0</a>] was calculated to
+provide the deviation in heterozygosity from our random expectation.
+Wright’s <em>F<sub>IS</sub></em> was calculated as
 (<em>H<sub>S</sub></em> - <em>H<sub>O</sub></em>)/<em>H<sub>S</sub></em>
 where <em>H<sub>O</sub></em> is the observed number of heterozygotes
 divided by their number and <em>H<sub>S</sub></em> is the number of
 heterozygotes we expect based on the allele frequencies, calculated as
 the frequency of the first allele multiplied by the frequency of the
-second and then by two. Wright’s <em>F<sub>IS</sub></em> therefore gives
-us the deviation in heterozygosity from our random expectation.
-Scatterplots were generated using ggplot2 [<a href="https://ggplot2.tidyverse.org" class="uri">https://ggplot2.tidyverse.org</a>]. Graphical panels were
+second multiplied by two and divided by their number. Scatterplots were
+generated using ggplot2 [<a href="https://ggplot2.tidyverse.org" class="uri">https://ggplot2.tidyverse.org</a>]. Graphical panels were
 assembled into a single graphic using ggpubr [<a href="https://CRAN.R-project.org/package=ggpubr" class="uri">https://CRAN.R-project.org/package=ggpubr</a>].</p>
 </div>
 <div id="results" class="section level2">
 <h2>Results</h2>
 <p><strong>Organization of the EH23 genome</strong></p>
-<p>The EH23 <em>Cannabis sativa</em> genome is organized into 9 pairs of
-autosomes and a pair of sex chromosomes (Figure 1A). Each pair of
-chromosomes were different in chromosome length and also demonstrated a
-large degree of synteny among each pair. Genes were located
-predominantly near the ends of each chromosomes, as opposed to being
-distributed evenly throughout each chromosome. This pattern of gene
-location near the ends of the chromosomes is consistent with previous
-reports [<a href="https://doi.org/10.1101/gr.242594.118" class="uri">https://doi.org/10.1101/gr.242594.118</a>]. The abundance of
+<p>The EH23 <em>Cannabis sativa</em> genome was organized into 9 pairs
+of autosomes and a pair of sex chromosomes (Figure 1A). Each pair of
+chromosomes were different in chromosome length but also demonstrated a
+large degree of synteny among each pair. Large inversions were present
+on chromosome 7 with smaller inversions distributed throughout the
+remaining chromosomes. Genes were located predominantly near the ends of
+each chromosomes, as opposed to being distributed evenly throughout each
+chromosome. This pattern of gene location near the ends of the
+chromosomes is consistent with previous reports [<a href="https://doi.org/10.1101/gr.242594.118" class="uri">https://doi.org/10.1101/gr.242594.118</a>]. The abundance of
 the motif ‘CpG’ (cytosine, phosphate, guanine; a motif thought to be
 important in the context of methylation) varied throughout each pair of
 chromosomes. This CpG abundance was associated with centromeric repeats,
@@ -545,22 +548,22 @@ Each of the 10 pairs of <em>Cannabis sativa</em> chromosomes appeared
 largely syntenic with an abundance of CpG motifs associated with
 centromeric regions.</p>
 <p><strong>Nonrandom inheritance of SNP markers</strong></p>
-<p>Alleles inherited through a single generation through a controlled
-cross, in a population of plants grown in a common garden, demonstrated
-random and nonrandom frequencies of inheritance. The parental population
-consisted of a self-pollinated individual, so allele frequencies at
-variable (heterozygous) positions were expected to be 0.5. Our random,
-or evolutionarily neutral, expectation is that allele frequencies will
-be maintained from generation to generation. That is, the allele
-frequencies in the parental population (a single individual) should
-approximate the allele frequencies observed in the progeny population
-(270 progeny plants). Similarly, our random, or evolutionarily neutral,
-expectation is that these alleles will combine to form genotypes
-randomly to meet our Hardy-Weinberg expectation (heterozygous genotypes
-at a rate of 2pq = 0.5; <em>F<sub>IS</sub></em> = 0). Variants in the
-EH23 <em>Cannabis sativa</em> genome demonstrated both neutral as well
-as non-random patterns of inheritance, typically at the chromosomal
-level.</p>
+<p>Alleles inherited through a single generation, resulting from a
+controlled cross, in a population of plants grown in a common garden,
+demonstrated both patterns of random and nonrandom inheritance. The
+parental population consisted of a self-pollinated individual, so allele
+frequencies at variable (heterozygous) positions were expected to be
+0.5. Our random, or evolutionarily neutral, expectation is that allele
+frequencies will be maintained from generation to generation. That is,
+the allele frequencies in the parental population (a single individual)
+should approximate the allele frequencies observed in the progeny
+population (270 progeny plants). Similarly, our random, or
+evolutionarily neutral, expectation is that these alleles will combine
+to form genotypes randomly to meet our Hardy-Weinberg expectation
+(heterozygous genotypes at a rate of 2<em>pq</em> = 0.5;
+<em>F<sub>IS</sub></em> = 0). Variants in the EH23 <em>Cannabis
+sativa</em> genome demonstrated both neutral as well as non-random
+patterns of inheritance, typically at the chromosomal level.</p>
 <p>A random, or evolutionarily neutral, pattern of inheritance was
 observed on throughout nuch of chromosome 4 (Figure 1B). The allele
 frequencies were near 0.5 for both the major and minor allele, and these
@@ -582,7 +585,7 @@ exhibited a heterozygote excess (<em>F<sub>IS</sub></em> &lt; 0).
 Deviations from our neutral expectations were observed throughout each
 chromosome, where observed, with the exception of the very ends of each
 chromosome.</p>
-<p>Chromosome 2 also exhibits our neutral assumptions where the
+<p>Chromosome 2 also exhibited our neutral assumptions where the
 frequencies of each allele was at 0.5. However, these alleles combined
 to form genotypes in a manner where homozygotes are favored, resulting
 in a positive <em>F<sub>IS</sub></em>. Chromosome 3 demonstrated a
@@ -595,14 +598,14 @@ non-neutral deviation in allele frequency that was similar to that of
 chromosome 3. However, on chromosome 4 the alleles joined to form
 genotypes in a manner where heterozygotes were favored, as indicated by
 a negative <em>F<sub>IS</sub></em>.</p>
-<p>Near the ends of the chromosomes, where most of the genes occur and
-recombination is observed [<a href="https://doi.org/10.1101/gr.242594.118" class="uri">https://doi.org/10.1101/gr.242594.118</a>], we tended to
-observe our neutral expectations. For example, much of chromosome 1
-demonstrated a deviation from our neutral allele frequency of 0.5 yet
-the ends of the chromosomes returned to our neutral expectation of 0.5.
-This suggests that the predominantly non-recombining chromosomes behave
-as a single locus except at the ends where recombination may allow a
-return to neutrality.</p>
+<p>Near the very ends of the chromosomes, where most of the genes occur
+and recombination is observed [<a href="https://doi.org/10.1101/gr.242594.118" class="uri">https://doi.org/10.1101/gr.242594.118</a>], we tended to
+observe our neutral expectations on all chromosomes. For example, much
+of chromosome 1 demonstrated a deviation from our neutral allele
+frequency of 0.5 yet the ends of the chromosomes returned to our neutral
+expectation of 0.5. This suggests that the predominantly non-recombining
+chromosomes behave as a single locus except at the ends where
+recombination may allow a return to neutrality.</p>
 <p>Throughout the hemp genome we observed different patterns of
 evolution. What is striking about these results is that different
 evolutionary scenarios were exhibited on different chromosomes. For
@@ -616,6 +619,24 @@ chromosomes.</p>
 </div>
 <div id="discussion" class="section level2">
 <h2>Discussion</h2>
+<p><strong>History of Cannabis genomics</strong></p>
+<p>The genomics age for <em>Cannabis</em> was initiated with a short
+read assembly of the THC-type strain Purple Kush [<a href="https://doi.org/10.1186/gb-2011-12-10-r102" class="uri">https://doi.org/10.1186/gb-2011-12-10-r102</a>].</p>
+<p><strong>Purple Kush</strong> N50 = 16.2 Kb, 0.0162 Mbp A combination
+of Illumina short read sequencing and 454 pyrosequencing was used to
+create an assembly consisting of 786.6 Mbp organized into 136,290
+scaffolds with an N50 of 16.2 Kbp.</p>
+<p>GCA_000230575.1</p>
+<p><strong>Purple Kush and Finola</strong> N50 = 61.0 Mbp (PK) and 77.1
+Mbp (Finola) Laverty and colleagues presented a comparative genomics
+perspective based on the genomes of a THC-type strain (Purple Kush) and
+a CBD-type strain (Finola) [<a href="https://doi.org/10.1101/gr.242594.118" class="uri">https://doi.org/10.1101/gr.242594.118</a>].</p>
+<p><strong>jl_Jilong</strong> N50= 83.0 Mbp Gao and colleagues
+contributed a genomic assembly from a plant from Southern China that is
+putatively wild [<a href="https://doi.org/10.1038/s41438-020-0295-3" class="uri">https://doi.org/10.1038/s41438-020-0295-3</a>].</p>
+<p><strong>CBDRx</strong> N50= 91.9 Mbp Grassa and colleagues
+contributed a genomic assembly from the CBD-type strain CBDRx [<a href="https://doi.org/10.1111/nph.17243" class="uri">https://doi.org/10.1111/nph.17243</a>].</p>
+<p><strong>Cannbio-2</strong> N50 = 91.5 Mbp</p>
 <div id="chromosomal-organization" class="section level3">
 <h3>Chromosomal organization</h3>
 <p>The phased diploid assembly of <em>Cannabis sativa</em> L. strain
@@ -686,7 +707,7 @@ segregation.</p>
 </div>
 <div id="references" class="section level2">
 <h2>References</h2>
-<p>FASTA2nuccomp</p>
+<p>nuccomp [<a href="https://github.com/knausb/nuccomp" class="uri">https://github.com/knausb/nuccomp</a>]</p>
 <p>motif_counter [no citation???]</p>
 <p>Onofri [<a href="https://doi.org/10.1016/j.phytochem.2015.03.006" class="uri">https://doi.org/10.1016/j.phytochem.2015.03.006</a>]</p>
 </div>
