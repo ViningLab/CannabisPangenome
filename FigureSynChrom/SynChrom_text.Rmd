@@ -16,6 +16,32 @@ knitr::opts_chunk$set(fig.align = "center")
 
 
 
+## Outline
+
+
+- Technical accomplishment
+  - 39 diploid annotated assemblies or 78 scaffolded haplotypes
+  - ~100 unscaffolded, annotated, halploid assemblies
+
+
+- Structure of a population of genomes / Pangenomic applications
+  - EH23 assembly: within genome variation, chromosome lengths, structural variation, chrom 7 cannabinoid synthases, chrom 8 acrocentric
+  - Segregation distortion: F2 vs scaffolded panel
+  - TEs
+  - Structural Variation
+
+
+- Case studies / Gene classes
+  - R-genes
+  - Terpenes
+  - Cannabinoid synthases
+  - Cannabinoid pathway
+
+
+- Natural and Artificial history
+  - Plant classes and differentiation
+
+
 
 ## PAG abstract
 
