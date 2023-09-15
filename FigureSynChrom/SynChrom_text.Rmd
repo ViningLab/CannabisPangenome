@@ -32,6 +32,7 @@ EH23 genome structure: genes, recomb, centromeres
 Cann Syn
 Rgenes
 
+250 words???
 
 Genomics of *Cannabis* L. strives to improve our understanding of how this plant contributes as an oil crop (e.g., CBCA, CBDA, THCA, and others), a grain crop, a fiber crop and as a part of the development of human culture and civilization.
 Genome assembly within *Cannabis* has proceeded from the assembly of the THC strain Purple Kush, with an N50 of 16.2 Kb (van Bakel et al. 2011), to the resequencing of Purple Kush (N50 of 61.0 Mbp) accompanied by the food and fiber type Finola (N50 of 77.1 Mbp; Laverty et al. 2018), the putatively wild plant from Asia ('jl' or Jianling; N50 of 83.0 Mbp; Gao et al. 2020), the CBD strain Cannbio-2 (N50 of 91.5 Mbp; Braich et al. 2020), the CBD strain CBDRx (N50 of 91.9 Mbp; Grassa et al. 2021) and other assemblies.
