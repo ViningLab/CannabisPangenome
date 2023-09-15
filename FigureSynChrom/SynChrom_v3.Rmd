@@ -1209,8 +1209,42 @@ ggarrange(
 #         dpi = 300,
 #         compression = "lzw")
 
+# ggsave( filename = "EH23_chroms_freqs.png",
+#         device = "png",
+#         width = 6.5,
+#         height = 6.5,
+#         #height = 9,
+#         units = "in",
+#         dpi = 300)
+
 ```
 
+
+
+```{r}
+
+pEH23
+
+# ggsave( filename = "EH23_chroms.png",
+#         device = "png",
+#         width = 6.5,
+#         height = 6.5,
+#         #height = 9,
+#         units = "in",
+#         dpi = 300)
+
+ahplot
+
+# ggsave( filename = "EH23_freqs.png",
+#         device = "png",
+#         width = 6.5,
+#         height = 6.5,
+#         #height = 9,
+#         units = "in",
+#         dpi = 300)
+
+
+```
 
 
 
