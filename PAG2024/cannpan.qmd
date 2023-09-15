@@ -1,0 +1,147 @@
+---
+title: "Cannabis PanGenome"
+author: "Knaus, Vining"
+format: revealjs
+editor: visual
+---
+
+## Cannabis Pangenome
+
+Brian J. Knaus^1^
+
+Kelly J. Vining^1^
+
+Your name^2^
+
+^1^Department of Horticulture, Oregon State University, Corvallis, OR 97331, USA
+
+^2^The Plant Molecular and Cellular Biology Laboratory, The Salk Institute for Biological Studies, La Jolla, CA 92037, USA
+
+## Abstract {.smaller}
+
+Genomics of *Cannabis* L. strives to improve our understanding of how this plant contributes as an oil crop (e.g., CBCA, CBDA, THCA, and others), a grain crop (food), a fiber crop (textiles) and as a part of the development of human culture and civilization.
+
+Genome assembly within \*Cannabis\* has proceeded from the assembly of the THC strain Purple Kush, with an N50 of 16.2 Kb (van Bakel et al. 2011), to the resequencing of Purple Kush (N50 of 61.0 Mbp) accompanied by the food and fiber type Finola (N50 of 77.1 Mbp; Laverty et al. 2018), the putatively wild plant from Asia ('jl' or Jianling; N50 of 83.0 Mbp; Gao et al. 2020), the CBD strain Cannbio-2 (N50 of 91.5 Mbp; Braich et al. 2020), the CBD strain CBDRx (N50 of 91.9 Mbp; Grassa et al. 2021) and other assemblies.
+
+Our Pangenomic work has resulted in 78 chromosome scale haplotypes assembled from 39 plants.
+
+These haplotype aware assemblies provide perspectives that allow comparison among assemblies to help validate assembly quality and provide inference on structural organization within each \*Cannabis\* chromosome.
+
+## Brief history of Cannabis genomics
+
+```{r}
+library(knitr)
+library(kableExtra)
+ncbi <- structure(list(Strain = c("CBDRx", "Cannbio-2", "\'jl\' (Jilong; 吉隆)", 
+"Finola", "Purple Kush", "Purple Kush"), Assembly = c("GCF_900626175.2", 
+"GCA_016165845.1", "GCA_013030365.1", "GCA_003417725.2", "GCA_000230575.5", 
+"GCA_000230575.1"), `Size (Mbp)` = c("876.147649", "914.397426", 
+"812.52542", "1009.674739", "891.964663", "892.0"), `N50 (Mbp)` = c("91.913879", 
+"91.49334", "82.998198", "77.135887", "60.9681", "0.1339"), Scaffolds = c("221", 
+"147", "483", "2362", "6653", "12836"), Busco = c("94.02", "97.08", 
+"92.69", "95.66", "93.47", NA), Citation = c("Grassa et al. 2021", 
+"Braich et al. 2020", "Gao et al. 2020", "Laverty et al. 2019", 
+"Laverty et al. 2019", "van Bakel 2011")), row.names = c(3L, 
+2L, 9L, 5L, 13L, 6L), class = "data.frame")
+ncbi$`Size (Mbp)` <- as.numeric(ncbi$`Size (Mbp)`)
+ncbi$`N50 (Mbp)` <- as.numeric(ncbi$`N50 (Mbp)`)
+ncbi$Scaffolds <- as.integer(ncbi$Scaffolds)
+#ncbi$Scaffolds <- as.character(as.integer(ncbi$Scaffolds))
+
+kable(ncbi,
+      #format = "html", 
+      caption = "Published Cannabis genome assemblies available at NCBI.", 
+      row.names = FALSE, 
+      digits = 2,
+      format.args = list( big.mark = ",", nsmall = 2)) %>% kable_styling( font_size = 22)
+#ncbi
+```
+
+::: aside
+
+And other publicly available assemblies.
+
+:::
+
+## EH23 Genome Assembly
+
+![](EH23_chroms.png){fig-align="center" width="500"}
+
+::: aside
+
+PacBio HiFi sequencing, haplotype aware assembly (hifiasm), Hi-C scaffolding.
+
+Early resin berry (ERB) X HO40_23 assembly
+
+:::
+
+## Segregation distortion
+
+![](EH23_freqs.png){fig-align="center" width="500"}
+
+::: aside
+
+EH23 was selfed to produce 270 F2 plants, Illumina short read sequencing, variant calling using FreeBayes and VCFtools. Variant data managed using vcfR.
+
+:::
+
+
+## Segregation distortion test
+
+
+```{r, fig.align='center', fig.height=10, fig.width=10}
+knitr::include_graphics("EH23_freqs.png", dpi = 400)
+```
+
+
+::: aside
+
+EH23 was selfed to produce 270 F2 plants, Illumina short read sequencing, variant calling using FreeBayes and VCFtools. Variant data managed using vcfR.
+
+:::
+
+
+## BUSCO
+
+Benchmarking Universal Single-Copy Orthologs (BUSCO)
+
+::: aside
+
+Simão, F.A., Waterhouse, R.M., Ioannidis, P., Kriventseva, E.V. and Zdobnov, E.M., 2015. BUSCO: assessing genome assembly and annotation completeness with single-copy
+orthologs. *Bioinformatics*, *31*(19), pp.3210-3212.
+
+https://busco.ezlab.org/
+
+:::
+
+## BUSCO barplot
+
+![](cann_busco_public.png){fig-align="center"}
+
+## Cannabinoid synthases
+
+![Chromosome 7, haplotypes are in columns, each point is the location of a BUSCO, lines connect the same BUSCO between haplotypes. Red triangles = THCAS (AB212829.1), blue triangles = CBDAS (AB292682.1), yellow triangles = CBCAS (LY658671.1), gray triangles = low specificity matches. High stringency matches are BLASTN hits at \>98% identity with 0 gaps.](ggbusco_lineplot_chrom7.png){fig-align="center" width="4000"}
+
+## Cannabinoid synthases, detail
+
+![Chromosome 7, zeroed on BUSCO_ID=127689at71240, haplotypes are in columns, each point is the location of a BUSCO, lines connect the same BUSCO between haplotypes. Red triangles = THCAS (AB212829.1), blue triangles = CBDAS (AB292682.1), yellow triangles = CBCAS (LY658671.1), gray triangles = low specificity matches. High stringency matches are BLASTN hits at \>98% identity with 0 gaps.](BUSCOlineplot_zerozoom.png){fig-align="center"}
+
+## Cannabinoid synthase loci?
+
+-   Was de Meijer and colleagues correct all along?
+-   How important is copy number?
+
+De Meijer, E.P., Bagatta, M., Carboni, A., Crucitti, P., Moliterni, V.C., Ranalli, P. and Mandolino, G., 2003. The inheritance of chemical phenotype in Cannabis sativa L. *Genetics*, *163*(1), pp.335-346.
+
+Vergara, D., Huscher, E.L., Keepers, K.G., Givens, R.M., Cizek, C.G., Torres, A., Gaudino, R. and Kane, N.C., 2019. Gene copy number is associated with phytochemistry in Cannabis sativa. *AoB Plants*, *11*(6), p.plz074.
+
+## Publicly available assemblies
+
+![Publicly available assemblies.](ggbusco_lineplot_chrom7_public.png){fig-align="center"}
+
+## Acknowledgments
+
+-   Seth Crawford, Andrea Garfinkel, OregonCBD
+-   Authors of publicly available assemblies
+
+![](OregonCBD.png){fig-align="center" width="120"}
