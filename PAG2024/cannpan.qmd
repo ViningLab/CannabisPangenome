@@ -139,9 +139,16 @@ Vergara, D., Huscher, E.L., Keepers, K.G., Givens, R.M., Cizek, C.G., Torres, A.
 
 ![Publicly available assemblies.](ggbusco_lineplot_chrom7_public.png){fig-align="center"}
 
+
 ## Acknowledgments
 
 -   Seth Crawford, Andrea Garfinkel, OregonCBD
 -   Authors of publicly available assemblies
 
-![](OregonCBD.png){fig-align="center" width="120"}
+
+```{r, fig.align='center', fig.height=2, fig.width=2}
+knitr::include_graphics("OregonCBD.png", dpi = 600)
+```
+
+
+

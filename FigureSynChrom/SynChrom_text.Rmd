@@ -25,7 +25,7 @@ knitr::opts_chunk$set(fig.align = "center")
 
 
 - Structure of a population of genomes / Pangenomic applications
-  - EH23 assembly: within genome variation, chromosome lengths, structural variation, chrom 7 cannabinoid synthases, chrom 8 acrocentric
+  - EH23 assembly: within genome variation, genic organization, chromosome lengths, structural variation, chrom 7 cannabinoid synthases, chrom 8 acrocentric
   - Segregation distortion: F2 vs scaffolded panel
   - TEs
   - Structural Variation
@@ -59,17 +59,27 @@ Cann Syn
 Rgenes
 
 
-Genomics of *Cannabis* L. strives to improve our understanding of how this plant contributes as an oil crop (e.g., CBCA, CBDA, THCA, and others), a grain crop, a fiber crop and as a part of the development of human culture and civilization.
-Genome assembly within *Cannabis* has proceeded from the assembly of the THC strain Purple Kush, with an N50 of 16.2 Kb (van Bakel et al. 2011), to the resequencing of Purple Kush (N50 of 61.0 Mbp) accompanied by the food and fiber type Finola (N50 of 77.1 Mbp; Laverty et al. 2018), the putatively wild plant from Asia ('jl' or Jianling; N50 of 83.0 Mbp; Gao et al. 2020), the CBD strain Cannbio-2 (N50 of 91.5 Mbp; Braich et al. 2020), the CBD strain CBDRx (N50 of 91.9 Mbp; Grassa et al. 2021) and other assemblies.
+Brian J. Knaus^1^, Kelly J. Vining^1^, Others^2^
 
-Our Pangenomic work has resulted in 78 chromosome scale haplotypes assembled from 39 plants.
-These haplotype aware assemblies provide perspectives that allow comparison among assemblies to help validate assembly quality and provide inference on structural organization within each *Cannabis* chromosome.
+^1^Department of Horticulture, Oregon State University, Corvallis, OR 97331, USA    
+^2^The Plant Molecular and Cellular Biology Laboratory, The Salk Institute for Biological Studies, La Jolla, CA 92037, USA
+
+Genomics of *Cannabis* L. strives to advance our understanding of how this plant contributes as a grain, fiber, and oil (CBCA, CBDA, THCA, and others) crop, as well as a part of the development of human culture.
+We present pangenomic work that has resulted in 78 chromosome scale haplotypes assembled from 39 plants.
+A focal point of these assemblies is the EH23 assembly that illustrated length polymorphism among pairs of chromosomes as well as inversions, demonstrating substantial among haplotype diversity.
+Genotyping of a selfed population exhibited segregation distortion where alleles on some chromosomes were non-randomly inherited and alleles combined to form genotypes non-randomly as well, resulting in a heterozygote deficit or excess that differentiated by chromosome.
+Near chromosomal level assemblies for chromosome 7 provided a perspective on CBDAS and THCAS alleles that associate with plant chemotype where THCAS type plants are THCAS:THCAS, CBDAS type plants are CBDAS:CBDAS, and balanced chemotype plants are CBDAS:THCAS.
+These haplotypes provide perspectives that facilitate comparison among assemblies to help validate and provide inference on structural organization within each *Cannabis* chromosome.
+
+
+
+
+Genome assembly within *Cannabis* has proceeded from the assembly of the THC strain Purple Kush, with an N50 of 16.2 Kb (van Bakel et al. 2011), to the resequencing of Purple Kush (N50 of 61.0 Mbp) accompanied by the food and fiber type Finola (N50 of 77.1 Mbp; Laverty et al. 2018), the putatively wild plant from Asia ('jl', N50 of 83.0 Mbp; Gao et al. 2020), the CBD strain Cannbio-2 (N50 of 91.5 Mbp; Braich et al. 2020), the CBD strain CBDRx (N50 of 91.9 Mbp; Grassa et al. 2021) and other assemblies.
 
 
 
 
 
-This resource provides perspectives not seen in haploid assemblies
 
 
 
