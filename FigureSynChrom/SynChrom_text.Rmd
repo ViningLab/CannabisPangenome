@@ -304,3 +304,16 @@ The lower panel presents *F~IS~* or the deviation from our random, or evolutiona
 A positive *F~IS~* indicates a deficiency of heterozygotes, a negative *F~IS~* indicates an excess of heterozygotes and an *F~IS~* of zero indicates that our allele frequencies predict heterozygosity.
 
 
+
+
+**Figure X** Cannabinoid synthase pathway genes of *Cannabis sativa* strain ERBxHO40.
+**Panel A**
+
+
+
+For each sample (x-axis) points mark the location of BUSCO (Benchmarking Universal Single-Copy Orthologs) genes.
+Lines connect identical BUSCO genes among samples.
+
+
+
+
