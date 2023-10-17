@@ -313,6 +313,10 @@ A positive *F~IS~* indicates a deficiency of heterozygotes, a negative *F~IS~* i
 
 For each sample (x-axis) points mark the location of BUSCO (Benchmarking Universal Single-Copy Orthologs) genes.
 Lines connect identical BUSCO genes among samples.
+Changes in the elevation and spacing of each BUSCO reflects variation among samples, while the lines draw attention to this variability among each sample's immediate neighbor.
+
+Triangles marke the location of blast hits for cannabinoid synthasees: cannabichromenic acid synthase (LY658671.1), cannabidiolic acid synthase (AB292682, AB292683, AB292684), and tetrahydrocannabinolic acid synthase (AB212829, AB212830).
+
 
 
 
