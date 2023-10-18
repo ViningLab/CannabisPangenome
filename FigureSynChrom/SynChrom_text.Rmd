@@ -309,14 +309,21 @@ A positive *F~IS~* indicates a deficiency of heterozygotes, a negative *F~IS~* i
 **Figure X** Cannabinoid synthase pathway genes of *Cannabis sativa* strain ERBxHO40.
 **Panel A**
 
-
-
-For each sample (x-axis) points mark the location of BUSCO (Benchmarking Universal Single-Copy Orthologs) genes.
-Lines connect identical BUSCO genes among samples.
-Changes in the elevation and spacing of each BUSCO reflects variation among samples, while the lines draw attention to this variability among each sample's immediate neighbor.
-
-Triangles marke the location of blast hits for cannabinoid synthasees: cannabichromenic acid synthase (LY658671.1), cannabidiolic acid synthase (AB292682, AB292683, AB292684), and tetrahydrocannabinolic acid synthase (AB212829, AB212830).
-
+Chromosome 7 included a single high stringency match for either tetrahydrocannabinolic acid synthase or cannabidiolic acid synthase, associated with chemotype, as well as a population of low stringency matches.
+For each diploid plant's chromosome (x-axis) colored points indicate the location of BUSCO (Benchmarking Universal Single-Copy Orthologs) genes for chromosome 7 (elevation for each point is in million base pairs).
+Lines connect identical BUSCO genes among neighboring samples.
+Changes in the elevation and spacing among BUSCO genes reflects structural variation within samples, while the lines draw attention to variability among each sample's immediate neighbor.
+Triangles mark the location of matches for three cannabinoid synthases (CBCAS, CBDAS, and THCAS).
+Red triangles indicate high stringency matches to THCAS (BLASTN query of NCBI accession "AB212829.1", percent identity >= 0.98, number of gaps = 0).
+Blue triangles indicate high stringency matches to CBDAS (BLASTN query of NCBI accession "AB292682.1", percent identity >= 0.98, number of gaps = 0).
+Yellow triangles indicate high stringency matches to CBCAS (BLASTN query of NCBI accession "LY658671.1", percent identity >= 0.98, number of gaps = 0).
+Gray triangles indicate low stringency matches to cannabinoid synthases (BLASTN query of cannabichromenic acid synthase (LY658671.1), cannabidiolic acid synthase (AB292682, AB292683, AB292684), and tetrahydrocannabinolic acid synthase (AB212829, AB212830), percent identity >= 0.90 and < 0.98, number of gaps > 0).
+Each plant that was characterized as predominantly producing THCA (Chemotype I) consisted of a pair of chromosomes (a and b) that each had a single match to tetrahydrocannabinolic acid synthase (AB212829.1), indicated by a single red triangle.
+Each plant that was characterized as predominantly producing CBDA (Chemotype III) consisted of a pair of chromosomes (a and b) that each had a single match to cannabidiolic acid synthase (AB292682.1), indicated by a single blue triangle.
+Each plant that was characterized as producing both THCA and CBDA (Chemotype II) consisted of a 
+pair of chromosomes where one chromosome included a single match to tetrahydrocannabinolic acid synthase (AB212829.1), indicated by a single red triangle, and the other chromosome included a single match to cannabidiolic acid synthase (AB292682.1), indicated by a single blue triangle.
+Plants that were characterized as being cannabigerolic acid accumulators (Chemotype IV) included chromosomes that may have had a single match to tetrahydrocannabinolic acid synthase (AB212829.1) or no high stringency matches to any of the three assayed cannabinoid synthases.
+Gray triangles indicate that a substantial population of low stringency matches were observed on all of the chromosome 7s.
 
 
 
