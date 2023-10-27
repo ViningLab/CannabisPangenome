@@ -21,8 +21,18 @@ load("./EH23ideo.RData")
 #
 pEH23
 
+
 load("./EH23ideo_ahplot.RData")
 ahplot
+
+library(ggplot2)
+#ahplot + ggplot2::scale_color_brewer(palette="Paired") 
+ahplot + scale_color_brewer(palette="Paired", aes(alpha=0.04))
+#  scale_color_manual( values = my_pal )
+
+my_cols <- paste(RColorBrewer::brewer.pal(n=10, name = "Paired"), "04", sep = "")
+ahplot + scale_color_manual( values = my_cols )
+
 ```
 
 

@@ -1,0 +1,71 @@
+---
+title: "Ideo_plot.Rmd"
+output: html_document
+date: "2023-10-21"
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(fig.align = "center")
+```
+
+
+
+```{r}
+t1 <- Sys.time()
+load("EH23ideo.RData")
+#pEH23
+```
+
+
+```{r}
+load("ahplot.RData")
+#ahplot
+t2 <- Sys.time()
+t2 - t1
+```
+
+
+
+```{r, fig.height=8, fig.width=8, message=FALSE, fig.cap="**Figure 1. Genomic architecture of the** ***Cannabis sativa*** **genome.**"}
+
+library("ggpubr")
+
+ggarrange(
+  plotlist = list(pEH23, ahplot),
+  labels = c("A", "B"),
+  label.x = 0,
+  label.y = c(1, 1.1),
+  ncol = 1, nrow = 2, 
+  widths = 1, heights = c(2, 1))
+
+
+# ggsave( filename = "EH23_chroms_freqs.tiff",
+#         device = "tiff",
+#         width = 6.5,
+#         height = 6.5,
+#         #height = 9,
+#         units = "in",
+#         dpi = 300,
+#         compression = "lzw")
+
+# ggsave( filename = "EH23_chroms_freqs.png",
+#         device = "png",
+#         width = 6.5,
+#         height = 6.5,
+#         #height = 9,
+#         units = "in",
+#         dpi = 300)
+
+```
+
+
+```{r}
+t99 <- Sys.time()
+t99 - t1
+```
+
+
+
