@@ -1380,9 +1380,16 @@ ahplot <- ahplot + ylab(NULL)
 
 ```{r, fig.width=12}
 #p
-ahplot
+#ahplot
 
 #ahplot + scale_color_npg( alpha = 0.04 )
+
+#fill = "#FFA500"
+#fill = "#1E90FF"
+
+# ahplot + scale_color_manual( values=c("#1E90FF", "#FFA500") )
+ahplot <- ahplot + scale_color_manual( values = rep(c("#1E90FF04", "#FFA50004"), times = 5) )
+ahplot
 
 ```
 
@@ -1461,7 +1468,7 @@ p + facet_grid( CHROM ~ . )
 #         compression = "lzw")
 
 
-barplot(table(cut(afreq$POS3, breaks = seq(0, 90e6, by = 1e6))))
+barplot(table(cut(afreq$POS3[afreq$CHROM == "chr5"], breaks = seq(0, 90e6, by = 1e6))))
 
 
 
