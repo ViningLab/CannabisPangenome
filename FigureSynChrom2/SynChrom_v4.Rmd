@@ -480,6 +480,10 @@ EH23b_wins$gcol <- new_col
 
 
 
+
+
+
+
 ```{r}
 library(ggplot2)
 
@@ -520,12 +524,16 @@ my_cols <- gray.colors(n=10, start = 0.3, end = 0.9)[round(EH23a_wins$snpssc * 9
 # )
 
 # Theme
+chrom_labels <- sub("a.chr", ".chr", EH23a$Id)
+chrom_labels <- sub("EH23.chr", "", chrom_labels)
+# chrom_labels
+
 p <- p + ggplot2::scale_x_continuous( 
   breaks = EH23a$chrom_num,
 #  limits = c(0.6, 10.4),
 #  limits = c(0.5, 10.5),
 #  labels = EH23a$Id
-  labels = sub("a.chr", ".chr", EH23a$Id)
+  labels = chrom_labels
 )
   
 p <- p + scale_y_continuous(
@@ -537,14 +545,14 @@ p <- p + scale_y_continuous(
 p <- p + ggplot2::theme( 
       #      panel.grid.minor.x = ggplot2::element_blank(), 
     panel.grid.minor.x = ggplot2::element_line( linewidth = 0.4, color = "#C0C0C0", linetype = 3 ),
-    axis.text.x = element_text(angle = 60, hjust = 1),
+#    axis.text.x = element_text(angle = 60, hjust = 1),
     axis.title.x=element_blank(),
     panel.grid.major.y = ggplot2::element_line( linewidth = 0.4, color = "#C0C0C0", linetype = 1 ),
     panel.grid.minor.y = ggplot2::element_line( linewidth = 0.4, color = "#C0C0C0", linetype = 3 )
   )
   
 p <- p + ggplot2::ylab("Position (Mbp)")
-p <- p + ggtitle( "EH23" )
+#p <- p + ggtitle( "EH23" )
 
 #p
 
@@ -893,30 +901,30 @@ my_rows <- grep("AH3Ma_CS-237_satelite|CsatSD_centromere_237bp|CsatSD_centromere
 table(ablstn$qseqid[my_rows])
 table(ablstn$sseqid[my_rows])
 #  blstw <- 0.48
-p <- p + ggplot2::geom_rect( 
-  data = ablstn[my_rows, ], 
-  ggplot2::aes( 
-    xmin = chrn - 0.5,
-    xmax = chrn - 0.2,
-    ymin = sstart, 
-    ymax = send),
-  fill = "#1E90FF",
-  color = '#1E90FF'
-)
+# p <- p + ggplot2::geom_rect( 
+#   data = ablstn[my_rows, ], 
+#   ggplot2::aes( 
+#     xmin = chrn - 0.5,
+#     xmax = chrn - 0.2,
+#     ymin = sstart, 
+#     ymax = send),
+#   fill = "#1E90FF",
+#   color = '#1E90FF'
+# )
 my_rows <- grep("AH3Ma_CS-237_satelite|CsatSD_centromere_237bp|CsatSD_centromere_370bp", bblstn$qseqid)
 table(bblstn$qseqid[my_rows])
 table(bblstn$sseqid[my_rows])
 
-p <- p + ggplot2::geom_rect( 
-  data = bblstn[my_rows, ], 
-  ggplot2::aes( 
-    xmin = chrn + 0.2,
-    xmax = chrn + 0.5,
-    ymin = sstart, 
-    ymax = send),
-  fill = "#1E90FF",
-  color = '#1E90FF'
-)
+# p <- p + ggplot2::geom_rect( 
+#   data = bblstn[my_rows, ], 
+#   ggplot2::aes( 
+#     xmin = chrn + 0.2,
+#     xmax = chrn + 0.5,
+#     ymin = sstart, 
+#     ymax = send),
+#   fill = "#1E90FF",
+#   color = '#1E90FF'
+# )
 ```
 
 
@@ -1035,6 +1043,7 @@ vcf@fix[1:3, 1:8]
 # vcf@fix[, "CHROM"][ vcf@fix[, "CHROM"] == "EH23b.chrX" ] <- "chrX"
 
 vcf@fix[, "CHROM"] <- sub("^EH23b.", "", vcf@fix[, "CHROM"])
+#vcf@fix[, "CHROM"] <- sub("^chr", "", vcf@fix[, "CHROM"])
 
 unique(vcf@fix[, "CHROM"])
 ```
@@ -1375,7 +1384,7 @@ t20 - t1
 
 ```{r}
 library(ggplot2)
-library(ggsci)
+#library(ggsci)
 
 table(afreq$facet2)
 
@@ -1412,19 +1421,23 @@ p <- ggplot( data = afreq,
              )
 p <- p + geom_point( shape = 20, show.legend = FALSE )
 p <- p + theme_bw()
-p <- p + theme( axis.title.x=element_blank(),
-                axis.text.x = element_text(angle = 60, hjust = 1)
+p <- p + theme( axis.title.x=element_blank()#,
+#                axis.text.x = element_text(angle = 60, hjust = 1)
 #                plot.margin = unit(c(0.1,0.1,1,0.1), "cm")
                 )
 #p <- p + theme(axis.title.x = element_blank(), 
 #               axis.text.x = element_text( angle = 60, hjust = 1))
 # p + scale_x_discrete(breaks = EH23a$mids2, labels = EH23a$Id)
 # p + scale_x_discrete(breaks = EH23a$mids2)
+
+chrom_names <- nucs$Id
+chrom_names <- sub("chr" ,"", chrom_names)
 p <- p + ggplot2::scale_x_continuous( 
   breaks = nucs$mids,
   expand = expansion(mult = 0.01, add = 0.0),
 #  expand = expansion(mult = 0.02, add = 0.0),
-  labels = sub("a.chr", ".chr", nucs$Id)
+  labels = chrom_names,
+#  labels = sub("a.chr", ".chr", nucs$Id)
 )
 p <- p + theme( panel.grid.major.x = element_line(color = "#A9A9A9", linewidth = 0.0 ) )
 p <- p + theme( panel.grid.minor.x = element_line(color = "#A9A9A9", linewidth = 0.0 ) )
@@ -1445,7 +1458,7 @@ p <- p + geom_vline( xintercept = 0, linetype = 5, color = "#808080", linewidth 
 
 #p <- p + ylim(0.3, 0.7)
 #p <- p + scale_color_manual( values = my_pal )
-p <- p + scale_color_npg( alpha = 0.03 )
+#p <- p + scale_color_npg( alpha = 0.03 )
 #p <- p + scale_color_npg( alpha = 0.05 )
 #
 #p <- 
