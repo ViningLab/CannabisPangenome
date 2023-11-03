@@ -105,7 +105,25 @@ https://busco.ezlab.org/
 
 ## Cannabinoid synthases
 
-![Chromosome 7, haplotypes are in columns, each point is the location of a BUSCO, lines connect the same BUSCO between haplotypes. Red triangles = THCAS (AB212829.1), blue triangles = CBDAS (AB292682.1), yellow triangles = CBCAS (LY658671.1), gray triangles = low specificity matches. High stringency matches are BLASTN hits at \>98% identity with 0 gaps.](ggbusco_lineplot_chrom7.png){fig-align="center" width="4000"}
+![Chromosome 7, haplotypes are in columns, each point is the location of a BUSCO, lines connect the same BUSCO between haplotypes. Red triangles = THCAS (AB212829.1; Kojoma et al. 2006), blue triangles = CBDAS (AB292682.1; Taura et al. 2007), yellow triangles = CBCAS (LY658671.1; Page and Stout 2019), gray triangles = low specificity matches. High stringency matches are BLASTN hits at \>98% identity with 0 gaps.](ggbusco_lineplot_chrom7.png){fig-align="center" width="4000"}
+
+
+<font size="4">
+
+Chromosome 7, haplotypes are in columns, each point is the location of a BUSCO, lines connect the same BUSCO between haplotypes. Red triangles = THCAS (AB212829.1; Kojoma et al. 2006), blue triangles = CBDAS (AB292682.1; Taura et al. 2007), yellow triangles = CBCAS (LY658671.1; Page and Stout 2019), gray triangles = low specificity matches. High stringency matches are BLASTN hits at \>98% identity with 0 gaps.
+
+</font> 
+
+<font size="2">
+
+Kojoma, M., Seki, H., Yoshida, S., & Muranaka, T. (2006). DNA polymorphisms in the tetrahydrocannabinolic acid (THCA) synthase gene in “drug-type” and “fiber-type” Cannabis sativa L. Forensic science international, 159(2-3), 132-140.
+
+Taura, F., Sirikantaramas, S., Shoyama, Y., Yoshikai, K., Shoyama, Y., & Morimoto, S. (2007). Cannabidiolic-acid synthase, the chemotype-determining enzyme in the fiber-type Cannabis sativa. FEBS letters, 581(16), 2929-2934.
+
+Page,J.E. and Stout,J.M. CANNABICHROMENIC ACID SYNTHASE FROM CANNABIS SATIVA. Patent: KR 1020190025485-A 5 11-MAR-2019.
+
+</font> 
+
 
 ## Cannabinoid synthases, detail
 
@@ -119,6 +137,19 @@ https://busco.ezlab.org/
 De Meijer, E.P., Bagatta, M., Carboni, A., Crucitti, P., Moliterni, V.C., Ranalli, P. and Mandolino, G., 2003. The inheritance of chemical phenotype in Cannabis sativa L. *Genetics*, *163*(1), pp.335-346.
 
 Vergara, D., Huscher, E.L., Keepers, K.G., Givens, R.M., Cizek, C.G., Torres, A., Gaudino, R. and Kane, N.C., 2019. Gene copy number is associated with phytochemistry in Cannabis sativa. *AoB Plants*, *11*(6), p.plz074.
+
+
+## Phenotypic variation
+
+
+$$
+P = G + E + \epsilon_{dNorm(0, \sigma^{2})}
+$$
+
+$$
+V_{P} = V_{A} + V_{D} + V_{I} + V_{E}
+$$
+
 
 ## Publicly available assemblies
 
