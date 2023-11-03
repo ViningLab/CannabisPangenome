@@ -718,7 +718,6 @@ p <- p2
 
 
 ```{r}
-
 # Cannabinoids
 my_rows <- grep("AB2|LY|NC_044376.1:c427", ablstn$qseqid)
 blstw <- 0.48
@@ -800,9 +799,99 @@ p <- p + ggplot2::geom_rect(
   #    linewidth = 4,
   color = '#B22222'
 )
+```
 
+
+```{r}
 # Centromeres, subtelomeric repeats
+
+my_rows <- grep("AH3Ma_CS-237_satelite", ablstn$qseqid)
+table(ablstn$qseqid[my_rows])
+table(ablstn$sseqid[my_rows])
+p2 <- p + ggplot2::geom_rect( 
+  data = ablstn[my_rows, ], 
+  ggplot2::aes( 
+    xmin = chrn - 0.5,
+    xmax = chrn - 0.2,
+    ymin = sstart, 
+    ymax = send),
+  fill = "#1E90FF",
+  color = '#1E90FF'
+)
+my_rows <- grep("AH3Ma_CS-237_satelite", bblstn$qseqid)
+table(bblstn$qseqid[my_rows])
+table(bblstn$sseqid[my_rows])
+p2 <- p2 + ggplot2::geom_rect( 
+  data = bblstn[my_rows, ], 
+  ggplot2::aes( 
+    xmin = chrn + 0.2,
+    xmax = chrn + 0.5,
+    ymin = sstart, 
+    ymax = send),
+  fill = "#1E90FF",
+  color = '#1E90FF'
+)
+p2
+
+my_rows <- grep("CsatSD_centromere_237bp", ablstn$qseqid)
+table(ablstn$qseqid[my_rows])
+table(ablstn$sseqid[my_rows])
+p2 <- p + ggplot2::geom_rect( 
+  data = ablstn[my_rows, ], 
+  ggplot2::aes( 
+    xmin = chrn - 0.5,
+    xmax = chrn - 0.2,
+    ymin = sstart, 
+    ymax = send),
+  fill = "#1E90FF",
+  color = '#1E90FF'
+)
+my_rows <- grep("CsatSD_centromere_237bp", bblstn$qseqid)
+table(bblstn$qseqid[my_rows])
+table(bblstn$sseqid[my_rows])
+p2 <- p2 + ggplot2::geom_rect( 
+  data = bblstn[my_rows, ], 
+  ggplot2::aes( 
+    xmin = chrn + 0.2,
+    xmax = chrn + 0.5,
+    ymin = sstart, 
+    ymax = send),
+  fill = "#1E90FF",
+  color = '#1E90FF'
+)
+p2
+
+my_rows <- grep("CsatSD_centromere_370bp", ablstn$qseqid)
+table(ablstn$qseqid[my_rows])
+table(ablstn$sseqid[my_rows])
+p2 <- p + ggplot2::geom_rect( 
+  data = ablstn[my_rows, ], 
+  ggplot2::aes( 
+    xmin = chrn - 0.5,
+    xmax = chrn - 0.2,
+    ymin = sstart, 
+    ymax = send),
+  fill = "#1E90FF",
+  color = '#1E90FF'
+)
+my_rows <- grep("CsatSD_centromere_370bp", bblstn$qseqid)
+table(bblstn$qseqid[my_rows])
+table(bblstn$sseqid[my_rows])
+p2 <- p2 + ggplot2::geom_rect( 
+  data = bblstn[my_rows, ], 
+  ggplot2::aes( 
+    xmin = chrn + 0.2,
+    xmax = chrn + 0.5,
+    ymin = sstart, 
+    ymax = send),
+  fill = "#1E90FF",
+  color = '#1E90FF'
+)
+p2
+
 my_rows <- grep("AH3Ma_CS-237_satelite|CsatSD_centromere_237bp|CsatSD_centromere_370bp", ablstn$qseqid)
+table(ablstn$qseqid[my_rows])
+table(ablstn$sseqid[my_rows])
 #  blstw <- 0.48
 p <- p + ggplot2::geom_rect( 
   data = ablstn[my_rows, ], 
@@ -815,6 +904,9 @@ p <- p + ggplot2::geom_rect(
   color = '#1E90FF'
 )
 my_rows <- grep("AH3Ma_CS-237_satelite|CsatSD_centromere_237bp|CsatSD_centromere_370bp", bblstn$qseqid)
+table(bblstn$qseqid[my_rows])
+table(bblstn$sseqid[my_rows])
+
 p <- p + ggplot2::geom_rect( 
   data = bblstn[my_rows, ], 
   ggplot2::aes( 
