@@ -58,9 +58,7 @@ kable(ncbi,
 ```
 
 ::: aside
-
 And other publicly available assemblies.
-
 :::
 
 ## EH23 Genome Assembly
@@ -68,11 +66,9 @@ And other publicly available assemblies.
 ![](EH23_chroms.png){fig-align="center" width="500"}
 
 ::: aside
-
 PacBio HiFi sequencing, haplotype aware assembly (hifiasm), Hi-C scaffolding.
 
 Early resin berry (ERB) X HO40_23 assembly
-
 :::
 
 ## Segregation distortion
@@ -80,38 +76,27 @@ Early resin berry (ERB) X HO40_23 assembly
 ![](EH23_freqs.png){fig-align="center" width="500"}
 
 ::: aside
-
 EH23 was selfed to produce 270 F2 plants, Illumina short read sequencing, variant calling using FreeBayes and VCFtools. Variant data managed using vcfR.
-
 :::
 
-
 ## Segregation distortion test
-
 
 ```{r, fig.align='center', fig.height=10, fig.width=10}
 knitr::include_graphics("EH23_freqs.png", dpi = 400)
 ```
 
-
 ::: aside
-
 EH23 was selfed to produce 270 F2 plants, Illumina short read sequencing, variant calling using FreeBayes and VCFtools. Variant data managed using vcfR.
-
 :::
-
 
 ## BUSCO
 
 Benchmarking Universal Single-Copy Orthologs (BUSCO)
 
 ::: aside
-
-Simão, F.A., Waterhouse, R.M., Ioannidis, P., Kriventseva, E.V. and Zdobnov, E.M., 2015. BUSCO: assessing genome assembly and annotation completeness with single-copy
-orthologs. *Bioinformatics*, *31*(19), pp.3210-3212.
+Simão, F.A., Waterhouse, R.M., Ioannidis, P., Kriventseva, E.V. and Zdobnov, E.M., 2015. BUSCO: assessing genome assembly and annotation completeness with single-copy orthologs. *Bioinformatics*, *31*(19), pp.3210-3212.
 
 https://busco.ezlab.org/
-
 :::
 
 ## BUSCO barplot
@@ -170,16 +155,11 @@ $$
 
 ![Publicly available assemblies.](ggbusco_lineplot_chrom7_public.png){fig-align="center"}
 
-
 ## Acknowledgments
 
 -   Seth Crawford, Andrea Garfinkel, OregonCBD
 -   Authors of publicly available assemblies
 
-
 ```{r, fig.align='center', fig.height=2, fig.width=2}
 knitr::include_graphics("OregonCBD.png", dpi = 600)
 ```
-
-
-
