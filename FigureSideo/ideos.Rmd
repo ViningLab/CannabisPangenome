@@ -102,7 +102,9 @@ for( i in 1:length(sampd) ){
 ```
 
 
-```{r, fig.height=10, fig.width=12, fig.cap="**Figure X.** Ideogram of the *Cannabis sativa* genome. Each chromosome is presented as a set of 1 Mbp windows where the width is proportional to the abundance of the 'CpG' motif (wide is low abundance, narrow is high abundance) and colored by gene density (cool or blue colors are low gene density and hot or yellow colors are high gene density). The 45S, 26S, 18S, and 5.8S probes are in firebrick red, the 5S probes are in black,  Cannabinoids (CBCAS, CBDAS, THCAS, OAC) are in forest green, the centromeric and telomeric probes are in Dodger blue and are offset from the center of each chromosome."}
+```{r, fig.height=10, fig.width=12, fig.cap="**Figure X.** Ideogram of the *Cannabis sativa* genome. Each chromosome is presented as a set of 1 Mbp windows where the width is proportional to the abundance of the 'CpG' motif (wide is low abundance, narrow is high abundance) and colored by gene density (cool or blue colors are low gene density and hot or yellow colors are high gene density). The 45S, 26S, 18S, and 5.8S probes are in firebrick red, the 5S probes are in black, Cannabinoids (CBCAS, CBDAS, THCAS, OAC) are in forest green. The probe 'CsatSD_centromere_237bp' is in Dodger blue (#1E90FF), the probe 'CsatSD_centromere_370bp' is in magenta (#FF00FF)"}
+
+#, the centromeric and telomeric probes are in Dodger blue and are offset from the center of each chromosome."}
 
 library(ggpubr)
 

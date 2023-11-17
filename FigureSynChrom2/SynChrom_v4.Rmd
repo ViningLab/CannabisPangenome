@@ -645,6 +645,8 @@ p
 
 p + xlim(5.5, 8.5) + ylim(10e6, 40e6)
 
+p + xlim(5.5, 8.5) + ylim(1, 20e6)
+
 #pEH23 <- p
 #save(pEH23, file = "ideo.RData")
 #load("ideo.RData")
@@ -931,6 +933,8 @@ table(bblstn$sseqid[my_rows])
 ```{r, fig.width=10}
 pEH23 <- p
 pEH23
+
+p + xlim(4.5, 8.5) + ylim(1.0, 20e6)
 ```
 
 

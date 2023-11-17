@@ -2,7 +2,8 @@
 get_nucs <- function( sampd ){
   cat("__Processing chromosomes.\n")
   sampn <- unlist(lapply(strsplit(sampd, split = "//"), function(x){x[length(x)]}))
-  cmd <- paste("~/gits/fasta2nuccomp/fasta2nuccomp.py ", 
+  #cmd <- paste("~/gits/fasta2nuccomp/fasta2nuccomp.py ", 
+  cmd <- paste("~/gits/nuccomp/nuccomp.py ", 
                sampd,
                "/",
                sampn,
@@ -276,8 +277,22 @@ plot_ideo <- function( sampd ) {
     color = '#B22222'
   )
   
+  # # Cent, subteol
+  # my_rows <- grep("AH3Ma_CS-237_satelite|CsatSD_centromere_237bp|CsatSD_centromere_370bp", blstn$qseqid)
+  # #  blstw <- 0.48
+  # p <- p + ggplot2::geom_rect( 
+  #   data = blstn[my_rows, ], 
+  #   ggplot2::aes( 
+  #     xmin = chrn - 0.5,
+  #     xmax = chrn - 0.2,
+  #     ymin = sstart, 
+  #     ymax = send),
+  #   fill = "#1E90FF",
+  #   color = '#1E90FF'
+  # )
+  
   # Cent, subteol
-  my_rows <- grep("AH3Ma_CS-237_satelite|CsatSD_centromere_237bp|CsatSD_centromere_370bp", blstn$qseqid)
+  my_rows <- grep("CsatSD_centromere_237bp", blstn$qseqid)
   #  blstw <- 0.48
   p <- p + ggplot2::geom_rect( 
     data = blstn[my_rows, ], 
@@ -288,6 +303,22 @@ plot_ideo <- function( sampd ) {
       ymax = send),
     fill = "#1E90FF",
     color = '#1E90FF'
+  )
+  
+  # Cent, subteol
+  my_rows <- grep("CsatSD_centromere_370bp", blstn$qseqid)
+  #  blstw <- 0.48
+  p <- p + ggplot2::geom_rect( 
+    data = blstn[my_rows, ], 
+    ggplot2::aes( 
+#      xmin = chrn - 0.5,
+#      xmax = chrn - 0.2,
+      xmin = chrn + 0.2,
+      xmax = chrn + 0.5,
+      ymin = sstart, 
+      ymax = send),
+    fill = "#FF00FF",
+    color = '#FF00FF'
   )
   
   return(p)
