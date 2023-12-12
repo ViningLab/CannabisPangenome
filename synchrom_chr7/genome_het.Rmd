@@ -1,0 +1,454 @@
+---
+title: "Het genome"
+output: html_document
+date: "2023-12-10"
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## VCF
+
+
+```{r}
+library(vcfR)
+```
+
+
+```{r, results='hide'}
+#vcf <- read.vcfR("F2s.variants5.freebayes.filt.3.vcf.gz", nrows = )
+#vcf <- read.vcfR("F2s_0NA.vcf.gz", nrows = )
+#vcf <- read.vcfR("/media/knausb/Vining_lab/private_data/salk/VCFs/F2s_0NA.vcf.gz", nrows = )
+vcf <- read.vcfR("/media/knausb/E737-9B48/releases/VCFs/F2s.variants7.freebayes.filt.3.vcf.gz")
+```
+
+
+
+```{r, results='markup'}
+t10 <- Sys.time()
+vcf
+#vcf <- vcf[is.biallelic(vcf), ]
+#vcf
+vcf@gt <- vcf@gt[, grep("Parent_23", colnames(vcf@gt), invert  = TRUE)]
+#colnames(vcf@gt)
+vcf
+vcf@fix[1:3, 1:8]
+```
+
+
+## Adjust chromosome names
+
+
+```{r}
+# vcf@fix[, "CHROM"][ vcf@fix[, "CHROM"] == "EH23b.chr1" ] <- "chr1"
+# vcf@fix[, "CHROM"][ vcf@fix[, "CHROM"] == "EH23b.chr5" ] <- "chr2"
+# vcf@fix[, "CHROM"][ vcf@fix[, "CHROM"] == "EH23b.chr2" ] <- "chr3"
+# vcf@fix[, "CHROM"][ vcf@fix[, "CHROM"] == "EH23b.chr3" ] <- "chr4"
+# vcf@fix[, "CHROM"][ vcf@fix[, "CHROM"] == "EH23b.chr4" ] <- "chr5"
+# vcf@fix[, "CHROM"][ vcf@fix[, "CHROM"] == "EH23b.chr7" ] <- "chr6"
+# vcf@fix[, "CHROM"][ vcf@fix[, "CHROM"] == "EH23b.chr8" ] <- "chr7"
+# vcf@fix[, "CHROM"][ vcf@fix[, "CHROM"] == "EH23b.chr9" ] <- "chr8"
+# vcf@fix[, "CHROM"][ vcf@fix[, "CHROM"] == "EH23b.chr6" ] <- "chr9"
+# vcf@fix[, "CHROM"][ vcf@fix[, "CHROM"] == "EH23b.chrX" ] <- "chrX"
+
+vcf@fix[, "CHROM"] <- sub("^EH23b.", "", vcf@fix[, "CHROM"])
+
+unique(vcf@fix[, "CHROM"])
+```
+
+
+## Sort VCF
+
+
+```{r}
+
+vcf2 <- vcf[ vcf@fix[, "CHROM"] == "chr1", ]
+vcf2 <- rbind2(vcf2, vcf[ vcf@fix[, "CHROM"] == "chr2", ])
+vcf2 <- rbind2(vcf2, vcf[ vcf@fix[, "CHROM"] == "chr3", ])
+vcf2 <- rbind2(vcf2, vcf[ vcf@fix[, "CHROM"] == "chr4", ])
+vcf2 <- rbind2(vcf2, vcf[ vcf@fix[, "CHROM"] == "chr5", ])
+vcf2 <- rbind2(vcf2, vcf[ vcf@fix[, "CHROM"] == "chr6", ])
+vcf2 <- rbind2(vcf2, vcf[ vcf@fix[, "CHROM"] == "chr7", ])
+vcf2 <- rbind2(vcf2, vcf[ vcf@fix[, "CHROM"] == "chr8", ])
+vcf2 <- rbind2(vcf2, vcf[ vcf@fix[, "CHROM"] == "chr9", ])
+vcf2 <- rbind2(vcf2, vcf[ vcf@fix[, "CHROM"] == "chrX", ])
+vcf <- vcf2
+rm(vcf2)
+```
+
+
+## Orient chromosomes
+
+
+```{r, eval=FALSE}
+table(vcf@fix[, "CHROM"])
+
+chrom_name <- "chr4"
+vcf@fix[ , "POS"][ vcf@fix[, "CHROM"] == chrom_name ] <- 
+  EH23b$Length[ EH23b$Id == "EH23b.chr4" ] - 
+  as.numeric(vcf@fix[ , "POS"][ vcf@fix[, "CHROM"] == chrom_name ])
+
+chrom_name <- "chr5"
+vcf@fix[ , "POS"][ vcf@fix[, "CHROM"] == chrom_name ] <- 
+  EH23b$Length[ EH23b$Id == "EH23b.chr5" ] - 
+  as.numeric(vcf@fix[ , "POS"][ vcf@fix[, "CHROM"] == chrom_name ])
+
+chrom_name <- "chr8"
+vcf@fix[ , "POS"][ vcf@fix[, "CHROM"] == chrom_name ] <- 
+  EH23b$Length[ EH23b$Id == "EH23b.chr8" ] - 
+  as.numeric(vcf@fix[ , "POS"][ vcf@fix[, "CHROM"] == chrom_name ])
+
+chrom_name <- "chrX"
+vcf@fix[ , "POS"][ vcf@fix[, "CHROM"] == chrom_name ] <- 
+  EH23b$Length[ EH23b$Id == "EH23b.chrX" ] - 
+  as.numeric(vcf@fix[ , "POS"][ vcf@fix[, "CHROM"] == chrom_name ])
+
+```
+
+
+## popsum
+
+
+
+```{r}
+my_popsum <- gt.to.popsum(vcf)
+#my_popsum <- as.matrix(my_popsum)
+my_popsum[1:3, ]
+
+```
+
+
+
+
+## Other
+
+
+
+```{r}
+my_popsum <- cbind(vcf@fix[ , 1:2 ], my_popsum)
+my_popsum[1:3, ]
+class(my_popsum)
+```
+
+
+```{r}
+hist(my_popsum$He, breaks = seq(from = 0.3, to = 0.5, by = 0.001))
+#hist(my_popsum$Ne)
+abline( v = 0.49 )
+
+barplot(table(my_popsum$CHROM[ my_popsum$He > 0.48 ]))
+
+```
+
+
+
+```{r}
+gt <- extract.gt(vcf)
+t(apply(gt[1:4, ], MARGIN = 1, function(x){ table(x, useNA = 'always') }))
+
+nrow(gt) * 4
+
+#, levels = c("0/0", "0/1", "1/1"))
+
+#tmp <- apply(gt, MARGIN = 1, function(x){ table(x, useNA = 'always') })
+tmp <- apply(gt, MARGIN = 1, function(x){ 
+  table(factor(x, levels = c("0/0", "0/1", "1/1", NA), exclude = NULL)) 
+  })
+
+length(tmp)
+range(lapply(tmp, length))
+tmp <- matrix(tmp, ncol = 4, byrow = TRUE)
+colnames(tmp) <- c("count0.0", "count0.1", "count1.1", "countNA")
+tmp[1:5, ]
+
+my_popsum <- cbind(my_popsum, tmp)
+my_popsum[1:3, ]
+
+```
+
+
+```{r}
+
+tmp <- matrix(unlist(strsplit(my_popsum$Allele_counts, split = ",")), ncol = 2, byrow = TRUE)
+colnames(tmp) <- c("ERBcount", "HO40count")
+
+my_popsum <- cbind(my_popsum, tmp)
+my_popsum$ERBcount <- as.numeric(my_popsum$ERBcount)
+my_popsum$HO40count <- as.numeric(my_popsum$HO40count)
+
+my_popsum[1:3, ]
+class(my_popsum)
+
+my_popsum$ERBfreq <- my_popsum$ERBcount/(my_popsum[, "n"] * 2)
+my_popsum$HO40freq <- my_popsum$HO40count/(my_popsum[, "n"] * 2)
+my_popsum[1:3, ]
+
+my_popsum$He2 <- 2 * my_popsum$ERBfreq * my_popsum$HO40freq
+my_popsum$POS2 <- my_pos
+my_popsum[1:3, ]
+
+```
+
+
+
+```{r}
+
+# write.table(x = my_popsum, file = "allele_freqs.csv", sep = ",",
+#             row.names = FALSE, col.names = TRUE)
+
+```
+
+
+
+## FIS
+
+
+```{r}
+Hs <- 2 * my_popsum$ERBfreq * my_popsum$HO40freq
+Ho <- my_popsum$count0.1 / my_popsum$n
+my_popsum$Fis <- (Hs - Ho)/Hs
+my_popsum[1:3, ]
+```
+
+
+## Thin
+
+
+```{r}
+#my_popsum <- my_popsum[seq(1, nrow(my_popsum), by = 2), ]
+```
+
+
+
+```{r, fig.width=10}
+# hist(my_popsum$ERBfreq)
+# hist(my_popsum$HO40freq)
+
+#my_popsum <- my_popsum[my_popsum$ERBfreq >= 0.4, ]
+#my_popsum <- my_popsum[my_popsum$ERBfreq <= 0.6, ]
+#
+#my_popsum <- my_popsum[my_popsum$HO40freq >= 0.4, ]
+#my_popsum <- my_popsum[my_popsum$HO40freq <= 0.6, ]
+
+my_min <- 0.3
+my_max <- 0.7
+my_popsum <- my_popsum[my_popsum$ERBfreq >= my_min, ]
+my_popsum <- my_popsum[my_popsum$ERBfreq <= my_max, ]
+#
+my_popsum <- my_popsum[my_popsum$HO40freq >= my_min, ]
+my_popsum <- my_popsum[my_popsum$HO40freq <= my_max, ]
+
+my_min <- -0.5
+my_max <- 0.5
+my_popsum <- my_popsum[my_popsum$Fis >= my_min, ]
+my_popsum <- my_popsum[my_popsum$Fis <= my_max, ]
+
+
+par( mfrow = c(1, 2) )
+#
+hist(my_popsum$HO40freq, xlab = "", ylab = "Count", main = "HO40 allele frequency")
+#
+hist(my_popsum$ERBfreq, xlab = "", ylab = "Count", main = "ERB allele frequency")
+
+par( mfrow = c(1, 1) )
+
+```
+
+
+```{r}
+barplot( table( my_popsum$CHROM ), las = 3 )
+title( ylab = "Variant count" )
+title( main = paste("Total Variant count:", format( nrow(my_popsum), big.mark = ",") ) )
+```
+
+
+## Write VCF
+
+```{r}
+my_popsum[1:3, ]
+nrow(my_popsum)
+
+vcf@fix[1:3, 1:8]
+nrow(vcf)
+
+tmp1 <- paste(getCHROM(vcf), getPOS(vcf), sep = "_")
+tmp2 <- paste( my_popsum$CHROM, my_popsum$POS, sep = "_")
+
+vcf <- vcf[tmp1 %in% tmp2, ]
+vcf
+
+# write.vcf(vcf, file = "tmsalk.vcf.gz")
+```
+
+
+
+
+## Long form
+
+
+```{r}
+afreq <- my_popsum
+
+EH23a <- afreq[, c("CHROM", "POS", "n", "Allele_counts", "He", "Ne", "count0.0", 
+"count0.1", "count1.1", "countNA", "ERBcount", "HO40count", "ERBfreq", 
+"HO40freq", "He2", "POS2")]
+EH23a$Frequency <- EH23a$ERBfreq
+EH23a$facet1 <- "EH23a"
+
+EH23b <- afreq[, c("CHROM", "POS", "n", "Allele_counts", "He", "Ne", "count0.0", 
+"count0.1", "count1.1", "countNA", "ERBcount", "HO40count", "ERBfreq", 
+"HO40freq", "He2", "POS2")]
+EH23b$Frequency <- EH23a$HO40freq
+EH23b$facet1 <- "EH23b"
+
+Het <- afreq[, c("CHROM", "POS", "n", "Allele_counts", "He", "Ne", "count0.0", 
+"count0.1", "count1.1", "countNA", "ERBcount", "HO40count", "ERBfreq", 
+"HO40freq", "He2", "POS2")]
+Het$Frequency <- EH23a$He2
+Het$facet1 <- "Het"
+Het[1:3, ]
+
+Fis_df <- afreq[, c("CHROM", "POS", "n", "Allele_counts", "He", "Ne", "count0.0", 
+"count0.1", "count1.1", "countNA", "ERBcount", "HO40count", "ERBfreq", 
+"HO40freq", "He2", "POS2")]
+#Fis_df$Frequency <- Fis
+Fis_df$Frequency <- afreq$Fis
+Fis_df$facet1 <- "Fis"
+```
+
+
+```{r}
+#
+afreq <- rbind(EH23a, EH23b, Het, Fis_df)
+#afreq <- rbind(EH23a, EH23b, Het)
+afreq$facet2 <- afreq$facet1
+afreq$facet2 <- sub("EH23[ab]", "EH23", afreq$facet2)
+afreq$facet2[ afreq$facet2 == "EH23" ] <- "Allele"
+afreq$facet2[ afreq$facet2 == "Het" ] <- "Heterozygosity"
+#table(afreq$facet1)
+table(afreq$facet2)
+afreq[1:3, ]
+```
+
+
+## Plot
+
+
+
+```{r}
+library(ggplot2)
+library(ggsci)
+
+table(afreq$facet2)
+
+#
+afreq <- afreq[afreq$facet2 != "Heterozygosity", ]
+
+
+#my_pal <- viridisLite::inferno(n = 10, begin = 0.2, end = 0.9, alpha = 0.01)
+#my_pal <- viridisLite::inferno(n = 10, begin = 0.2, end = 0.9, alpha = 0.04)
+#my_pal <- viridisLite::viridis(n = 10, begin = 0.2, end = 0.9, alpha = 0.04)
+my_pal <- RColorBrewer::brewer.pal(n=10, name = "Paired")
+#my_pal <- RColorBrewer::brewer.pal(n=10, name = "Set3")
+my_pal <- paste(my_pal, "04", sep = "")
+
+set.seed(99)
+my_pal <- my_pal[sample(1:length(my_pal), size = length(my_pal))]
+#palette(my_pal)
+
+#as.numeric(as.factor(afreq$CHROM))
+
+#afreq$col2 <- viridisLite::magma( n = 10, alpha = 0.8, begin = 0, end = 1 )[as.numeric(as.factor(afreq$CHROM))]
+
+# range(afreq$POS2)
+
+#afreq$facet2 <- factor(afreq$facet2, levels = c("Allele", "F[IS]"))
+
+p <- ggplot( data = afreq, 
+             mapping = aes( x = POS2, 
+                            #y = ERBfreq,
+                            #y = freq,
+                            y = Frequency,
+                            color = CHROM )
+                            #color = col2)
+             )
+p <- p + geom_point( shape = 20, show.legend = FALSE )
+p <- p + theme_bw()
+p <- p + theme( axis.title.x=element_blank(),
+                axis.text.x = element_text(angle = 60, hjust = 1)
+#                plot.margin = unit(c(0.1,0.1,1,0.1), "cm")
+                )
+#p <- p + theme(axis.title.x = element_blank(), 
+#               axis.text.x = element_text( angle = 60, hjust = 1))
+# p + scale_x_discrete(breaks = EH23a$mids2, labels = EH23a$Id)
+# p + scale_x_discrete(breaks = EH23a$mids2)
+p <- p + ggplot2::scale_x_continuous( 
+  breaks = nucs$mids,
+  expand = expansion(mult = 0.01, add = 0.0),
+#  expand = expansion(mult = 0.02, add = 0.0),
+  labels = sub("a.chr", ".chr", nucs$Id)
+)
+p <- p + theme( panel.grid.major.x = element_line(color = "#A9A9A9", linewidth = 0.0 ) )
+p <- p + theme( panel.grid.minor.x = element_line(color = "#A9A9A9", linewidth = 0.0 ) )
+
+# p <- p + geom_vline( xintercept = nuccomp$Length2, linetype = 1, color = "#808080", linewidth = 0.4 )
+# p <- p + geom_vline( xintercept = 0, linetype = 1, color = "#808080", linewidth = 0.4 )
+#p <- p + geom_vline( xintercept = nuccomp$Length2, linetype = 5, color = "#808080", linewidth = 0.4 )
+p <- p + geom_vline( xintercept = nucs$ends, linetype = 5, color = "#808080", linewidth = 0.4 )
+
+p <- p + geom_vline( xintercept = 0, linetype = 5, color = "#808080", linewidth = 0.4 )
+
+#p <- p + geom_hline( yintercept = 0.5, linetype = 1, color = "#000000", linewidth = 1 )
+#p <- p + geom_hline( yintercept = c(0, 0.5), linetype = 1, color = "#000000", linewidth = 1 )
+
+
+#p + scale_color_manual( values = viridisLite::magma( n = 10, alpha = 0.01, begin = 0.2, end = 0.9 ) )
+#p <- p + xlim(100, sum(nuccomp$Length))
+
+#p <- p + ylim(0.3, 0.7)
+#p <- p + scale_color_manual( values = my_pal )
+p <- p + scale_color_npg( alpha = 0.03 )
+#p <- p + scale_color_npg( alpha = 0.05 )
+#
+#p <- 
+p + facet_grid(facet1 ~ ., scales = "free_y", labeller = label_parsed)
+#p <- 
+#ahplot + ylab("")
+
+# ahplot <- ahplot + scale_y_continuous( breaks = seq(-1.0, 1.0, by = 0.2),
+#                   minor_breaks = seq(-1, 1, by = 0.1) )
+
+ahplot <- p + facet_grid(facet2 ~ . , scales = "free_y", labeller = label_parsed)
+#ahplot <-   ahplot + theme( panel.grid.major.y = element_line(color = "#696969", linewidth = 0.6 ) )
+ahplot <- ahplot + theme( panel.grid.major.y = element_line(color = "#A9A9A9", linewidth = 0.4 ) )
+#ahplot + theme( panel.grid.major.y = element_line(color = "#C0C0C0", linewidth = 0.2, linetype = 1 ) )
+
+#  myPlots[[i]] <- myPlots[[i]] + theme( panel.grid.minor.y=element_line(color = "#C0C0C0", size=0.2) )
+ahplot <- ahplot + ylab(NULL)
+```
+
+
+```{r, fig.width=12}
+#p
+ahplot
+
+#ahplot + scale_color_npg( alpha = 0.04 )
+
+```
+
+
+```{r}
+#save(pEH23, file = "EH23ideo.RData")
+#save(ahplot, file = "EH23ideo_ahplot.RData")
+
+# Didn't work.
+#save( list(pEH23, ahplot), file = "EH23ideo.RData")
+```
+
+
+
+
