@@ -22,9 +22,9 @@ knitr::opts_chunk$set(fig.align = "center")
 #my_samp <- "DPSV"
 #my_samp <- "NLv1"
 #my_samp <- "SAN2"
+#my_samp <- "SODL"
 #
-my_samp <- "SODL"
-#my_samp <- "WHW"
+my_samp <- "WHW"
 
 
 my_samp_a <- paste(my_samp, "a", sep = "")
@@ -87,9 +87,13 @@ syn <- syri[syri[, 11] == "SYN", ]
 syn[1:3, ]
 nrow(syn)
 last_win <- 1
+#
+coalesce <- 1e0
 #coalesce <- 5e4
 #coalesce <- 1e5
-coalesce <- 4e5
+
+#coalesce <- 4e5
+
 #coalesce <- 1e6
 for( j in 2:nrow(syn) ){
   if( syn$ref_start[j] - syn$ref_end[last_win] < coalesce &
@@ -811,7 +815,12 @@ p
 
 ```{r, fig.width=10}
 # p
-p + xlim(5.5, 8.5) + ylim(10e6, 40e6)
+# p + xlim(5.5, 8.5) + ylim(10e6, 40e6)
+p + xlim(5.0, 9.0) + ylim(10e6, 40e6)
+
+# ggsave(filename = paste(my_samp, "_5-9MB_ideo.png", sep = ""), device = "png",
+#        width = 6.5, height = 3.25, units = "in", dpi = 300)
+
 ```
 
 
