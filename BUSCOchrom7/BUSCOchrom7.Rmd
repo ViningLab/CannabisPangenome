@@ -1,0 +1,112 @@
+---
+title: "BUSCO chrom"
+output: 
+  html_document:
+    toc: true
+    code_folding: hide
+date: "2023-07-06"
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+#knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(results = "hide")
+knitr::opts_chunk$set(fig.align = "center")
+knitr::opts_chunk$set(fig.width = 12)
+knitr::opts_chunk$set(warning = FALSE)
+```
+
+
+```{r}
+t1 <- Sys.time()
+```
+
+
+```{r}
+load("BUSCOchrom7.RData")
+```
+
+
+```{r}
+p
+```
+
+
+```{r}
+load("BUSCOchrom7_127689at71240.RData")
+```
+
+```{r}
+p2
+```
+
+
+
+```{r}
+library(ggplot2)
+
+p2 <- p2 + annotate( geom = 'point', x = rep(78, times = 4),
+                     xmax = 80, 
+               #y = c(1.0e6, 2e6, 3.0e6),
+               y = c(1.0e6, 2e6, 3.0e6, 4.0e6),
+               size = 4, pch = 24, 
+               bg = c("#C0C0C066", "#B22222","#1E90FF", "#FFD700"))
+p2 <- p2 + annotate( geom = 'text', x = rep(78, times = 4), 
+                     y = c(0.8e6, 1.8e6, 2.8e6, 3.8e6) - 0.2e6, 
+                     label = c("CanSyn", "THCAS", "CBDAS", "CBCAS"), 
+                     size = 4, angle = -90 )
+#p2 <- p2 + theme(axis.text.x = element_text( size = 6 ))
+p2 <- p2 + theme(axis.text.x = element_text( size = 8 ))
+
+p2 <- p2 + annotate( geom = 'text', x = 1, y = 1.4e5, label = "BUSCO: 127689at71240", hjust = 0)
+
+#p2 + ylab("Distance (MBp) from\nBUSCO: 127689at71240")
+
+p2
+
+# ggsave(filename = "BUSCOchrom7_127689at71240.tiff", device = "tiff",
+#        width = 6.5, height = 6.5,
+#        #width = 3.25, height = 3.25,
+#        units = "in", dpi = 150, compression = "lzw")
+# 
+# ggsave(filename = "BUSCOchrom7_127689at71240.png", device = "png",
+#        width = 6.5, height = 6.5,
+#        #width = 3.25, height = 3.25,
+#        units = "in", dpi = 150)
+
+```
+
+
+## Text
+
+
+
+**Figure X** Cannabinoid synthase pathway genes of *Cannabis sativa* strain ERBxHO40.
+**Panel A**
+
+Chromosome 7 included a single high stringency match for either tetrahydrocannabinolic acid synthase or cannabidiolic acid synthase, associated with chemotype, as well as a population of low stringency matches.
+For each diploid plant's chromosome (x-axis) colored points indicate the location of BUSCO (Benchmarking Universal Single-Copy Orthologs) genes for chromosome 7 (elevation for each point is in million base pairs).
+Lines connect identical BUSCO genes among neighboring samples.
+Changes in the elevation and spacing among BUSCO genes reflects structural variation within samples, while the lines draw attention to variability among each sample's immediate neighbor.
+Triangles mark the location of matches for three cannabinoid synthases (CBCAS, CBDAS, and THCAS).
+Red triangles indicate high stringency matches to THCAS (BLASTN query of NCBI accession "AB212829.1", percent identity >= 0.98, number of gaps = 0).
+Blue triangles indicate high stringency matches to CBDAS (BLASTN query of NCBI accession "AB292682.1", percent identity >= 0.98, number of gaps = 0).
+Yellow triangles indicate high stringency matches to CBCAS (BLASTN query of NCBI accession "LY658671.1", percent identity >= 0.98, number of gaps = 0).
+Gray triangles indicate low stringency matches to cannabinoid synthases (BLASTN query of cannabichromenic acid synthase (LY658671.1), cannabidiolic acid synthase (AB292682, AB292683, AB292684), and tetrahydrocannabinolic acid synthase (AB212829, AB212830), percent identity >= 0.90 and < 0.98, number of gaps > 0).
+Each plant that was characterized as predominantly producing THCA (Chemotype I) consisted of a pair of chromosomes (a and b) that each had a single match to tetrahydrocannabinolic acid synthase (AB212829.1), indicated by a single red triangle.
+Each plant that was characterized as predominantly producing CBDA (Chemotype III) consisted of a pair of chromosomes (a and b) that each had a single match to cannabidiolic acid synthase (AB292682.1), indicated by a single blue triangle.
+Each plant that was characterized as producing both THCA and CBDA (Chemotype II) consisted of a 
+pair of chromosomes where one chromosome included a single match to tetrahydrocannabinolic acid synthase (AB212829.1), indicated by a single red triangle, and the other chromosome included a single match to cannabidiolic acid synthase (AB292682.1), indicated by a single blue triangle.
+Plants that were characterized as being cannabigerolic acid accumulators (Chemotype IV) included chromosomes that may have had a single match to tetrahydrocannabinolic acid synthase (AB212829.1) or no high stringency matches to any of the three assayed cannabinoid synthases.
+Gray triangles indicate that a substantial population of low stringency matches were observed on all of the chromosome sevens.
+
+
+
+
+```{r}
+t99 <- Sys.time()
+t99 - t1
+```
+

@@ -92,7 +92,22 @@ my_chroms[1:3, ]
 ```{r}
 my_data <- readr::read_csv("gene_counts.csv", )
 my_data
+```
 
+
+```{r}
+gene_cnts <- data.frame(
+  Sample = my_data[, 1],
+  Count = rowSums(my_data[, -1], na.rm = TRUE)
+)
+knitr::kable(gene_cnts)
+mean(gene_cnts$Count)
+```
+
+
+
+
+```{r}
 library(tidyr)
 data_long <- my_data %>%
   pivot_longer( cols = !Sample, names_to = "Chrom", values_to = "Count")
@@ -190,6 +205,9 @@ p
 
 
 ```
+
+
+
 
 
 ## Lengths
