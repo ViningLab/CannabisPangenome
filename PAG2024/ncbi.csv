@@ -1,0 +1,7 @@
+"Strain","Assembly","Size (Mbp)","N50 (Mbp)","Scaffolds","Busco","Citation"
+"CBDRx","GCF_900626175.2",876.147649,91.913879,221,"94.02","Grassa et al. 2021"
+"Cannbio-2","GCA_016165845.1",914.397426,91.49334,147,"97.08","Braich et al. 2020"
+"'jl' (Jilong; 吉隆)","GCA_013030365.1",812.52542,82.998198,483,"92.69","Gao et al. 2020"
+"Finola","GCA_003417725.2",1009.674739,77.135887,2362,"95.66","Laverty et al. 2019"
+"Purple Kush","GCA_000230575.5",891.964663,60.9681,6653,"93.47","Laverty et al. 2019"
+"Purple Kush","GCA_000230575.1",892,0.1339,12836,NA,"van Bakel 2011"

@@ -46,6 +46,7 @@ p2
 
 ```{r}
 library(ggplot2)
+library(dplyr)
 
 p2 <- p2 + annotate( geom = 'point', x = rep(78, times = 4),
                      xmax = 80, 
@@ -91,16 +92,27 @@ ty3 <- ltrs[grep("Gypsy", ltrs$Type), ]
 
 ltrs[1:3, 1:8]
 
+#
+ty3 <- ty3[ (ty3$Stop - ty3$Start) > 4e3 & (ty3$Stop - ty3$Start) < 15e3, ]
+ty3 <- ty3[ !is.na(ty3$Sample), ]
+table(ty3$Sample, useNA = 'always')
+nrow(ty3)
+#
+hist(ty3$Stop - ty3$Start)
+
+
 #p2 <-
 p2 + annotate( geom = 'point', 
                x = ltrs$Sample,
                y = ltrs$Start,
                size = 1.4, pch = 23, color = "#C0C0C011", bg = "#C0C0C044")
 
-p2 + annotate( geom = 'point', 
-               x = ty1$Sample,
-               y = ty1$Start,
-               size = 1.4, pch = 23, color = "#C0C0C011", bg = "#C0C0C044")
+# p2 + annotate( geom = 'point', 
+#                x = ty1$Sample,
+#                y = ty1$Start,
+#                size = 1.4, pch = 23, color = "#C0C0C011", bg = "#C0C0C044")
+
+#table(ty3$Sample, useNA = 'always')
 
 p2 + annotate( geom = 'point', 
                x = ty3$Sample,
@@ -109,9 +121,15 @@ p2 + annotate( geom = 'point',
                pch = 21, 
                #pch = 23, 
                color = "#C0C0C011", 
+               #bg = "#6B8E2322"
                bg = "#DAA52022"
                #bg = "#9ACD3222"
                )
+
+# ggsave(filename = "BUSCOchrom7_127689at71240_ty3.png", device = "png",
+#        width = 6.5, height = 6.5,
+#        #width = 3.25, height = 3.25,
+#        units = "in", dpi = 150)
 
 
 ```

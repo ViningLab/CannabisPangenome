@@ -55,6 +55,7 @@ kable(ncbi,
       digits = 2,
       format.args = list( big.mark = ",", nsmall = 2)) %>% kable_styling( font_size = 22)
 #ncbi
+#write.table(ncbi, file = "ncbi.csv", sep = ",", row.names = FALSE, col.names = TRUE)
 ```
 
 ::: aside
@@ -137,7 +138,6 @@ De Meijer, E.P., Bagatta, M., Carboni, A., Crucitti, P., Moliterni, V.C., Ranall
 Vergara, D., Huscher, E.L., Keepers, K.G., Givens, R.M., Cizek, C.G., Torres, A., Gaudino, R. and Kane, N.C., 2019. Gene copy number is associated with phytochemistry in Cannabis sativa. *AoB Plants*, *11*(6), p.plz074.
 
 ## Phenotypic variation
-
 
 $$
 V_{P} = V_{A} + V_{D} + V_{I} + V_{E}
