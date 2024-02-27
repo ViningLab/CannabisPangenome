@@ -1,6 +1,9 @@
 # Salk Cannabis Pangenome Lines
 
 
+https://resources.michael.salk.edu/resources/cannabis_genomes/index.html
+
+
 http://salk-tm-pub.s3-website-us-west-2.amazonaws.com/cannabis_sativa/
 
 
