@@ -88,6 +88,51 @@ title( main = "Varin content (Blink model; Varin_Total)" )
 
 
 
+```{r, echo=FALSE, fig.width=12, fig.cap="**Figure X** Manhattan plot."}
+# png(filename = "varin_total_gwas.png", width = 6.5, height = 4, units = "in",
+#    res = 300)
+
+
+palette(my_pal)
+gwas$col <- my_pal[gwas$chrom_num]
+gwas$col <- substr(gwas$col, start = 1, stop = 7)
+#max(-log10(gwas$P.value))
+
+round(-log10(gwas$P.value)/24 * 10)
+
+
+plot(x = gwas$POS, y = -log10(gwas$P.value), 
+#     col = vat$Chromosome,
+     col = gwas$chrom_num,
+     pch = 20, xlab = "", ylab = "", xaxt = "n",
+     cex = -log10(gwas$P.value) * 0.14)
+#     cex = 1-abs(gwas$P.value) * 1.1)
+#     cex = abs(gwas$Effect) * 0.1)
+
+abline(h = seq(0, 30, by = 1), lty = 3, col = "#C0C0C088")
+abline(h = seq(0, 30, by = 5), lty = 1, col = "#C0C0C088")
+
+axis(side = 1, at = nucs$mids, labels = c(1:9, "X"))
+#axis(side = 1, at = nuc$lpos, labels = c(1:9, "X"))
+#title( xlab = "Chromosome (CBDRx; GCF_900626175.2)", line = 2 )
+title( xlab = "Chromosome (EH23b)", line = 2 )
+title( ylab = expression("-Log"["10"](italic(p)-value)), line = 1.8 )
+title( main = "Varin content (Blink model; Varin_Total)" )
+
+
+# abline( v = c(69653599 + nucs$starts[4], 69653748 + nucs$starts[4]),
+#         col = "#1E90FF",
+# #        col = "#B22222",
+#         lty = 3, lwd = 2)
+
+
+#palette("default")
+#dev.off()
+```
+
+
+
+
 
 ```{r, results='asis'}
 #plot(gwas$P.value, gwas$H.B.P.Value)
