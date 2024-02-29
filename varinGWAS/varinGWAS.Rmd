@@ -3,7 +3,8 @@ title: "Varin GWAS"
 author: "Brian J. Knaus"
 date: "`r format(Sys.time(), '%Y, %B %d')`"
 output: 
-  html_document
+  html_document:
+    toc: true
 editor_options: 
   chunk_output_type: console
 ---
@@ -182,7 +183,8 @@ title( main = "Varin content (Blink model; Varin_Total)" )
 ```
 
 
-
+Coordinates can be checked at the Michael Lab genome browser (JBrowse).
+https://resources.michael.salk.edu/resources/cannabis_genomes/index.html
 
 
 ```{r, results='asis'}
@@ -202,6 +204,7 @@ knitr::kable(gwas3,
              caption = "**Table X.** Select results from GAPIT GWAS using the Blink model, sorted by P.value.",
              row.names = FALSE)
 ```
+
 
 
 
@@ -284,7 +287,7 @@ my_dat$pcol[ my_dat$gt == 2 ] <- "#B22222"
 # my_dat$gt <- my_dat$gt + 1
 
 my_dat2 <- my_dat
-my_dat2 <- my_dat[ my_dat$gt != 2, ]
+#my_dat2 <- my_dat[ my_dat$gt != 2, ]
 
 lm1 <- lm( Varin_Total ~ gt, data = my_dat2 )
 # lm11 <- lm( Varin_Total ~ gt + I(gt^2), data = my_dat2 )
@@ -376,7 +379,8 @@ my_dat <- data.frame(
 )
 my_dat$pcol[ my_dat$gt == 2 ] <- "#B22222"
 #
-my_dat2 <- my_dat[ my_dat$gt != 2, ]
+my_dat2 <- my_dat
+#my_dat2 <- my_dat[ my_dat$gt != 2, ]
 lm2 <- lm( Varin_Total ~ gt, data = my_dat2 )
 lm2 <- lm( Varin_Total ~ gt * gt, data = my_dat2 )
 lm2 <- lm( Varin_Total ~ gt:gt, data = my_dat2 )
@@ -622,6 +626,8 @@ var_df$var_p <- var_df$var/sum(var_df$var)
 
 ## More single loci
 
+### X_44482355
+
 
 ```{r}
 #gt2[, 1:3]
@@ -639,7 +645,8 @@ my_dat <- data.frame(
 )
 #table(my_dat$gt)
 my_dat$pcol[ my_dat$gt == 2 ] <- "#B22222"
-my_dat2 <- my_dat[ my_dat$gt != 2, ]
+my_dat2 <- my_dat
+#my_dat2 <- my_dat[ my_dat$gt != 2, ]
 lm1 <- lm( Varin_Total ~ gt, data = my_dat2 )
 summary(lm1)
 ```
@@ -696,9 +703,11 @@ my_dat <- data.frame(
 )
 #table(my_dat$gt)
 my_dat$pcol[ my_dat$gt == 2 ] <- "#B22222"
-my_dat2 <- my_dat[ my_dat$gt != 2, ]
+my_dat2 <- my_dat
+#my_dat2 <- my_dat[ my_dat$gt != 2, ]
 lm1 <- lm( Varin_Total ~ gt, data = my_dat2 )
 summary(lm1)
+lm2 <- lm( Varin_Total ~ gt + I(gt^2), data = my_dat )
 ```
 
 
@@ -706,6 +715,7 @@ summary(lm1)
 library(pander)
 #pander(lm1)
 pander(summary(lm1))
+pander(summary(lm2))
 ```
 
 
@@ -753,7 +763,8 @@ my_dat <- data.frame(
 )
 #table(my_dat$gt)
 my_dat$pcol[ my_dat$gt == 2 ] <- "#B22222"
-my_dat2 <- my_dat[ my_dat$gt != 2, ]
+my_dat2 <- my_dat
+#my_dat2 <- my_dat[ my_dat$gt != 2, ]
 lm1 <- lm( Varin_Total ~ gt, data = my_dat2 )
 summary(lm1)
 ```
