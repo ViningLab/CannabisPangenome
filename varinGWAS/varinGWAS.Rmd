@@ -521,9 +521,27 @@ lm1 <- lm( pheno$Varin_Total ~ gt2["4_68382150", ] +
              gt2["4_68382150", ]:gt2["4_36256098", ] +
              gt2["4_68382150", ]:gt2["7_290913", ] +
              gt2["4_68382150", ]:gt2["X_44482355", ] +
-             gt2["4_68382150", ]:gt2["X_12488664", ]
+             gt2["4_68382150", ]:gt2["X_12488664", ] +
+             gt2["4_36256098", ]:gt2["7_290913", ] +
+             gt2["4_36256098", ]:gt2["X_44482355", ] +
+             gt2["4_36256098", ]:gt2["X_12488664", ] +
+             gt2["7_290913", ]:gt2["X_44482355", ] +
+             gt2["7_290913", ]:gt2["X_12488664", ] +
+             gt2["X_44482355", ]:gt2["X_12488664", ]
              )
 pander(summary(lm1))
+
+
+var_df <- data.frame( var = diag(vcov(lm1)))
+var_df$var_p <- var_df$var/sum(var_df$var)
+#var_df[sort.int(var_df$var_p, decreasing = TRUE, index.return = TRUE)$ix, ]
+knitr::kable(var_df[sort.int(var_df$var, decreasing = TRUE, index.return = TRUE)$ix, ])
+
+# library("lmerTest")
+# VCrandom <- VarCorr(lm1)
+# print(VCrandom, comp = "Variance")
+
+#summary(lm1)$sigma
 
 ```
 
@@ -534,6 +552,70 @@ pander(summary(lm1))
 #summary(lm( pheno$Varin_Total ~ polym( gt2["4_68382150", ], gt2["4_36256098", ], degree=2, raw=T)))
 ```
 
+
+### 5 loci, ordered
+
+
+```{r, results='markup'}
+lm1 <- lm( pheno$Varin_Total ~ 
+             gt2["4_68382150", ] + 
+             gt2["4_36256098", ] + 
+             gt2["X_12488664", ] +
+             gt2["X_44482355", ] +
+             gt2["7_290913", ] +
+             I(gt2["4_68382150", ]^2) +
+             I(gt2["X_44482355", ]^2) +
+             I(gt2["4_36256098", ]^2) + 
+             I(gt2["X_12488664", ]^2) +
+             I(gt2["7_290913", ]^2) +
+             gt2["4_68382150", ]:gt2["X_12488664", ] +
+             gt2["4_36256098", ]:gt2["X_12488664", ] +
+             gt2["4_68382150", ]:gt2["X_44482355", ] +
+             gt2["4_68382150", ]:gt2["4_36256098", ] +
+             gt2["X_44482355", ]:gt2["X_12488664", ] +
+             gt2["4_68382150", ]:gt2["7_290913", ] +
+             gt2["4_36256098", ]:gt2["7_290913", ] +
+             gt2["4_36256098", ]:gt2["X_44482355", ] +
+             gt2["7_290913", ]:gt2["X_44482355", ] +
+             gt2["7_290913", ]:gt2["X_12488664", ] 
+             )
+pander(summary(lm1))
+
+lm1s <- summary(lm1)
+
+#grep("Intercept", rownames(lm1s$coefficients))
+
+lm1_add <- lm1s$coefficients[grep("\\^2|:", rownames(lm1s$coefficients), invert = TRUE), ]
+lm1_dom <- lm1s$coefficients[grep("\\^2", rownames(lm1s$coefficients), invert = FALSE), ]
+lm1_epi <- lm1s$coefficients[grep(":", rownames(lm1s$coefficients), invert = FALSE), ]
+
+lm1_add <- lm1_add[sort.int(lm1_add[, "Pr(>|t|)"], decreasing = FALSE, index.return = TRUE)$ix, ]
+lm1_dom <- lm1_dom[sort.int(lm1_dom[, "Pr(>|t|)"], decreasing = FALSE, index.return = TRUE)$ix, ]
+lm1_epi <- lm1_epi[sort.int(lm1_epi[, "Pr(>|t|)"], decreasing = FALSE, index.return = TRUE)$ix, ]
+
+lm1_epi <- rbind(lm1_add, lm1_dom, lm1_epi)
+
+library(kableExtra)
+knitr::kable(lm1_epi) %>%
+  kable_styling( full_width = FALSE ) %>%
+  row_spec(c(7:11), background = "#C0C0C0") %>%
+#  row_spec(x, c(7, 12:15), bold = TRUE, italic = TRUE)
+  row_spec(c(7, 12:15), background = "#FFA07A")
+
+
+
+#knitr::kable(lm1s$coefficients[ sort.int(lm1s$coefficients[, 'Estimate'], decreasing = F, index.return = T)$ix, ])
+#knitr::kable(lm1s$coefficients[ sort.int(lm1s$coefficients[, 'Pr(>|t|)'], decreasing = F, index.return = T)$ix, ])
+
+
+
+var_df <- data.frame( var = diag(vcov(lm1)))
+var_df$var_p <- var_df$var/sum(var_df$var)
+#var_df[sort.int(var_df$var_p, decreasing = TRUE, index.return = TRUE)$ix, ]
+#knitr::kable(var_df[sort.int(var_df$var, decreasing = TRUE, index.return = TRUE)$ix, ])
+
+
+```
 
 
 
