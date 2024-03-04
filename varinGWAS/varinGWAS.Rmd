@@ -30,6 +30,35 @@ knitr::opts_chunk$set(results = "hide")
 ## Methods
 
 
+### Phenotypic measure
+
+Varin content wasw measured somehow...
+
+
+### DNA sequencing
+
+
+Tissue was harvested from the F1 parent, EH23, and 270 F2 progeny.
+Libraries were prepared.
+The parent was sequenced at high coverage in order to capture all the alleles expected in the F2 as a quality control measure.
+The 270 F2 progeny samples were sequenced at low coverage to attain a low coverage but high sample size panel.
+
+
+### Genotype calling
+
+Ryan.
+
+
+### Genome wide association study
+
+
+Variants in the VCF format (https://doi.org/10.1093/bioinformatics/btr330) were read into R (https://www.R-project.org/) and converted to hapmap format using vcfR ( https://doi.org/10.1111/1755-0998.12549).
+GAPIT3 (https://doi.org/10.1016/j.gpb.2021.08.005) was used to perform genome wide association study to use the variants panel to explain phenotypic variance observed for varin content.
+The GAPIT3 function `GAPIT()` was used with three principal components (PCA.total = 3) and the Blink model (model="Blink").
+
+The Blink model (https://doi.org/10.1093/gigascience/giy154) builds on the 
+
+
 
 
 
@@ -43,8 +72,11 @@ t1 <- Sys.time()
 
 
 ```{r}
-gwas <- read.csv("GWAS_blink_varin.csv.gz")
-gwas[1:3, 1:5]
+# gwas <- read.csv("/media/knausb/E737-9B48/knausb/allele_hw/GAPIT3/GAPIT.Association.GWAS_Results.FarmCPU.Varin_Total.csv")
+# 
+gwas <- read.csv("/media/knausb/E737-9B48/knausb/allele_hw/GAPIT3_blink/GAPIT.Association.GWAS_Results.BLINK.Varin_Total.csv")
+#gwas <- read.csv("GWAS_blink_varin.csv.gz")
+gwas[1:3, ]
 ```
 
 
@@ -52,6 +84,30 @@ gwas[1:3, 1:5]
 nucs <- read.csv("nucs.csv.gz")
 nucs[1:3, 1:5]
 ```
+
+
+# Add POS
+
+```{r}
+
+if(length(grep("POS", names(gwas))) == 0){
+  #is.na(gwas$POS) <- TRUE
+  gwas$POS <- gwas$Pos
+  for(i in 2:nrow(nucs)){
+    gwas$POS[ gwas$Chr == nucs$Id[i] ] <- gwas$Pos[ gwas$Chr == nucs$Id[i] ] + sum( nucs$Length[1:(i - 1)] )
+  }
+}
+
+if(length(grep("chrom_num", names(gwas))) == 0){
+  gwas$chrom_num <- sub(".+\\chr", "", gwas$Chr)
+  gwas$chrom_num[ gwas$chrom_num == "X" ] <- 10
+  gwas$chrom_num[ gwas$chrom_num == "Y" ] <- 11
+  gwas$chrom_num <- as.numeric( gwas$chrom_num )
+}
+
+gwas[1:3, ]
+```
+
 
 
 
@@ -164,6 +220,11 @@ plot(x = gwas$POS, y = -log10(gwas$P.value),
 abline(h = seq(0, 30, by = 1), lty = 3, col = "#C0C0C088")
 abline(h = seq(0, 30, by = 5), lty = 1, col = "#C0C0C088")
 
+abline( v = sum(nucs$Length[1:6]) + 1010217 ) # ALT4
+text( x = sum(nucs$Length[1:6]) + 1010217 + 0, y = 20, labels = "ALT4" ) # ALT4
+abline( v = sum(nucs$Length[1:3]) + 72420315 ) # BKR
+text( x = sum(nucs$Length[1:3]) + 72420315, y = 20, labels = "BKR" ) # BKR
+
 axis(side = 1, at = nucs$mids, labels = c(1:9, "X"))
 #axis(side = 1, at = nuc$lpos, labels = c(1:9, "X"))
 #title( xlab = "Chromosome (CBDRx; GCF_900626175.2)", line = 2 )
@@ -198,17 +259,104 @@ gwas3 <- data.frame( gwas2[, c(1, 4)],
 names(gwas3)[3] <- "-log10(P)"
 gwas3 <- gwas3[1:10, ]
 #gwas3[1:3, ]
-
-
 knitr::kable(gwas3, 
              caption = "**Table X.** Select results from GAPIT GWAS using the Blink model, sorted by P.value.",
              row.names = FALSE)
 ```
 
 
+```{r, results='asis'}
+#plot(gwas$P.value, gwas$H.B.P.Value)
+#gwas[1:3, ]
+gwas2 <- gwas[sort.int(abs(gwas$Effect), decreasing = TRUE, index.return = TRUE)$ix, ]
+gwas3 <- data.frame( gwas2[, c(1, 4)],
+                     '-log10(P)' = -log10(gwas2$P.value),
+                     gwas2[, c(5, 6, 7, 8, 9, 3)]
+                     )
+names(gwas3)[3] <- "-log10(P)"
+gwas3 <- gwas3[1:10, ]
+#gwas3[1:3, ]
+knitr::kable(gwas3, 
+             caption = "**Table X.** Select results from GAPIT GWAS using the Blink model, sorted by abs(Effect).",
+             row.names = FALSE)
+```
 
 
-## Epistasis
+### Manhattan plot, detail on BKR
+
+```{r, echo=FALSE, fig.width=12, fig.cap="**Figure X** Manhattan plot."}
+plot(x = gwas$POS, y = -log10(gwas$P.value), 
+#     col = vat$Chromosome,
+     #col = gwas$chrom_num,
+     col = gwas$col,
+     pch = 20, xlab = "", ylab = "", xaxt = "n",
+     xlim = c(294e6, 300.6e6 ),
+     cex = 2)
+#     cex = -log10(gwas$P.value) * 0.20)
+     #cex = -log10(gwas$P.value) * 0.14)
+#     cex = 1-abs(gwas$P.value) * 1.1)
+#     cex = abs(gwas$Effect) * 0.1)
+
+abline(h = seq(0, 30, by = 1), lty = 3, col = "#C0C0C088")
+abline(h = seq(0, 30, by = 5), lty = 1, col = "#C0C0C088")
+
+abline( v = sum(nucs$Length[1:3]) + 72420315 ) # BKR
+text( x = sum(nucs$Length[1:3]) + 72420315, y = 20, labels = "BKR" ) # BKR
+abline( v = sum(nucs$Length[1:6]) + 1010217 ) # ALT4
+text( x = sum(nucs$Length[1:6]) + 1010217 + 0, y = 20, labels = "ALT4" ) # ALT4
+
+
+axis(side = 1, at = nucs$mids, labels = c(1:9, "X"))
+axis(side = 1, at = seq(0, 300e6, by = 1e6))
+#axis(side = 1, at = nuc$lpos, labels = c(1:9, "X"))
+#title( xlab = "Chromosome (CBDRx; GCF_900626175.2)", line = 2 )
+#title( xlab = "Chromosome (EH23b)", line = 2 )
+title( ylab = expression("-Log"["10"](italic(p)-value)), line = 1.8 )
+title( main = "Varin content (Blink model; Varin_Total)" )
+```
+
+
+### Manhattan plot, detail on ALT4
+
+```{r, echo=FALSE, fig.width=12, fig.cap="**Figure X** Manhattan plot."}
+plot(x = gwas$POS, y = -log10(gwas$P.value), 
+#     col = vat$Chromosome,
+     #col = gwas$chrom_num,
+     col = gwas$col,
+     pch = 20, xlab = "", ylab = "", xaxt = "n",
+#     xlim = c(466.5e6, 469.5e6 ),
+     xlim = c(466.5e6, 471.5e6 ),
+     cex = 2)
+     #cex = -log10(gwas$P.value) * 0.20)
+     #cex = -log10(gwas$P.value) * 0.14)
+#     cex = 1-abs(gwas$P.value) * 1.1)
+#     cex = abs(gwas$Effect) * 0.1)
+
+abline(h = seq(0, 30, by = 1), lty = 3, col = "#C0C0C088")
+abline(h = seq(0, 30, by = 5), lty = 1, col = "#C0C0C088")
+
+abline( v = sum(nucs$Length[1:3]) + 72420315 ) # BKR
+text( x = sum(nucs$Length[1:3]) + 72420315, y = 20, labels = "BKR" ) # BKR
+abline( v = sum(nucs$Length[1:6]) + 1010217 ) # ALT4
+text( x = sum(nucs$Length[1:6]) + 1010217 + 0, y = 20, labels = "ALT4" ) # ALT4
+
+
+axis(side = 1, at = nucs$mids, labels = c(1:9, "X"))
+axis(side = 1, at = seq(0, 900e6, by = 1e6))
+#axis(side = 1, at = nuc$lpos, labels = c(1:9, "X"))
+#title( xlab = "Chromosome (CBDRx; GCF_900626175.2)", line = 2 )
+#title( xlab = "Chromosome (EH23b)", line = 2 )
+title( ylab = expression("-Log"["10"](italic(p)-value)), line = 1.8 )
+title( main = "Varin content (Blink model; Varin_Total)" )
+```
+
+
+
+
+## Single loci
+
+
+### Data
 
 
 ```{r}
@@ -258,57 +406,126 @@ hist(pheno$Varin_Total, breaks = seq(0, 65, by = 2))
 ```
 
 
-### lm 4_68382150
-
-```{r}
-# #gt[, 1:4]
-# lm1 <- lm( pheno$Varin_Total ~ gt2["4_20005812", ] )
-# #lm1 <- lm( pheno$Varin_Total ~ gt[1, ] : gt[2, ] )
-# summary(lm1)
-```
-
-
 ```{r, fig.width=6}
-# plot(gt2["4_20005812", ], pheno$Varin_Total)
-# abline(lm1)
+qqnorm(pheno$Varin_Total)
+qqline(pheno$Varin_Total, col = 2, lwd = 4 )
 ```
 
 
+### locus 4_68382150
+
+
 ```{r}
+my_locus <- "4_68382150"
+# my_locus <- "4_36256098"
+# my_locus <- "7_290913"
+# my_locus <- "X_12488664"
+# my_locus <- "X_44482355"
+chr_pos <- paste(getCHROM(vcf), getPOS(vcf), sep = "_")
+#my_alleles <- paste(getREF(vcf)[my_locus == chr_pos], getALT(vcf)[my_locus == chr_pos], sep = "/")
+my_alleles <- paste( "0 = ", getREF(vcf)[my_locus == chr_pos], "; 1 = ", getALT(vcf)[my_locus == chr_pos], sep = "")
+
 my_dat <- data.frame(
   Varin_Total = pheno$Varin_Total,
-  gt = gt2["4_68382150", ],
-#  gt = gt2["4_20005812", ],
+  gt = gt2[my_locus, ],
   pcol = "#000000"
-#  gt_4_20005812 = gt2["4_20005812", ]
-#  gt_7_290913 = gt2["7_290913", ]
 )
 my_dat$pcol[ my_dat$gt == 2 ] <- "#B22222"
-# my_dat$gt <- my_dat$gt + 1
 
-my_dat2 <- my_dat
-#my_dat2 <- my_dat[ my_dat$gt != 2, ]
-
-lm1 <- lm( Varin_Total ~ gt, data = my_dat2 )
-# lm11 <- lm( Varin_Total ~ gt + I(gt^2), data = my_dat2 )
+lm1 <- lm( Varin_Total ~ gt, data = my_dat )
 lm11 <- lm( Varin_Total ~ gt + I(gt^2), data = my_dat )
-
-
-summary(lm1)
-
-aggregate(Varin_Total ~ gt, data = my_dat, mean)
-
-# x <- 1
-# x <- 2
-# lm11$coefficients[1] + x * lm11$coefficients[2] + x^2 * lm11$coefficients[3]
 
 my_vals <- data.frame(
   x = seq(0, 2, length.out=10)
 )
 my_vals$y <- lm11$coefficients[1] + my_vals$x * lm11$coefficients[2] + my_vals$x^2 * lm11$coefficients[3]
-
 ```
 
+
+```{r, results='markup'}
+library(pander)
+#pander(lm1)
+pander(summary(lm1))
+pander(summary(lm11))
+#hist(lm11$fitted.values)
+```
+
+
+```{r, results='asis'}
+# print(xtable::xtable(summary(lm1)), type = 'html')
+```
+
+
+```{r, results='markup'}
+summary(lm1)
+```
+
+
+
+
+```{r, fig.width=6}
+# pheno$Varin_Total2 <- pheno$Varin_Total - lm11$fitted.values
+# 
+pheno$Varin_Total2 <- lm11$residuals
+# pheno$Varin_Total <- lm11$residuals
+hist(pheno$Varin_Total2)
+qqnorm(pheno$Varin_Total2)
+qqline(pheno$Varin_Total2, col = 2, lwd = 4 )
+```
+
+
+
+```{r, fig.width=6, fig.cap="**Figure X.** Ability of the genotype to predict the phenotype."}
+library(ggplot2)
+#my_dat$gt <- as.factor(my_dat$gt)
+p <- ggplot( data = my_dat, mapping = aes( x = gt, y = Varin_Total, fill = gt, group = gt ))
+p <- p + theme_bw()
+p <- p + geom_violin()
+p <- p + scale_x_continuous( 
+  breaks = c(0, 1, 2),
+  labels = c("0/0", "0/1", "1/1")
+)
+p <- p + theme(legend.position="none")
+p <- p + scale_fill_continuous(type = "viridis", begin = 0.2)
+p <- p + geom_jitter(shape=16, position=position_jitter(0.15), col = my_dat$pcol, size = 2)
+p <- p + ylab("Varin Total (units???)")
+p <- p + xlab("Genotype")
+p <- p + ggtitle( paste(my_locus, my_alleles, sep = ": ") )
+#
+p <- p + geom_abline( slope = lm1$coefficients[2], intercept = lm1$coefficients[1], linewidth = 2, col = "#808080")
+p <- p + geom_line( data = my_vals, mapping = aes( x = x, y = y ), inherit.aes = F, linewidth = 2, col = "#808080" )
+p
+```
+
+
+### locus 4_36256098
+
+
+```{r}
+# my_locus <- "4_68382150"
+my_locus <- "4_36256098"
+# my_locus <- "7_290913"
+# my_locus <- "X_12488664"
+# my_locus <- "X_44482355"
+chr_pos <- paste(getCHROM(vcf), getPOS(vcf), sep = "_")
+#my_alleles <- paste(getREF(vcf)[my_locus == chr_pos], getALT(vcf)[my_locus == chr_pos], sep = "/")
+my_alleles <- paste( "0 = ", getREF(vcf)[my_locus == chr_pos], "; 1 = ", getALT(vcf)[my_locus == chr_pos], sep = "")
+
+my_dat <- data.frame(
+  Varin_Total = pheno$Varin_Total,
+  gt = gt2[my_locus, ],
+  pcol = "#000000"
+)
+my_dat$pcol[ my_dat$gt == 2 ] <- "#B22222"
+
+lm1 <- lm( Varin_Total ~ gt, data = my_dat )
+lm11 <- lm( Varin_Total ~ gt + I(gt^2), data = my_dat )
+
+my_vals <- data.frame(
+  x = seq(0, 2, length.out=10)
+)
+my_vals$y <- lm11$coefficients[1] + my_vals$x * lm11$coefficients[2] + my_vals$x^2 * lm11$coefficients[3]
+```
 
 
 ```{r, results='markup'}
@@ -319,12 +536,6 @@ pander(summary(lm11))
 ```
 
 
-```{r, fig.width=6}
-# plot( jitter(my_dat$gt, factor  = 0.6), my_dat$Varin_Total)
-# abline(lm1)
-```
-
-
 ```{r, fig.width=6, fig.cap="**Figure X.** Ability of the genotype to predict the phenotype."}
 library(ggplot2)
 #my_dat$gt <- as.factor(my_dat$gt)
@@ -335,66 +546,56 @@ p <- p + scale_x_continuous(
   breaks = c(0, 1, 2),
   labels = c("0/0", "0/1", "1/1")
 )
-
-#p <- p + geom_violin( scale = "count" )
-#p <- p + scale_fill_manual(values=c("#999999", "#E69F00", "#56B4E9"))
-#p <- p + scale_fill_continuous(values=c("#999999", "#E69F00", "#56B4E9"))
-# 
 p <- p + theme(legend.position="none")
 p <- p + scale_fill_continuous(type = "viridis", begin = 0.2)
-#p <- p + geom_jitter(shape=16, position=position_jitter(0.1), col = "#B22222")
 p <- p + geom_jitter(shape=16, position=position_jitter(0.15), col = my_dat$pcol, size = 2)
 p <- p + ylab("Varin Total (units???)")
-#p <- p + xlab("Genotype at chromosome 4, position 20,005,812 bp")
 p <- p + xlab("Genotype")
-#p <- p + ggtitle("Chromosome 4, position 20,005,812 bp")
-p <- p + ggtitle("Chromosome 4, position 68,382,150 bp")
+p <- p + ggtitle( paste(my_locus, my_alleles, sep = ": ") )
 #
 p <- p + geom_abline( slope = lm1$coefficients[2], intercept = lm1$coefficients[1], linewidth = 2, col = "#808080")
+p <- p + geom_line( data = my_vals, mapping = aes( x = x, y = y ), inherit.aes = F, linewidth = 2, col = "#808080" )
 p
-
-p + geom_line( data = my_vals, mapping = aes( x = x, y = y ), inherit.aes = F, linewidth = 2, col = "#808080" )
-
 ```
 
 
-### lm 7_290913
+### locus 7_290913
 
 
 ```{r}
-#gt[, 1:4]
-#lm2 <- lm( pheno$Varin_Total ~ gt2["7_290913", ] )
-#summary(lm2)
-```
+# my_locus <- "4_68382150"
+# my_locus <- "4_36256098"
+# 
+my_locus <- "7_290913"
+# my_locus <- "X_12488664"
+# my_locus <- "X_44482355"
+chr_pos <- paste(getCHROM(vcf), getPOS(vcf), sep = "_")
+#my_alleles <- paste(getREF(vcf)[my_locus == chr_pos], getALT(vcf)[my_locus == chr_pos], sep = "/")
+my_alleles <- paste( "0 = ", getREF(vcf)[my_locus == chr_pos], "; 1 = ", getALT(vcf)[my_locus == chr_pos], sep = "")
 
-
-```{r}
 my_dat <- data.frame(
   Varin_Total = pheno$Varin_Total,
-  gt = gt2["7_290913", ],
-#  gt = gt2["4_20005812", ],
+  gt = gt2[my_locus, ],
   pcol = "#000000"
-#  gt_4_20005812 = gt2["4_20005812", ]
-#  gt_7_290913 = gt2["7_290913", ]
 )
 my_dat$pcol[ my_dat$gt == 2 ] <- "#B22222"
-#
-my_dat2 <- my_dat
-#my_dat2 <- my_dat[ my_dat$gt != 2, ]
-lm2 <- lm( Varin_Total ~ gt, data = my_dat2 )
-lm2 <- lm( Varin_Total ~ gt * gt, data = my_dat2 )
-lm2 <- lm( Varin_Total ~ gt:gt, data = my_dat2 )
 
+lm1 <- lm( Varin_Total ~ gt, data = my_dat )
+lm11 <- lm( Varin_Total ~ gt + I(gt^2), data = my_dat )
 
-summary(lm2)
+my_vals <- data.frame(
+  x = seq(0, 2, length.out=10)
+)
+my_vals$y <- lm11$coefficients[1] + my_vals$x * lm11$coefficients[2] + my_vals$x^2 * lm11$coefficients[3]
 ```
 
 
 ```{r, results='markup'}
 library(pander)
-pander(summary(lm2))
+#pander(lm1)
+pander(summary(lm1))
+pander(summary(lm11))
 ```
-
 
 
 ```{r, fig.width=6, fig.cap="**Figure X.** Ability of the genotype to predict the phenotype."}
@@ -407,157 +608,214 @@ p <- p + scale_x_continuous(
   breaks = c(0, 1, 2),
   labels = c("0/0", "0/1", "1/1")
 )
-
 p <- p + theme(legend.position="none")
 p <- p + scale_fill_continuous(type = "viridis", begin = 0.2)
 p <- p + geom_jitter(shape=16, position=position_jitter(0.15), col = my_dat$pcol, size = 2)
 p <- p + ylab("Varin Total (units???)")
 p <- p + xlab("Genotype")
-#p <- p + ggtitle("Chromosome 4, position 20,005,812 bp")
-#p <- p + ggtitle("Chromosome 4, position 68,382,150 bp")
-p <- p + ggtitle("Chromosome 7, position 290,913 bp")
+p <- p + ggtitle( paste(my_locus, my_alleles, sep = ": ") )
 #
-p <- p + geom_abline( slope = lm2$coefficients[2], 
-                      intercept = lm2$coefficients[1],
-                      linewidth = 2, col = "#808080")
+p <- p + geom_abline( slope = lm1$coefficients[2], intercept = lm1$coefficients[1], linewidth = 2, col = "#808080")
+p <- p + geom_line( data = my_vals, mapping = aes( x = x, y = y ), inherit.aes = F, linewidth = 2, col = "#808080" )
 p
 ```
 
 
-### Epistasis: interaction among loci
+### locus X_12488664
 
 
-```{r, results='markup'}
-#lm2 <- lm( pheno$Varin_Total ~ gt2["4_20005812", ] )
-# lm3 <- lm( pheno$Varin_Total ~ gt2["4_20005812", ] * gt2["4_20005812", ] )
-# lm3 <- lm( pheno$Varin_Total ~ poly(gt2["4_20005812", ], degree = 1, raw = T) )
+```{r}
+# my_locus <- "4_68382150"
+# my_locus <- "4_36256098"
+# my_locus <- "7_290913"
 # 
-# lm3 <- lm( pheno$Varin_Total ~ gt2["4_20005812", ] + I(gt2["4_20005812", ]^2) )
-# lm3 <- lm( pheno$Varin_Total ~ gt2["4_20005812", ] + gt2["4_20005812", ]:gt2["4_20005812", ] )
-# lm3 <- lm( pheno$Varin_Total ~ gt2["4_20005812", ] * gt2["7_290913", ] )
+my_locus <- "X_12488664"
+# my_locus <- "X_44482355"
+chr_pos <- paste(getCHROM(vcf), getPOS(vcf), sep = "_")
+# my_alleles <- paste(getREF(vcf)[my_locus == chr_pos], getALT(vcf)[my_locus == chr_pos], sep = "/")
+my_alleles <- paste( "0 = ", getREF(vcf)[my_locus == chr_pos], "; 1 = ", getALT(vcf)[my_locus == chr_pos], sep = "")
 
-lm3 <- lm( pheno$Varin_Total ~ gt2["4_68382150", ] + gt2["7_290913", ] )
-#summary(lm3)
-lm4 <- lm( pheno$Varin_Total ~ gt2["4_68382150", ] * gt2["7_290913", ] )
-#lm4 <- lm( pheno$Varin_Total ~ gt2["4_68382150", ] * gt2["7_290913", ] + gt2["4_68382150", ]:gt2["4_68382150", ])
+my_dat <- data.frame(
+  Varin_Total = pheno$Varin_Total,
+  gt = gt2[my_locus, ],
+  pcol = "#000000"
+)
+my_dat$pcol[ my_dat$gt == 2 ] <- "#B22222"
 
-lm5 <- lm( pheno$Varin_Total ~ gt2["4_68382150", ] * gt2["7_290913", ] + I(gt2["4_68382150", ]^2) )
+lm1 <- lm( Varin_Total ~ gt, data = my_dat )
+lm11 <- lm( Varin_Total ~ gt + I(gt^2), data = my_dat )
 
+my_vals <- data.frame(
+  x = seq(0, 2, length.out=10)
+)
+my_vals$y <- lm11$coefficients[1] + my_vals$x * lm11$coefficients[2] + my_vals$x^2 * lm11$coefficients[3]
 ```
 
 
 ```{r, results='markup'}
 library(pander)
-pander(summary(lm3))
-pander(summary(lm4))
-pander(summary(lm5))
-```
-
-
-
-```{r, fig.width=6}
-# plot(gt2["7_290913", ], pheno$Varin_Total)
-# coefficients(lm3)
-# abline(lm3)
-```
-
-
-
-
-
-
-
-
-```{r}
-#lm2 <- lm( pheno$Varin_Total ~ gt2[1, ] + I(gt2[1, ]^2) )
-#lm2 <- lm( pheno$Varin_Total ~ poly(gt2[1, ], 2, raw = FALSE) )
-#summary(lm2)
-```
-
-
-## Model building
-
-
-```{r, results='markup'}
-lm1 <- lm( pheno$Varin_Total ~ gt2["4_68382150", ] + I(gt2["4_68382150", ]^2) )
-# lm2 <- lm( pheno$Varin_Total ~ gt2["4_68382150", ] + I(gt2["4_68382150", ]^2) + 
-#              gt2["4_36256098", ] + I(gt2["4_36256098", ]^2) + 
-#              gt2["4_68382150", ]:gt2["4_36256098", ] )
-lm2 <- lm( pheno$Varin_Total ~ gt2["4_68382150", ] + I(gt2["4_68382150", ]^2) + 
-             gt2["4_36256098", ] + I(gt2["4_36256098", ]^2) )
-pander(summary(lm2))
-
-lm3 <- lm( pheno$Varin_Total ~ gt2["4_68382150", ] + I(gt2["4_68382150", ]^2) + 
-             gt2["4_36256098", ] + I(gt2["4_36256098", ]^2) + 
-             gt2["X_12488664", ] + I(gt2["X_12488664", ]^2) )
-pander(summary(lm3))
-
-# lm4 <- lm( pheno$Varin_Total ~ gt2["4_68382150", ] + I(gt2["4_68382150", ]^2) + 
-#              gt2["4_36256098", ] + I(gt2["4_36256098", ]^2) + 
-#              gt2["7_290913", ] + I(gt2["7_290913", ]^2) )
-lm4 <- lm( pheno$Varin_Total ~ gt2["4_68382150", ] + I(gt2["4_68382150", ]^2) + 
-             gt2["4_36256098", ] + I(gt2["4_36256098", ]^2) + 
-             gt2["7_290913", ] + I(gt2["7_290913", ]^2) +
-             gt2["4_68382150", ]:gt2["4_36256098", ] +
-             gt2["4_68382150", ]:gt2["7_290913", ]
-             )
-pander(summary(lm4))
-
-
-#lm5 <- lm( pheno$Varin_Total ~ gt2["4_68382150", ] * gt2["7_290913", ] + I(gt2["4_68382150", ]^2) )
-
-```
-
-
-### 5 loci
-
-```{r, results='markup'}
-lm1 <- lm( pheno$Varin_Total ~ gt2["4_68382150", ] + 
-             gt2["4_36256098", ] + 
-             gt2["7_290913", ] +
-             gt2["X_44482355", ] +
-             gt2["X_12488664", ] +
-             I(gt2["4_68382150", ]^2) +
-             I(gt2["4_36256098", ]^2) + 
-             I(gt2["7_290913", ]^2) +
-             I(gt2["X_44482355", ]^2) +
-             I(gt2["X_12488664", ]^2) +
-             gt2["4_68382150", ]:gt2["4_36256098", ] +
-             gt2["4_68382150", ]:gt2["7_290913", ] +
-             gt2["4_68382150", ]:gt2["X_44482355", ] +
-             gt2["4_68382150", ]:gt2["X_12488664", ] +
-             gt2["4_36256098", ]:gt2["7_290913", ] +
-             gt2["4_36256098", ]:gt2["X_44482355", ] +
-             gt2["4_36256098", ]:gt2["X_12488664", ] +
-             gt2["7_290913", ]:gt2["X_44482355", ] +
-             gt2["7_290913", ]:gt2["X_12488664", ] +
-             gt2["X_44482355", ]:gt2["X_12488664", ]
-             )
+#pander(lm1)
 pander(summary(lm1))
-
-
-var_df <- data.frame( var = diag(vcov(lm1)))
-var_df$var_p <- var_df$var/sum(var_df$var)
-#var_df[sort.int(var_df$var_p, decreasing = TRUE, index.return = TRUE)$ix, ]
-knitr::kable(var_df[sort.int(var_df$var, decreasing = TRUE, index.return = TRUE)$ix, ])
-
-# library("lmerTest")
-# VCrandom <- VarCorr(lm1)
-# print(VCrandom, comp = "Variance")
-
-#summary(lm1)$sigma
-
+pander(summary(lm11))
 ```
 
 
+```{r, fig.width=6, fig.cap="**Figure X.** Ability of the genotype to predict the phenotype."}
+library(ggplot2)
+#my_dat$gt <- as.factor(my_dat$gt)
+p <- ggplot( data = my_dat, mapping = aes( x = gt, y = Varin_Total, fill = gt, group = gt ))
+p <- p + theme_bw()
+p <- p + geom_violin()
+p <- p + scale_x_continuous( 
+  breaks = c(0, 1, 2),
+  labels = c("0/0", "0/1", "1/1")
+)
+p <- p + theme(legend.position="none")
+p <- p + scale_fill_continuous(type = "viridis", begin = 0.2)
+p <- p + geom_jitter(shape=16, position=position_jitter(0.15), col = my_dat$pcol, size = 2)
+p <- p + ylab("Varin Total (units???)")
+p <- p + xlab("Genotype")
+p <- p + ggtitle( paste(my_locus, my_alleles, sep = ": ") )
+#
+p <- p + geom_abline( slope = lm1$coefficients[2], intercept = lm1$coefficients[1], linewidth = 2, col = "#808080")
+p <- p + geom_line( data = my_vals, mapping = aes( x = x, y = y ), inherit.aes = F, linewidth = 2, col = "#808080" )
+p
+```
+
+
+### locus X_12488664 minus 4_68382150
 
 
 ```{r}
-#summary(lm( pheno$Varin_Total ~ polym( gt2["4_68382150", ], gt2["4_36256098", ], degree=2, raw=T)))
+# my_locus <- "4_68382150"
+# my_locus <- "4_36256098"
+# my_locus <- "7_290913"
+# 
+my_locus <- "X_12488664"
+# my_locus <- "X_44482355"
+chr_pos <- paste(getCHROM(vcf), getPOS(vcf), sep = "_")
+# my_alleles <- paste(getREF(vcf)[my_locus == chr_pos], getALT(vcf)[my_locus == chr_pos], sep = "/")
+my_alleles <- paste( "0 = ", getREF(vcf)[my_locus == chr_pos], "; 1 = ", getALT(vcf)[my_locus == chr_pos], sep = "")
+
+my_dat <- data.frame(
+#  Varin_Total = pheno$Varin_Total,
+  Varin_Total = pheno$Varin_Total2,
+  gt = gt2[my_locus, ],
+  pcol = "#000000"
+)
+my_dat$pcol[ my_dat$gt == 2 ] <- "#B22222"
+
+lm1 <- lm( Varin_Total ~ gt, data = my_dat )
+lm11 <- lm( Varin_Total ~ gt + I(gt^2), data = my_dat )
+
+my_vals <- data.frame(
+  x = seq(0, 2, length.out=10)
+)
+my_vals$y <- lm11$coefficients[1] + my_vals$x * lm11$coefficients[2] + my_vals$x^2 * lm11$coefficients[3]
 ```
 
 
-### 5 loci, ordered
+```{r, results='markup'}
+library(pander)
+#pander(lm1)
+pander(summary(lm1))
+pander(summary(lm11))
+```
+
+
+```{r, fig.width=6, fig.cap="**Figure X.** Ability of the genotype to predict the phenotype."}
+library(ggplot2)
+#my_dat$gt <- as.factor(my_dat$gt)
+p <- ggplot( data = my_dat, mapping = aes( x = gt, y = Varin_Total, fill = gt, group = gt ))
+p <- p + theme_bw()
+p <- p + geom_violin()
+p <- p + scale_x_continuous( 
+  breaks = c(0, 1, 2),
+  labels = c("0/0", "0/1", "1/1")
+)
+p <- p + theme(legend.position="none")
+p <- p + scale_fill_continuous(type = "viridis", begin = 0.2)
+p <- p + geom_jitter(shape=16, position=position_jitter(0.15), col = my_dat$pcol, size = 2)
+p <- p + ylab("Varin Total (units???)")
+p <- p + xlab("Genotype")
+p <- p + ggtitle( paste(my_locus, my_alleles, sep = ": ") )
+#
+p <- p + geom_abline( slope = lm1$coefficients[2], intercept = lm1$coefficients[1], linewidth = 2, col = "#808080")
+p <- p + geom_line( data = my_vals, mapping = aes( x = x, y = y ), inherit.aes = F, linewidth = 2, col = "#808080" )
+p
+```
+
+
+
+
+
+
+
+### locus X_44482355
+
+
+```{r}
+# my_locus <- "4_68382150"
+# my_locus <- "4_36256098"
+# my_locus <- "7_290913"
+# my_locus <- "X_12488664"
+# 
+my_locus <- "X_44482355"
+chr_pos <- paste(getCHROM(vcf), getPOS(vcf), sep = "_")
+# my_alleles <- paste(getREF(vcf)[my_locus == chr_pos], getALT(vcf)[my_locus == chr_pos], sep = "/")
+my_alleles <- paste( "0 = ", getREF(vcf)[my_locus == chr_pos], "; 1 = ", getALT(vcf)[my_locus == chr_pos], sep = "")
+
+my_dat <- data.frame(
+  Varin_Total = pheno$Varin_Total,
+  gt = gt2[my_locus, ],
+  pcol = "#000000"
+)
+my_dat$pcol[ my_dat$gt == 2 ] <- "#B22222"
+
+lm1 <- lm( Varin_Total ~ gt, data = my_dat )
+lm11 <- lm( Varin_Total ~ gt + I(gt^2), data = my_dat )
+
+my_vals <- data.frame(
+  x = seq(0, 2, length.out=10)
+)
+my_vals$y <- lm11$coefficients[1] + my_vals$x * lm11$coefficients[2] + my_vals$x^2 * lm11$coefficients[3]
+```
+
+
+```{r, results='markup'}
+library(pander)
+#pander(lm1)
+pander(summary(lm1))
+pander(summary(lm11))
+```
+
+
+```{r, fig.width=6, fig.cap="**Figure X.** Ability of the genotype to predict the phenotype."}
+library(ggplot2)
+#my_dat$gt <- as.factor(my_dat$gt)
+p <- ggplot( data = my_dat, mapping = aes( x = gt, y = Varin_Total, fill = gt, group = gt ))
+p <- p + theme_bw()
+p <- p + geom_violin()
+p <- p + scale_x_continuous( 
+  breaks = c(0, 1, 2),
+  labels = c("0/0", "0/1", "1/1")
+)
+p <- p + theme(legend.position="none")
+p <- p + scale_fill_continuous(type = "viridis", begin = 0.2)
+p <- p + geom_jitter(shape=16, position=position_jitter(0.15), col = my_dat$pcol, size = 2)
+p <- p + ylab("Varin Total (units???)")
+p <- p + xlab("Genotype")
+p <- p + ggtitle( paste(my_locus, my_alleles, sep = ": ") )
+#
+p <- p + geom_abline( slope = lm1$coefficients[2], intercept = lm1$coefficients[1], linewidth = 2, col = "#808080")
+p <- p + geom_line( data = my_vals, mapping = aes( x = x, y = y ), inherit.aes = F, linewidth = 2, col = "#808080" )
+p
+```
+
+
+
+
+## Epistasis: interaction among loci
 
 
 ```{r, results='markup'}
@@ -583,7 +841,7 @@ lm1 <- lm( pheno$Varin_Total ~
              gt2["7_290913", ]:gt2["X_44482355", ] +
              gt2["7_290913", ]:gt2["X_12488664", ] 
              )
-pander(summary(lm1))
+# pander(summary(lm1))
 
 lm1s <- summary(lm1)
 
@@ -599,211 +857,64 @@ lm1_epi <- lm1_epi[sort.int(lm1_epi[, "Pr(>|t|)"], decreasing = FALSE, index.ret
 
 lm1_epi <- rbind(lm1_add, lm1_dom, lm1_epi)
 
+my_caption <- "Table X. Coefficients from a linear model fitted to 5 loci including additive, dominance, and epistatic effects. Dominance effects are colored in gray and include ^2 in the name. Epistatic effects are named by a pair of variants delimited by a colon (:). Effects that were statistically significant are in bold italics."
+
 library(kableExtra)
-knitr::kable(lm1_epi) %>%
+my_dom <- grep("\\^2", row.names(lm1_epi))
+my_sig <- lm1_epi[ , "Pr(>|t|)"] <= 0.05
+my_sig <- (1:nrow(lm1_epi))[my_sig]
+
+knitr::kable(lm1_epi, caption = my_caption) %>%
   kable_styling( full_width = FALSE ) %>%
-  row_spec(c(7:11), background = "#C0C0C0") %>%
+  #row_spec(c(7:11), background = "#f5f5f5") %>%
+  #row_spec(c(7:11), background = "#DCDCDC") %>%
+  row_spec(my_dom, background = "#DCDCDC") %>%
 #  row_spec(x, c(7, 12:15), bold = TRUE, italic = TRUE)
-  row_spec(c(7, 12:15), background = "#FFA07A")
-
-
-
-#knitr::kable(lm1s$coefficients[ sort.int(lm1s$coefficients[, 'Estimate'], decreasing = F, index.return = T)$ix, ])
-#knitr::kable(lm1s$coefficients[ sort.int(lm1s$coefficients[, 'Pr(>|t|)'], decreasing = F, index.return = T)$ix, ])
-
-
-
-var_df <- data.frame( var = diag(vcov(lm1)))
-var_df$var_p <- var_df$var/sum(var_df$var)
-#var_df[sort.int(var_df$var_p, decreasing = TRUE, index.return = TRUE)$ix, ]
-#knitr::kable(var_df[sort.int(var_df$var, decreasing = TRUE, index.return = TRUE)$ix, ])
-
-
+#  row_spec(c(7, 12:15), background = "#FFA07A")
+  row_spec(my_sig, bold = T, italic = T)
+#  row_spec(c(7, 12:15), bold = T, italic = T)
+#lm1s$adj.r.squared
 ```
 
 
+* R.squared: `r lm1s$r.squared`
+* adj.r.squared: `r lm1s$adj.r.squared`
 
 
-## More single loci
-
-### X_44482355
 
 
-```{r}
-#gt2[, 1:3]
+## Genes near 4_68382150
 
-# my_locus <- "4_68382150"
-my_locus <- "X_44482355"
+EH23b.chr4.v1.g179640: EH23b.chr4:68,349,015..68,349,455 (+)
 
-my_dat <- data.frame(
-  Varin_Total = pheno$Varin_Total,
-  gt = gt2[ my_locus, ],
-#  gt = gt2["4_20005812", ],
-  pcol = "#000000"
-#  gt_4_20005812 = gt2["4_20005812", ]
-#  gt_7_290913 = gt2["7_290913", ]
-)
-#table(my_dat$gt)
-my_dat$pcol[ my_dat$gt == 2 ] <- "#B22222"
-my_dat2 <- my_dat
-#my_dat2 <- my_dat[ my_dat$gt != 2, ]
-lm1 <- lm( Varin_Total ~ gt, data = my_dat2 )
-summary(lm1)
+```
+>EH23b.chr4.v1.g179640-genomic
+ATGTTCATGGATGCCATTTCTCCCAAGTTTAGGGAATTACAAGGGCCCGTGGTGGTTGAAACGCGAGGAAGTGAATCAACTATATATGTGCAAGGAAGTTATATTAATGTGGTTGTTCTCTTTAACAACGATGTTAAGGAATTGGATCATGAGATTGAGCTACGTGCTTGGGAGAGAAACAACATGGACATTGGGGTAGAAATCAACGAAGAAGCAAAGTCTTTAAGTGATGAAGATGTACCTTTAGAAAAACCAATTTCCCATGAGGATCTCCTTTCTAAAACAAGAAAACCTGACTTAGTAACCTTCAAGAAGTTACAACTTATTTTAACTGGTTGCATGAAGCTATTTACAAATCAACGACCCTATTGTCCttttactaaccatgagatcatcaacacagacgttgtggttgtctcaattcgatcctccagtgcatag
+```
+
+EH23b.chr4.v1.g179650: EH23b.chr4:68,361,291..68,362,563 (-)
+
+```
+>EH23b.chr4.v1.g179650-genomic
+ATGATGAGAAGGCAACAAGATCAGCAGTCGGGGGTTTTGTATGAGCTTTCATCTCTAGTCCTCAACATCCTTCGATCTCCTCCATCGCCGATTCCGTTTTCCGATCAGTTACCGGAGATGCCTCCGACGCGGAGGTTATCACCGACATCCTCGTCCTCGGCGGCGTCGCAGATCTCGCCGGCAGGGTTTGCCTCGCTCTTATTAGGGATTTCTTTGGCTCTGATGCTTTGTGGGTCAGTAACTTTCTTCATCGGATTCATATTGATGCCTTGGGTTCTAGGATTGGTGATGGTGTTCTACGTGGCTGGGATTGTTTCGAGCCTCTCCATGTTGGGGCGCTCCATTTTTTGTTACGCCATGGGACCTTCTCAGCCCCGGAAGGAAATTCCTGGTAAGTTCATATCTCCTTTGACTTTATTTAAAACTTCACGATTTGATCGTAACGTTCTCGCAATTTATGTTTTAATTATTTTATATATGAGATTTGAGAATTTCATCATTAATTTCTTGTTTGTTTACTTTGTTATCGATTGAATTTAATGAGAATATGCTTTCGTTGATTCATGTGAAGAGTTTTTGCTTTGGAATAGAAGAAAACCCTTTGATTATGAACTGGGTTACCTACCCTGGTATAATTATATCTCTGTTAAGACATTTTTCTTTAACTAGACGTCTTTTTGAATTGGAGTAGCACAATAATATCTTTTGGATTTATATGCATGATCAATCATTGAATAAATATCCCATATGTCGCCTATGGAAAATTTGGGATTGTTATTTTAAAAAATGGTTATTGATTGGGTTAGGTTTCTATTAACGGACTGATTGATCAAAGCCTTATTTAAGTTGAATGATTTAGTCAAAAAACACATTTGTCTATACTCTGTACTTCTCTGTTTTTCTCCTAGTTTTTATTTTTTATCATGTTTGTAACATAAACCTGAACTGAGAAATCCCTTTTTCTCTTTTGGATTGTTCATTGGCAGAGAGCCTCATAATCAGTATTACCTCAGTACAAGCTTTCATTGTTTGTGTTGATATCCCCAGTTCATTTGTAACATAAAAAAATGAACTGGGAAAAAGAAAACCCTTCTTGCCTTTCGGGTTGTCCATTGGTTACTCTTTAGTTAATACTTCTTACTGTCAAGCTTTCATTGTTTTCCTAATAATTTTTAACAGTCCAACCACCTATCTGTTACTGCTATCAATTGTCTCTTTTTACAACGTTTCTCACTATTTATTTGTTATTATTGTAGCATGGAAAGTATTGTGA
 ```
 
 
-```{r, results='markup'}
-library(pander)
-#pander(lm1)
-pander(summary(lm1))
+EH23b.chr4.v1.g179660: EH23b.chr4:68,396,704..68,397,192 (+)
+
+
+```
+>EH23b.chr4.v1.g179660-genomic
+atggacgagttgatggctatggtaaaaggagcgcccacacctggagagcccacacctgcaccgcaaaatgaggaacaagaggcgagTGATAACGAAGATGTCTTCCCAGAAGATTGGGAAGCAGATGATAACGAGGCACCGTCAACTCCATTGGAAGCAATCATCACGGCCATTGGGGATACACAATCACAGGACGAAGTCCTACTTCTACCTGCACCCCCAGAAAATGTGCCATTTGTGAGGAAGAGGAAGCCGCCAACGTACTTGAACGACTACACTGCGGAAAAGAAAAAGAGGCGAGTTCTTCCAGAGAACGTAGACCCGGAGAGACCAGCAGACCGTAGATTGCTTCGTACGTTCAAGAGGTGGTTGATTGGAGACATTCCCAATGCTCGACCTAGGAATGTGCACACCGGTGTTGGTGATGTGAAGTTCTTCACAACTTTGTTTCTTAGGTCGGAGTGGCTTCACGATGATGTAAGTATTTAA
 ```
 
+EH23b.chr4.v1.g179670: EH23b.chr4:68,405,102..68,415,834 (-)
 
-```{r, fig.width=6, fig.cap="**Figure X.** Ability of the genotype to predict the phenotype."}
-library(ggplot2)
-#my_dat$gt <- as.factor(my_dat$gt)
-p <- ggplot( data = my_dat, mapping = aes( x = gt, y = Varin_Total, fill = gt, group = gt ))
-p <- p + theme_bw()
-p <- p + geom_violin()
-p <- p + scale_x_continuous( 
-  breaks = c(0, 1, 2),
-  labels = c("0/0", "0/1", "1/1")
-)
 
-p <- p + theme(legend.position="none")
-p <- p + scale_fill_continuous(type = "viridis", begin = 0.2)
-p <- p + geom_jitter(shape=16, position=position_jitter(0.15), col = my_dat$pcol, size = 2)
-p <- p + ylab("Varin Total (units???)")
-p <- p + xlab("Genotype")
-#p <- p + ggtitle("Chromosome 4, position 20,005,812 bp")
-#p <- p + ggtitle("Chromosome 4, position 68,382,150 bp")
-p <- p + ggtitle(my_locus)
-#
-p <- p + geom_abline( slope = lm1$coefficients[2], intercept = lm1$coefficients[1], linewidth = 2, col = "#808080")
-p
 ```
-
-
-### 4_36256098
-
-```{r}
-#gt2[, 1:3]
-
-# my_locus <- "4_68382150"
-# my_locus <- "X_44482355"
-my_locus <- "4_36256098"
-
-my_dat <- data.frame(
-  Varin_Total = pheno$Varin_Total,
-  gt = gt2[ my_locus, ],
-#  gt = gt2["4_20005812", ],
-  pcol = "#000000"
-#  gt_4_20005812 = gt2["4_20005812", ]
-#  gt_7_290913 = gt2["7_290913", ]
-)
-#table(my_dat$gt)
-my_dat$pcol[ my_dat$gt == 2 ] <- "#B22222"
-my_dat2 <- my_dat
-#my_dat2 <- my_dat[ my_dat$gt != 2, ]
-lm1 <- lm( Varin_Total ~ gt, data = my_dat2 )
-summary(lm1)
-lm2 <- lm( Varin_Total ~ gt + I(gt^2), data = my_dat )
+>EH23b.chr4.v1.g179670-genomic
+atgggaagagggagagtagagctgaagaggattgagaacaagatcaacaggcaagtgacctttgcaaagcgaagaaacgggcttttgaaaaaggcctatgagctttccgttctatgcgatgctgaggttgctctcatcatcttctccaatagaggaaagctgtacgagttttgcagtagttcaaggtatatatatatTTTCACCAAAACATCTATATAATATATATGTATCATAAGCACAAAAAGGTATAAGATGAGCTATAAAGCAAAACTTATATGAAAGAGAAAGCTTTTGTTTTAATATTGAAATATGTGTGAGTATATATATATATTTATTTATTTTGGTGATTCCTCTTTTGGATCTCGAATTACTAGCTAGTCTGGTTTAAGGGTTTTGGCAAAGCTGGTGAAATCTCtttgtataaagagaagttgtgtgcttatatttgtgtttgtggtgtttgttttttttgtaatttgtttggttgAATTTCGAAACGTTTTTTCCCTTTATTACCGTTTTAGTGAATGTCTCCGCGTTTTTAGCAGGGCTGAGTGTCTCTGTGGTGGCATTGGCTGCTAGATCTGCAACTGGAAACGCCATAAAACATCATTATAATTATATATATATGACTATATATCTCttcttcttttattaatttattcataccatattttatattataatacaataataatccatatatatatatataactatatgttatGCTTTTGTTTTGTGTGAACTCTTTTTCTTTCAAACTTTTTCTTCCCTTTCCATATTATGCGAAAAGATCCGATCTTTCAATGGACCAAGCTTGGTAGGTTTTTGGCTACAGCTCTCTCTCTCTGATGGCACCTTGGACAACTTGGCTTCATTCTTCCAAAACTGTATTTTTTCTGTCACATCTTTTTCTCTACATTTATTCATATTTTCCCACTTCTATGATATGAGCCTGCTAATTAGGGTTTTCTTTAAGCTTTCATTATTTACTATTAAAAGTTTTTCCTTTTTTTTTATGGGGAGCTAGGGTCAGGGCACTTGGGATGGTCATCATATCAGATCGTAAGTTGATCTGATCGGAATCTATAATATATTAATTAATTTTCCAGGTTGGGAAATGAAACAAGAGAGAGAGAGGTTGCTTCTGGGTATGGGTTAAAACATTTTGACGGTATGTAGCTAGCTTTTTCAGATTCAAGAGTTTCATTCTTTCACATATCACTGGATTAAATCTCTCTCTCTCTCTACATTTCAATCAAAGTCAAGTCGAACGAGGATGCTTTCGATCAATCTAAGTGGATCGATCGATCGATCCAGACATTTGACTAATCTTAATTTCTGACATTAGGGTTTACTGTTTCCAAAGCTCACTTTTTTTTTTTCTTTTTTCCCCAAAAAGATTCAATGATTAATCATCTGATTATTGTTAATCTATTTAATAACTAGTATTGTAAATTAGGAGGTAACCCATTTAAAAATTAAAATATTTGTTTTTTTGGGATTTACTGGCTACATATTATTATGTTTTTTTTTTTTTTTGAAAGGCTGGCTATATATTATTAGTTTATATTCTGGTAACAAATTAATCATTTTAGGTTTTTTTTTCTTTTTGAAATGGAATTATTTTGGGTTCTAGTTTGAAATAAATATTAATTAAAGCTGTTAATTAGTTAGAAATTTGGGGTTTTTTTTGTTAGAAGTGTGCTAAAAAAATGATATGTAGTTAATTTTATTAATTGTTAATTTTCACATTTCTAGTTATTGTTTGAGCATCTCCAATTATATTTTTTATTTTTTaattaaaatagagaattattttattgttgttactagttctacttcctactttagttagtatttgattattttaataatattttataatttaaatttatcaaatataaattaattttataaaataataaaaaaaattatagtgcttttattaaaatattattaaaaaagtttagctaaaaaataaggagctctctatatttgagagctccttatctattttttattatagaaattgttattttttgtatggttagagcttattttttcaagtctaaagagtgtgtttagaaagtatagttagagatgTCTTATATAGTATATATAACATATCTACATTTGTTTATTATATGTTGTTTAGTTGAAGAGAAATATGTTCTTTAAGAACACATGTTGTTCTTTGTTGAGGCATATATCTTCTTATATTTATATCCTTATTTATTTAAGCACATAAAAGGAGTCATTTTTTAAGAAATTGTTCATTATCCAGATTAAATCTCACTAAAGACGAAAGACGAAAGGGCCATTTAATTGAAGAGATATGTATTTAGTTATTTGGGAATAACCAAAGATGAAAAGGCTAATTAATCGAAGAGAAACAtctatggttatttgggaataactaaagacgcttctattcaattaaatgagtttttcgtcttcgctttcagattttctaaaatcattttttttttaaaatttttgtctacgatgttttaataaaaccaaagataaaactaaattttgatgagtgctaaagtaaaatcaatgaaacaagcctctttagacttgtatcttctgttttttatttttttttttacaaaaaaataaaaaaataaatgtgttaattgtagtagtAAAACTTTTTTTATTGCATTTTCAAAACTGAAACTTTTGAAAGATAGAAGTAAATCTCAACAACTAGCTAGTATGCAGCGTTCCAAGGATCCTCCCAAACATGTCATAGTGGGATCGGTCAGGAGGCCGGAAAAGTTAATGCCCGGTAATCATGCAGGCCTCGCAACCGATCCCAAACTACCTCGCTCGGGAGGTTGCTTTCATTAAGATGCACACCATTTTGGTATAAATATGGTTGCTTCTATCAAGATGCACATCATTTTGGTATATGTATTTATATATATAAGTGATACTCAATTCCAAGTTTAATTTTTTACATTAAGAATATGATCAACATTAGTTACACATTCATGTTATTAACTCCGCTGTTAGATAATAGTGTGATTGATTTGCATAAAGGGATATTGCGATAGAAATATGAAAGTTGTGTTAAATATGGTTATGTTGAAAAAATTTAAGTACTTAGATAACTTATAAATTTTCACTATAAAAATCCATGTTATCCAATCTTCCACATTTGCATCTAGTAGAGCACGTATATACAATGGAACTAAAAATTGATTTAGATATTTTTTCTGTAAAAATATAAATTTAGGTACACTTTCAGTACAACTTATACTCTTGGCACAAATATTTATCTATCTATCTATATGAATATATATATATATATATATAATATGGTTTTCAACATATAATATTCAACCATCTATTATTCTTTTCGAAACAAACACGCATGATCTTTTGCATTGCAAGATATTAATACAAAAGGTCTGATTTGATCTTCTATCTTAATTTTGTTTGATGCAATATATAAGTCTAATTTTTTTTACCATAAACCAAATGTAGAACATATATACTTGTAATAAGTTTGGCCCTAATATATCCTTAAATAATCCTTATTCAAAATGTTGTTATATGAAGTGATATAGTTATTAGTTTACATTGTGATCAAATGTCTAGGAATTCTTCGTGAGGAGATTATTATGAAATAATATATGCATTTATTAATTTAGGTTTTGTGATGATATACATATATTTATACACAGCATGCTAAAAACACTGGAAAGGTATCAGAAGAACAACTATGGAGCTCCAGAGCCTAACGTGTCTGCAAGAGAAGCCTTGGTAATAATAATTATTAGTTATATATATAAATATATATATTTATATTTTTGGTTTATAGATTGCATAAATAATGTATTATCTTATATATATACACATCATGTTTGTTACTTGCATGTTATTTGTTAGAAATATGTATAGCATATGCTTGTTTGTAATGAGATAAATTGATATCTTTGAAAAGTGAAATATATGGCTTCTCTTTGACTTTCCAACTTAACTACGATTAgaatattaaaattagctacacatttctacaacactttagtttagaaatttttacacatttgtgataaaaattatctaagaaccttaagtaatttctagataagatttaatgtagaatatactagccatgtgaactctagaaatatttagatgtgtatggatacaattctaactagtaaaagaaaaatctagaagaaataattctaacgacgggtaagtaactacaaataccctatcaagaattctaaattgtgtaaccaatatccaaactatcaataaagcttactactttctcatacaatccttttctaagccaaactattctctacTATATACACAACAACCTATCAAGTATTACCATACTACTATTGTCATCATATTACACTATTCACTAAACACATTATAAAATTTTCACCTAAACAAATCACAACTATTTACTCTATTCTAATTTAACAAGCCATCAGTGGTATCCGAACTCTTTGGCTAGCTCACACTCTGTCCATAGAACCTATATTTTTGTCATATTTGTTACTTTCTTTCTGTAATTGGGCTCATCCAACTGCTGTTGTTTGATTTATTAAATATCTTCTATTCTAGTGTAGACCCCTTTATCAAAAGCAAGAACCATAGACCGCTTGCATAAATTGCCTTTCCTGAGACTCATGCCCCAGCCCACTTATTTGCTGGTCACGACCTCTTTGTGGGAGAACTAGTACTTCCCTTTGGGACAAGATTTCACAACTCTATCATTTTCATGAGAGCCCATCTATGTAGTATACTTTGTCTCTGACTTCCACTCCAGGCGCAGTCcatcaacatgagtttggagtccaaccactcttctctacgtcttccaatttttcatgtagaaaactatgaaaaattatcgaagaggaaatcgctattctggaagatattacatctctttcagaagatcaaaagaaggcattagaggataatcaacaaaaggattctcatgcattatacttcttatagcaagctatgacattcaattttttttttcacggagtatggatgcaacaacgacaaaagaagcatgtgacacggtgcaagaggagttttaaggaacagttaaggtacgcacagttagactacaaaagcttagaagagattttgagaatcttaaaatgaatgataatgtgaccgcaaaagattactattctagaattaaagaaatagtatatcaaatgggagcctatgaagaaataatttctgacaaaaatatagtacaaaagacattaatatcttgtacagaaaaatatgattcaattatttatgttatagagaaaactaaagacttagaaactctatcactaactaaataataggctctcttgaaacatatgaaagtagacaagaaaggtataaggaaagtgaagctgaaaatgtcttcagtctaaaatcaatctgtggtctcaaaaaccaaaagctgatgggaaaaagatacaacaaaaataaaaagaaaataacgacaagtatcctccatgtggcatttgtaaaagaaaaagtcacttggagaaagacgacttgtttaaaggaaaaccacagtgccaaaattgtaaaaaaaaattgggcacactaaaaaaacttgtcgtttaaaaaaattccatcaagctaattttttcgaagagaaaaataatgaaagtaatctcttatgtatctgccaagctgcatcagaagaaggagaagatacttggcatcttgatagtgcttgtagtaaccatatgataaaaaatgagagcatcttttgcagtcttgacatatccaagactaaagtcaaaatcgattaggtgacttcatggaagtagtcggtaaaggcactatttccattgaccttaaaaaggcaagagatacattaatgatgtacttttggtattcgacatcaatcaaaatctacatattgttggccaaattattgaaaaagggtactctttacattttgaaggagattcttgcacaatctatgataagcaaaatatatcctttcaaattataaaggtaaaaattagaaataacagatactttcccatataatggagatatgcacttggaagcaatgtggcaatacaagcgcaaacagatgagtcgtgactttagcatagaaggtttggtcacttcaactttcacgggctaaagatcctcaaatagaagaatatgatgcgagacatactaacaatTAAGGAGATCAACACAGTTTGCGAAGGATGCATGCTTGGAAAATGACATCGTCAACTTCTTTCGTCAAGCAAAGcttggagagccaaaaagccactgcagttgatccatacagatgtctgcgaggcaatgcgcactccattaaatgatcaaaaataagtacttcattctcttcatggatgactttactagaatgacatgagttcattttatgcaacaaaagccgcaagtttttgatattttcaaaagaaataaagcccgtgttgaaaaacaaagtggacattatatcaagacaattagaagtgatagaggcaaagaatacacttctaatgaatttaataagttctgtaaagatgaagggatggagcaccaactcactgttggatatgcaccaaaacaaaatggcatatctgaaaggaaaaataggactgttatggaggcattaagagccatgctactagagaaaggtcttccaaaaagattttggacagaggcagtaagcactgcagtctacttgctcaatggatgtccaaccaaagtcgtgcagaataagacgccgaacgaagcttggagtggacgtaagtcatcagttaagtatctcaaagtcttcggctgcatatgctactctcacattccaaaagagaaaagtggcaagcttgatgagaagactgaaaaaatgaatcttcttaggctatagtactcaatcaaaaggttatccgagtctacaacttagaatcaaataaactaataataagtctaaatgtaaaatttgatgaagatgCtgcatataactgggagacacaagaagttgaaagaaagacaatcaatattcctctaccaccaagacaagaacttgatcaaaatgaagtttttactcaaccaacaacaaaaaaaccatgacaagctattgaatccccaccaaactcaccagtaaggcgaacaagactgctTGCTGGGATCTATGAGACATGCAACCTAGTACTTACAGAGCCAGAAAGTTTTGAAGTAGCTCAACAACAAGAAGTATGGAGAAAATccatgaatgaagagataaaactgattgaaaataatgagacttgggagcttgtagatcgacaacatgacaaagaaagttcatgagtcaagtaggtctacaagacaaaactcaacgtagaagactctatccaaaagcacaaagcaagattagttgtgaaatgatactctcaacagtatagagttgattacaatgaaatattttctccagtagcacgccttgacactattagggctttaatagctctagccacatagaataaatagaagattttttaactcgatgtgaactcggcattcctaaatagttatcttgaagaagaaatatatgtagagcaacctcaaggttttgtggtgcaaggacaagaagataaagttctcaagttaaaaaaaggcttgtatggcttaaagcaagctccgcaagcctggtatagtataatcaaccactacttcactaaacaacgatataggaggagcaaaagtgaaccaacattatacataaaaacacaaggtatgaatgatacactaattgtctctttatacgttgatgatctcatctacataggaaataatgagaaaataatcaaGAAATTTAAAGAAGACATGATGAAGAGTTTCAAGATGATCGATCTAGGATTAATGCTCTACTTTCTGATGATCGAAATAACTCAAAAAGAAGATGGGATCTTCATCTCACAAAAAAGGTATACGGAGACACTATTGAAGAAAATCAAAATAGAGGGACGCAAGACTGCATCAACTCCATTACACAACAATAAAGCTCTCAAGAAAGAAGATGGCTCACCAAAAATAGATGAATCAAAATTTTAaagtctaatcggcagcctactctatctaattactacaggaccagacataatatacgcagttagcattctatcaagcttcatgcatgatccaagtcaagttcactacggagcagccaagtaaatcctcagatacttgtgaagaacaaaactcaatggtatttggcacgaaattacaaatgattctaaactgattggctacacggatagtgactgagcaggatcagttcacgacatgaagaacacacttggatctggaatattttcttgggcatcaaagaagcaaccaactgttgccaaatcatctatagaagcagaatatattacatcagctatgactacaagccaaactatatggcttaaaagaatacttgaaggcataggagaattacaagaagaagttataatgatcttttgcgtaagtatatcagctacaacaatggcaaagaatcccgtatttcatatagcagaacgaagcatataagcatcagatattattttatcaggaaagtagaagcaagcaaagaaatagagctcaagcactgcaagactgaagaacaattggcagatattttcacaaaggcGTTACCAAGAGGAAAATTTGAGCTACTACgagacatgattgttgttataaaaatttgtaccaatgagaagtattagagaatgtgctacacttttttaaaacaccttagtctagaaatttctacacatttgaagaaaaaattctataagaaccttaagtaatttctagataagatttaatctggaaaatattagctatgcgaactttagatgtgtattgatacaatttcttctagtaaaagaagaatccagaaaatataattctaaccacaaaatgtaaagagtaagcaactataaatacctcatcaatgattccaaattgtataaccaacatccaaactattaataaagcttactactttctcatacaatcttcttctaagccaaactattatctacTATATACACAACCAACTGTAAAGTTATCACCATACTACCATCATCATCATCATACTACACTAGTCACTAAACACATTACAAAACTATCACCTAAAACAAATCACAACTATTTACTTTATTCTAATTTAACAAACCATCAATTACTGTATATATCAAAGAAATAGTACGAATCAAGAATATTCAAACTAACTAACCAGTACTGAATTTACAATCCACATTATTAGTGTTTCAAATAAATAAACTAATAATCTAGTAATCTACCTTATTACCTCATATTGCCTAATTTTTACTTTTCTTCCTATGATCTTTCTGTATTAAGATAGATACTGTATATCTTTACATTAACATGCACGAGAAATTGCACTAGAAGTAGCTCATGACATTTTAGGTAATTTAGTTGAGATGAACTAGCAAATAAGTGCGCCACTAGCTAATTTAGCTACTATATTGTTCATTTGTTCTAACATATATTATATGCATATATATATATATTGATTATAATATTATTCCTTCTAAAACTATAGGAACTGAGTAGCCAACAGGAGTATTTGAAGCTAAAAGCACGCTATGATACTCTGCTAAGGAATCACAGGTTAATTCATACACAGTACTAGCTATTAATTAGCTGCAAATTAAAGATGTTTATTTTTGTAATATTGTAAGCATATATATGCATCTGATGTTAGTTATCCACCGtagaaaccttatgggagaagaactaggaaacttaagcagcaaagagctcgagtcacttgaaagacagctggatacgtcactcaagcagatcagatcaacgcgggtatttatttatatataaatatatatatatatatatatattaactcatttataattatttatttcatttTTATATATAGAGGAAAACCCAGTTTGAAAGTGCCAAATAATTTGTGGTTTCATGAACTAACTCTGGACTTTGTTTTGTCTTATAATGTAGACCCAATGCATGCTAGATCAGCTCACCGATCTTCAGCGTAAAGTATGAAAAATATGCTTTATATAATATGCCACACTATATATATGTTTACATAAAAAAAATTGAATTTTCTTACCTCTATATATGTATGCAGGAACATTTTCTTAACGAAACTAACAAGAACCTGAAACAAAAGGTGATAACTGTACATCAACATTATTTCAACTCTTCTTGGTCatatatatatatgatttgatttgttgtgtgtatatatatatatatatatatatgtgtgtgtgtgtctataATGTGTTTGTGGTTTGCAGCTGGTGGAAGGTTACCAACTAAGTTCACTCCAACTTAATCCAAGCGCCGATGAGTATGGGCGGCAATCTCATCAACAGCAGGCTCATCATGATGTGTTTTATCACCCTTTGGACTGTGAGCCCACATTACAAATTGGGTATGTACTAATTAATAATCCTATATATATATAAAGTACTAATTAAAACTCACTAGAATTCAATCATGGAAGTAATAATACAATACATTTTGTGTGTACTGGTTGAGTAATTAAGTAACTTAATGGAAGAAAAAGAAAAAATAAAAACATACTTTATCCAAATAATCTATTTAATAATCGTCGATTTTGACATTTATATATGATTAATTACAGATATCAGGCAGATACAATATCAGTTGTGACAGCCGGTCCAAGCGTGAATAACTACTTGCCAGCAGGCTGGTTGCCTTGA
 ```
-
-
-```{r, results='markup'}
-library(pander)
-#pander(lm1)
-pander(summary(lm1))
-pander(summary(lm2))
-```
-
-
-```{r, fig.width=6, fig.cap="**Figure X.** Ability of the genotype to predict the phenotype."}
-library(ggplot2)
-#my_dat$gt <- as.factor(my_dat$gt)
-p <- ggplot( data = my_dat, mapping = aes( x = gt, y = Varin_Total, fill = gt, group = gt ))
-p <- p + theme_bw()
-p <- p + geom_violin()
-p <- p + scale_x_continuous( 
-  breaks = c(0, 1, 2),
-  labels = c("0/0", "0/1", "1/1")
-)
-
-p <- p + theme(legend.position="none")
-p <- p + scale_fill_continuous(type = "viridis", begin = 0.2)
-p <- p + geom_jitter(shape=16, position=position_jitter(0.15), col = my_dat$pcol, size = 2)
-p <- p + ylab("Varin Total (units???)")
-p <- p + xlab("Genotype")
-p <- p + ggtitle(my_locus)
-#
-p <- p + geom_abline( slope = lm1$coefficients[2], intercept = lm1$coefficients[1], linewidth = 2, col = "#808080")
-p
-```
-
-
-### 10_12488664
-
-```{r}
-#gt2[, 1:3]
-
-# my_locus <- "4_68382150"
-# my_locus <- "X_44482355"
-# my_locus <- "4_36256098"
-my_locus <- "X_12488664"
-
-
-my_dat <- data.frame(
-  Varin_Total = pheno$Varin_Total,
-  gt = gt2[ my_locus, ],
-#  gt = gt2["4_20005812", ],
-  pcol = "#000000"
-#  gt_4_20005812 = gt2["4_20005812", ]
-#  gt_7_290913 = gt2["7_290913", ]
-)
-#table(my_dat$gt)
-my_dat$pcol[ my_dat$gt == 2 ] <- "#B22222"
-my_dat2 <- my_dat
-#my_dat2 <- my_dat[ my_dat$gt != 2, ]
-lm1 <- lm( Varin_Total ~ gt, data = my_dat2 )
-summary(lm1)
-```
-
-
-```{r, results='markup'}
-library(pander)
-#pander(lm1)
-pander(summary(lm1))
-```
-
-
-```{r, fig.width=6, fig.cap="**Figure X.** Ability of the genotype to predict the phenotype."}
-library(ggplot2)
-#my_dat$gt <- as.factor(my_dat$gt)
-p <- ggplot( data = my_dat, mapping = aes( x = gt, y = Varin_Total, fill = gt, group = gt ))
-p <- p + theme_bw()
-p <- p + geom_violin()
-p <- p + scale_x_continuous( 
-  breaks = c(0, 1, 2),
-  labels = c("0/0", "0/1", "1/1")
-)
-
-p <- p + theme(legend.position="none")
-p <- p + scale_fill_continuous(type = "viridis", begin = 0.2)
-p <- p + geom_jitter(shape=16, position=position_jitter(0.15), col = my_dat$pcol, size = 2)
-p <- p + ylab("Varin Total (units???)")
-p <- p + xlab("Genotype")
-p <- p + ggtitle(my_locus)
-#
-p <- p + geom_abline( slope = lm1$coefficients[2], intercept = lm1$coefficients[1], linewidth = 2, col = "#808080")
-p
-```
-
-
-
-
-
-
 
 ```{r, results='asis'}
 t99 <- Sys.time()
