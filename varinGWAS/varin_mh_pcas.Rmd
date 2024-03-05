@@ -30,7 +30,7 @@ knitr::opts_chunk$set(results = "markup")
 ## PCA
 
 
-```{r pca, echo=FALSE, fig.cap="A caption", out.width = '60%'}
+```{r pca, echo=FALSE, fig.cap="A caption", out.width = '80%'}
 knitr::include_graphics("pca_eigenvectors.png")
 ```
 
