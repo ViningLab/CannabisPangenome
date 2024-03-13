@@ -590,6 +590,7 @@ my_vals$y <- lm11$coefficients[1] + my_vals$x * lm11$coefficients[2] + my_vals$x
 ```
 
 
+
 ```{r, results='markup'}
 library(pander)
 #pander(lm1)
@@ -619,6 +620,45 @@ p <- p + geom_abline( slope = lm1$coefficients[2], intercept = lm1$coefficients[
 p <- p + geom_line( data = my_vals, mapping = aes( x = x, y = y ), inherit.aes = F, linewidth = 2, col = "#808080" )
 p
 ```
+
+
+```{r, fig.width=6, fig.cap="**Figure X.** Ability of the genotype to predict the phenotype."}
+library(ggplot2)
+
+my_dat$chr7col <- gt2["4_68382150", ]
+# my_dat$chr7col[ my_dat$chr7col == 0 ] <- "#1b9e77"
+my_dat$chr7col[ my_dat$chr7col == 0 ] <- "#e7298a"
+my_dat$chr7col[ my_dat$chr7col == 1 ] <- "#d95f02"
+my_dat$chr7col[ my_dat$chr7col == 2 ] <- "#7570b3"
+# my_dat$chr7col[ my_dat$chr7col == 0 ] <- "#7fc97f"
+# my_dat$chr7col[ my_dat$chr7col == 1 ] <- "#beaed4"
+# my_dat$chr7col[ my_dat$chr7col == 2 ] <- "#fdc086"
+
+
+#my_dat$gt <- as.factor(my_dat$gt)
+p <- ggplot( data = my_dat, mapping = aes( x = gt, y = Varin_Total, 
+                                           #fill = gt, 
+                                           group = gt ))
+p <- p + theme_bw()
+p <- p + geom_violin()
+p <- p + scale_x_continuous( 
+  breaks = c(0, 1, 2),
+  labels = c("0/0", "0/1", "1/1")
+)
+p <- p + theme(legend.position="none")
+p <- p + scale_fill_continuous(type = "viridis", begin = 0.2)
+#p <- p + geom_jitter(shape=16, position=position_jitter(0.15), col = my_dat$pcol, size = 2)
+p <- p + geom_jitter(shape=16, position=position_jitter(0.15), col = my_dat$chr7col, size = 2)
+p <- p + ylab("Varin Total (units???)")
+p <- p + xlab("Genotype")
+p <- p + ggtitle( paste(my_locus, my_alleles, sep = ": ") )
+#
+p <- p + geom_abline( slope = lm1$coefficients[2], intercept = lm1$coefficients[1], linewidth = 2, col = "#808080")
+p <- p + geom_line( data = my_vals, mapping = aes( x = x, y = y ), inherit.aes = F, linewidth = 2, col = "#808080" )
+p
+```
+
+
 
 
 ### locus X_12488664
