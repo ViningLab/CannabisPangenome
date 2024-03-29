@@ -305,4 +305,84 @@ for( i in 1:length(my_mhs)){
 ```
 
 
+## PCA = 6
+
+
+```{r}
+# svg(filename = "mh_varin_pca6.svg", width = 6.5, height = 3.5)
+# mh_plot(my_mhs[2], main = my_names[2], detail1 = FALSE, detail2 = FALSE)
+# dev.off()
+```
+
+
+```{r}
+
+gwas <- read.csv(my_mhs[2])
+
+if(length(grep("POS", names(gwas))) == 0){
+  #is.na(gwas$POS) <- TRUE
+  gwas$POS <- gwas$Pos
+  for(i in 2:nrow(nucs)){
+      gwas$POS[ gwas$Chr == nucs$Id[i] ] <- gwas$Pos[ gwas$Chr == nucs$Id[i] ] + sum( nucs$Length[1:(i - 1)] )
+  }
+}
+
+if(length(grep("chrom_num", names(gwas))) == 0){
+    gwas$chrom_num <- sub(".+\\chr", "", gwas$Chr)
+    gwas$chrom_num[ gwas$chrom_num == "X" ] <- 10
+    gwas$chrom_num[ gwas$chrom_num == "Y" ] <- 11
+    gwas$chrom_num <- as.numeric( gwas$chrom_num )
+}
+  
+my_pal <- c("#420A6866", "#D94D3D66", "#FCAF1366", "#BF395266", 
+              "#81206C66", "#62146E66", "#ED692566", "#A12A6366", 
+              "#F98B0B66", "#F6D64566"
+)
+  
+palette(my_pal)
+gwas$col <- my_pal[gwas$chrom_num]
+gwas$col <- substr(gwas$col, start = 1, stop = 7)
+
+my_ps <- -log10(gwas$P.value)
+my_ps <- my_ps/max(my_ps) * 235
+my_ps <- my_ps + 20
+my_ps <- round(my_ps)
+range(my_ps)
+my_ps <- as.hexmode(my_ps)
+my_ps <- format(my_ps, width = 2)
+
+gwas$col <- paste(gwas$col, my_ps, sep = "")
+#table(nchar(gwas$col))
+
+svg(filename = "mh_varin_pca6.svg", width = 6.5, height = 3.5)
+
+par( mar = c(3, 3, 2, 0.1) )
+
+plot(x = gwas$POS, y = -log10(gwas$P.value), 
+     col = gwas$col,
+     pch = 20, xlab = "", ylab = "", xaxt = "n",
+     cex = -log10(gwas$P.value) * 0.20)
+
+  abline(h = seq(0, 30, by = 1), lty = 3, col = "#C0C0C088")
+  abline(h = seq(0, 30, by = 5), lty = 1, col = "#C0C0C088")
+  axis(side = 1, at = nucs$mids, labels = c(1:9, "X"))
+  title( xlab = "Chromosome (EH23b)", line = 2 )
+  title( ylab = expression("-Log"["10"](italic(p)-value)), line = 1.8 )
+  title( main = my_names[2] )
+  #title( main = "Varin content (Blink model; Varin_Total)" )
+  
+  abline( v = sum(nucs$Length[1:6]) + 1010217 ) # ALT4
+#  text( x = sum(nucs$Length[1:6]) + 1010217 + 0, y = 20, labels = "ALT4" ) # ALT4
+  text( x = sum(nucs$Length[1:6]) + 1010217 + 0, y = 8, labels = "ALT4" ) # ALT4
+  abline( v = sum(nucs$Length[1:3]) + 72420315 ) # BKR
+  text( x = sum(nucs$Length[1:3]) + 72420315, y = 8, labels = "BKR" ) # BKR
+#  text( x = sum(nucs$Length[1:3]) + 72420315, y = 20, labels = "BKR" ) # BKR
+
+dev.off()
+
+
+par( mar = c(5, 4, 4, 2) )
+
+
+```
 
