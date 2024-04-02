@@ -1,0 +1,57 @@
+---
+title: "Varin patent"
+output: html_document
+date: "2024-04-01"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## 2023-03-05 Bakker varin genes
+
+
+
+
+
+
+## 2024-03-05 Bakker varin markers
+
+https://ppubs.uspto.gov/dirsearch-public/print/downloadPdf/11920187
+
+https://patentimages.storage.googleapis.com/c7/48/ce/a3255317acac63/WO2023015268A1.pdf
+
+https://www.ncbi.nlm.nih.gov/nuccore/?term=ketoacyl-acyl+carrier+protein+reductase
+
+
+
+Varinolic cannabinoids
+
+
+
+## Notable references
+
+Clarke, R. and Merlin, M., 2016. Cannabis: evolution and ethnobotany. Univ of California Press.
+- Growth requirements
+
+
+de Zeeuw, R.A., Wijsbeek, J., Breimer, D.D., Vree, T.B., van Ginneken, C.A. and van Rossum, J.M., 1972. Cannabinoids with a propyl side chain in cannabis: Occurrence and chromatographic behavior. Science, 175(4023), pp.778-779.
+
+
+Guan, X., Okazaki, Y., Zhang, R., Saito, K. and Nikolau, B.J., 2020. Dual-localized enzymatic components constitute the fatty acid synthase systems in mitochondria and plastids. Plant Physiology, 183(2), pp.517-529.
+
+
+Livingston, S.J., Quilichini, T.D., Booth, J.K., Wong, D.C., Rensing, K.H., Laflamme‐Yonkman, J., Castellarin, S.D., Bohlmann, J., Page, J.E. and Samuels, A.L., 2020. Cannabis glandular trichomes alter morphology and metabolite content during flower maturation. The Plant Journal, 101(1), pp.37-56.
+- Varin in Purple Kush and Finola
+
+
+Welling, M.T., Liu, L., Raymond, C.A., Kretzschmar, T., Ansari, O. and King, G.J., 2019. Complex patterns of cannabinoid alkyl side-chain inheritance in cannabis. Scientific reports, 9(1), p.11421.
+
+
+
+
+
+
+
+
