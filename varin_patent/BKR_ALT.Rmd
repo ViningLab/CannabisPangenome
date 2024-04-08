@@ -1,0 +1,32 @@
+---
+title: "BKR_ALT"
+output: html_document
+date: "2024-04-03"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## BKR
+
+
+Welling, M.T., Liu, L., Kretzschmar, T. et al. An extreme-phenotype genome‐wide association study identifies candidate cannabinoid pathway genes in Cannabis. Sci Rep 10, 18643 (2020).
+https://doi.org/10.1038/s41598-020-75271-7
+
+Xin Guan, Yozo Okazaki, Rwisdom Zhang, Kazuki Saito, Basil J. Nikolau, Dual-Localized Enzymatic Components Constitute the Fatty Acid Synthase Systems in Mitochondria and Plastids  , Plant Physiology, Volume 183, Issue 2, June 2020, Pages 517–529, https://doi.org/10.1104/pp.19.01564
+
+### 2023-03-05 Bakker varin genes
+Varin genes [116] (p. 34 or p. 35)
+Seq ID NO: 2 (protein): CBDRx_XP_030498455.faa
+
+
+## ALT
+
+Pulsifer, I.P., Lowe, C., Narayaran, S.A. et al. Acyl-lipid thioesterase1–4 from Arabidopsis thaliana form a novel family of fatty acyl–acyl carrier protein thioesterases with divergent expression patterns and substrate specificities. Plant Mol Biol 84, 549–563 (2014). 
+https://doi.org/10.1007/s11103-013-0151-z
+
+
+
+

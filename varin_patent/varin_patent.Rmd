@@ -25,13 +25,15 @@ Seq ID NO: 2 (protein)
 
 
 ```{r}
-library(ape)
-dna <- read.FASTA("/media/knausb/Vining_lab/public_databases/NCBI/Abacus/GCA_025232715.1/GCA_025232715.1_Csat_AbacusV2_genomic.fna")
-my_seq <- as.matrix(dna[4])[, 72696599:72691998]
-toupper(paste(as.character(my_seq[1:80]), collapse = ""))
+# library(ape)
+# dna <- read.FASTA("/media/knausb/Vining_lab/public_databases/NCBI/Abacus/GCA_025232715.1/GCA_025232715.1_Csat_AbacusV2_genomic.fna")
+# my_seq <- as.matrix(dna[4])[, 72696599:72691998]
+# toupper(paste(as.character(my_seq[1:80]), collapse = ""))
 ```
 
-
+```
+"GTACCGACGGTAACGACCTAGTTTGCAACATCAAAGGTTTAGTTGGTCTTAAAGGTCGAGTAAGAAACTGGCCTTTCGGG"
+```
 
 
 
@@ -116,7 +118,15 @@ Livingston, S.J., Quilichini, T.D., Booth, J.K., Wong, D.C., Rensing, K.H., Lafl
 - Varin in Purple Kush and Finola
 
 
+
+Pavlovic, R., Panseri, S., Giupponi, L., Leoni, V. and Citti, C., 2019. Phytochemical and ecological analysis of two varieties of hemp (Cannabis sativa L.) grown in a mountain environment of Italian Alps. Frontiers in Plant Science, 10, p.470737.
+https://doi.org/10.3389/fpls.2019.01265 
+- Finola as high varin
+
+
 Welling, M.T., Liu, L., Raymond, C.A., Kretzschmar, T., Ansari, O. and King, G.J., 2019. Complex patterns of cannabinoid alkyl side-chain inheritance in cannabis. Scientific reports, 9(1), p.11421.
+
+Welling, M.T., Liu, L., Kretzschmar, T., Mauleon, R., Ansari, O. and King, G.J., 2020. An extreme-phenotype genome‐wide association study identifies candidate cannabinoid pathway genes in Cannabis. Scientific Reports, 10(1), p.18643.
 
 
 
