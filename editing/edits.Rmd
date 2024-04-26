@@ -1,0 +1,63 @@
+---
+title: "Untitled"
+output: html_document
+date: "2024-04-19"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Main
+
+
+## Trio-phased, haplotype-resolved chromosome-scale Cannabis “anchor” genome
+
+
+
+## Cannabis pangenome uncovers at least five distinct populations
+
+
+## The evolution of the cannabis genome is a history of transposable element movement
+
+
+## The Cannabis pangenome displays high levels of structural variation
+
+
+## Pan-genes and Pan-chromosomes 
+
+- R-genes
+- Terpenes
+
+
+## The cannabinoid pathway is both variable and domesticated
+
+
+## Varin cannabinoids (THCV and CBDV) are associated with complex variation in fatty acid biosynthesis gene
+
+
+
+
+# Conclusions
+
+
+
+
+## TE libraries
+
+Finola (GCA_003417725.2)
+CBDRx (GCF_900626175.2)
+Purple_Kush (GCA_000230575.5)
+jl (GCA_013030365.1)
+Cannbio-2 (GCA_016165845.1)
+JL_Mother (GCA_012923435.1)
+
+
+ERB_F3, FB30, HO40, I3, TS1_3_v1, W103
+
+
+ERBxHO40_23
+ERBxHO40_23
+
+
