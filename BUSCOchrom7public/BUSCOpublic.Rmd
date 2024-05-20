@@ -109,3 +109,27 @@ p
 
 ```
 
+
+```{r}
+
+busc <- busc[ , sort.int(colnames(busc) ,index.return = TRUE)$ix]
+
+busc <- cbind(busc[ , grep("CBDRx|Abacus|Finola", colnames(busc), invert = TRUE)],  busc[ , c("CBDRx", "Abacus", "Finola")])
+
+
+myx <- factor(cbdas$sseqid, levels = colnames(busc))
+
+p <- gg_line_map(busc, check_table = FALSE, size = 1.2, lalpha = 0.2)
+p
+
+p <- p + annotate( geom = "line", x = as.numeric(myx), y = cbdas$sstart, linewidth = 1.2, color = "#1E90FF")
+p <- p + annotate( geom = "point", x = myx, y = cbdas$sstart, shape = 24, bg = "#1E90FF", size = 4)
+p
+
+# ggsave(filename = "ggbusco_lineplot_chrom7_public.png",
+#        device = "png", width = 6.5, height = 4.5, units = "in", dpi = 300)
+
+
+```
+
+

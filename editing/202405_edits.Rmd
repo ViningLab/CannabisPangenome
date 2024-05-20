@@ -1,0 +1,42 @@
+---
+title: "202405_edits"
+output: html_document
+date: "2024-05-20"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+4,300 word limit for 8 pages.
+
+
+# Main
+
+# Haplotype-resolved, chromosome-scale “anchor” genomes
+
+# Pangenome uncovers at least five populations
+
+# Transposable element evolution and function
+
+# High levels of Structural variation
+
+# Pan-gene analyses
+
+# Terpene synthase genes
+
+# Disease resistance gene analogs
+
+# Partially domesticated cannabinoid pathway
+
+# Varin cannabinoids and fatty acid genes
+
+
+Conclusions
+
+
+
+
+
+

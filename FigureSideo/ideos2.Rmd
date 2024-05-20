@@ -1,0 +1,149 @@
+---
+title: "Ideos"
+output: 
+  pdf_document:
+    toc: true
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+editor_options: 
+  chunk_output_type: console
+---
+
+
+```{r setup, include=FALSE}
+#knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(fig.align = "center")
+```
+
+
+```{r}
+t1 <- Sys.time()
+
+sampd <- list.dirs("/media/knausb/E737-9B48/releases/scaffolded/")
+sampd <- grep("scaffolded/$", sampd, value = TRUE, invert = TRUE)
+sampd <- grep("EDTAOutput", sampd, value = TRUE, invert = TRUE)
+
+#sampd <- sampd[ c(2:5, grep("EH23", sampd)) ]
+#sampd <- sampd[2:5]
+
+#sub(".+//", "", sampd)
+sampn <- unlist(lapply(strsplit(sampd, split = "//"), function(x){x[2]}))
+```
+
+
+## Queries
+
+
+```{r}
+my_queries <- data.frame( 
+  query = c("45S", "26S", "5.8S", "18S", "5S", 
+            "CS-237_satelite", "CsatSD_centromere_237bp", "CsatSD_subtelomere_370bp"),
+  Length = c(9382, 1544, 157, 1552, 259, 557, 237, 370 )
+  )
+knitr::kable(my_queries)
+
+```
+
+
+
+## nuccomp
+## fast_win
+## Ideo function
+
+```{r}
+source("Rfunctions.R")
+```
+
+
+
+
+
+```{r, results='hide', message=FALSE}
+t4 <- Sys.time()
+
+sampd <- list.dirs("/media/knausb/E737-9B48/releases/scaffolded/")
+sampd <- grep("scaffolded/$", sampd, value = TRUE, invert = TRUE)
+sampd <- grep("EDTAOutput", sampd, value = TRUE, invert = TRUE)
+
+#sampd <- sampd[ c(2:5, grep("EH23", sampd)) ]
+#sampd <- sampd[ c(2:11, grep("EH23", sampd)) ]
+
+#sampd <- sampd[ c(1:2, grep("EH23", sampd)) ]
+#sampd <- sampd[ c(1:10, grep("EH23", sampd)) ]
+
+#sampd <- sampd[ c(1:16, grep("EH23", sampd)) ]
+#sampd <- sampd[ c(1:22, grep("EH23", sampd)) ]
+#sampd <- sampd[ 1:30 ]
+#sampd <- sampd[2:5]
+
+#undebug(plot_ideo)
+# p1 <- plot_ideo( sampd[1] )
+# p1 <- plot_ideo( sampd[5] )
+# p1 <- plot_ideo( sampd[6] )
+# p1
+
+# plist[[1]] <- plot_ideo( sampd[1] )
+# plist[[2]] <- plot_ideo( sampd[2] )
+# 
+# plist[[1]]
+# plist[[2]]
+
+
+plist <- vector( mode = "list", length = length(sampd) )
+for( i in 1:length(sampd) ){
+  message("Processing sample ", i, " of ", length(sampd), ".")
+  plist[[i]] <- plot_ideo( sampd[i] )
+}
+
+# plist[[1]]
+
+#sub(".+//", "", sampd)
+#sampn <- unlist(lapply(strsplit(sampd, split = "//"), function(x){x[2]}))
+```
+
+
+
+```{r, fig.height=10, fig.width=12, fig.cap="Ideogram of the \\textit{Cannabis sativa} genome. Each chromosome is presented as a set of 1 Mbp windows where the width is proportional to the abundance of the 'CpG' motif (wide is low abundance, narrow is high abundance) and colored by gene density (cool or blue colors are low gene density and hot or yellow colors are high gene density).  The 45S, 26S, 18S, and 5.8S probes are in firebrick red (\\#B22222), the 5S probes are in black, Cannabinoids (CBCAS, CBDAS, THCAS, OAC) are in forest green. The probe 'CsatSD\\_centromere\\_237bp' is in Dodger blue  (\\#1E90FF), the probe 'CsatSD\\_centromere\\_370bp' is in magenta (\\#FF00FF)."}
+
+#, the centromeric and telomeric probes are in Dodger blue and are offset from the center of each chromosome."}
+
+library(ggpubr)
+
+my_ps <- 1:4
+#ggarrange( plotlist = plist[my_ps], ncol = 2, nrow = 3, labels = c("A", "B", "C", "D", "E", "F"))
+
+
+for(i in 1:ceiling(length(plist)/4) ){
+  my_ps <- 1:4
+  my_ps <- my_ps + (i - 1) * 4
+  if( my_ps[length(my_ps)] > length(plist) ){
+    my_ps <- my_ps[1]:length(plist)
+  }
+  print(ggarrange( plotlist = plist[my_ps], ncol = 2, nrow = 2,
+                   labels = c("A", "B", "C", "D")))
+}
+
+
+# for(i in 1:(length(plist)/6) ){
+#   my_ps <- 1:6
+#   my_ps <- my_ps + (i - 1) * 6
+#   if( my_ps[length(my_ps)] > length(plist) ){
+#     my_ps <- my_ps[1]:length(plist)
+#   }
+#   print(ggarrange( plotlist = plist[my_ps], ncol = 2, nrow = 3, labels = c("A", "B", "C", "D", "E", "F")))
+# }
+
+
+
+#ggarrange( plotlist = plist[1:6], ncol = 2, nrow = 3, labels = c("A", "B", "C", "D", "E", "F"))
+#ggarrange( plotlist = plist[7:12], ncol = 2, nrow = 3, labels = c("A", "B", "C", "D", "E", "F"))
+
+
+```
+
+
+```{r, results='markup'}
+t99 <- Sys.time()
+t99 - t1
+
+```
