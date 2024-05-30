@@ -1,6 +1,9 @@
 ---
-title: "Untitled"
-output: html_document
+title: "Chromosome7 plus publics"
+output:
+  html_document:
+    code_folding: hide
+    toc: true
 date: "2024-04-26"
 editor_options: 
   chunk_output_type: console
@@ -8,58 +11,49 @@ editor_options:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(fig.align = "center")
+knitr::opts_chunk$set(warning = FALSE)
 ```
 
 
-
+## Input BLAST data
 
 
 ```{r}
 blast <- read.csv("cannsyn_blast.csv")
-blast[1:3,]
-table(blast$qseqid)
+#blast[1:3,]
+#table(blast$qseqid)
 cbdas <- blast[blast$qseqid == "AB292682.1", ]
 #cbdas <- cbdas[cbdas$pident >= 98, ]
 cbdas$sseqid <- sub("\\.chr7", "", cbdas$sseqid)
-table(cbdas$sseqid)
-
+#table(cbdas$sseqid)
 ```
 
 
 ```{r}
 tmp <- read.csv("cbdas_ncbi.csv")
 #tmp <- tmp[tmp$pident >= 98, ]
-tmp[1:3, ]
+# tmp[1:3, ]
 #table(tmp$sseqid)
 #tmp[tmp$sseqid == "Cannbio-2", ]
 #tmp[tmp$sseqid == "jl", ]
 
 cbdas <- rbind(cbdas, tmp)
 cbdas <- cbdas[cbdas$pident >= 98, ]
-table(cbdas$sseqid)
+#table(cbdas$sseqid)
 ```
+
 
 ## BUSCO input
 
+
 ```{r}
 busc <- read.csv("BUSCOchrom7.csv.gz")
-busc[1:3, ]
+#busc[1:3, ]
 ```
 
 
-### omit NCBI
-
-```{r}
-# busc <- busc[, grep("CBDRx.NC_044378.1|Abacus.CM046076.1|Finola.CM011610.1|Purple_Kush.CM010797.2", colnames(busc), invert = TRUE)]
-# colnames(busc)[ colnames(busc) == "CBDRX.CBDRX.chr7"] <- "CBDRx"
-# colnames(busc)[ colnames(busc) == "ABAC.ABAC.chr7"] <- "Abacus"
-# colnames(busc)[ colnames(busc) == "FIN.FIN.chr7"] <- "Finola"
-# colnames(busc)[ colnames(busc) == "PK.PK.chr7"] <- "Purple Kush"
-# colnames(busc)[ colnames(busc) == "Cannbio.2.CM028020.1"] <- "Cannbio-2"
-# colnames(busc)[ colnames(busc) == "jl_Kyirong.CM022973.1"] <- "jl_Kyirong"
-```
-
-### Omit publics
+## Manage publics
 
 ```{r}
 #busc <- busc[, grep("CBDRx.NC_044378.1|Abacus.CM046076.1|Finola.CM011610.1|Purple_Kush.CM010797.2", colnames(busc), invert = TRUE)]
@@ -71,21 +65,25 @@ colnames(busc)[ colnames(busc) == "Finola.CM011610.1"] <- "Finola"
 colnames(busc)[ colnames(busc) == "Purple_Kush.CM010797.2"] <- "Purple Kush"
 colnames(busc)[ colnames(busc) == "Cannbio.2.CM028020.1"] <- "Cannbio-2"
 colnames(busc)[ colnames(busc) == "jl_Kyirong.CM022973.1"] <- "jl_Kyirong"
-busc[1:3, 1:8]
-busc[1:3, (ncol(busc)-4):ncol(busc)]
+# busc[1:3, 1:8]
+# busc[1:3, (ncol(busc)-4):ncol(busc)]
 ```
 
 
+BUSCOplot available below.
 
+```
+devtools::install_github(repo="knausb/BUSCOplot")
+```
 
 
 ```{r}
 library(BUSCOplot)
 library(ggplot2)
-class(unlist(busc["BUSCO_ID=100415at71240", ]))
+#class(unlist(busc["BUSCO_ID=100415at71240", ]))
 
 #busc <- busc[ , 60:ncol(busc)]
-colnames(busc)
+#colnames(busc)
 
 # LETTERS[1:10] %in% LETTERS[3:4]
 #colnames(busc)[ !colnames(busc) %in% cbdas$sseqid ]
@@ -97,31 +95,10 @@ myx <- factor(cbdas$sseqid, levels = colnames(busc))
 
 p <- gg_line_map(busc, check_table = FALSE, size = 1.2, lalpha = 0.2)
 p
-
-p <- p + annotate( geom = "line", x = as.numeric(myx), y = cbdas$sstart, linewidth = 1.2, color = "#1E90FF")
-p <- p + annotate( geom = "point", x = myx, y = cbdas$sstart, shape = 24, bg = "#1E90FF", size = 4)
-p
-
-
-# ggsave(filename = "ggbusco_lineplot_chrom7_public.png",
-#        device = "png", width = 6.5, height = 4.5, units = "in", dpi = 300)
-
-
 ```
 
 
 ```{r}
-
-busc <- busc[ , sort.int(colnames(busc) ,index.return = TRUE)$ix]
-
-busc <- cbind(busc[ , grep("CBDRx|Abacus|Finola", colnames(busc), invert = TRUE)],  busc[ , c("CBDRx", "Abacus", "Finola")])
-
-
-myx <- factor(cbdas$sseqid, levels = colnames(busc))
-
-p <- gg_line_map(busc, check_table = FALSE, size = 1.2, lalpha = 0.2)
-p
-
 p <- p + annotate( geom = "line", x = as.numeric(myx), y = cbdas$sstart, linewidth = 1.2, color = "#1E90FF")
 p <- p + annotate( geom = "point", x = myx, y = cbdas$sstart, shape = 24, bg = "#1E90FF", size = 4)
 p
@@ -129,7 +106,39 @@ p
 # ggsave(filename = "ggbusco_lineplot_chrom7_public.png",
 #        device = "png", width = 6.5, height = 4.5, units = "in", dpi = 300)
 
-
 ```
+
+
+## Sort
+
+
+```{r}
+busc <- busc[ , sort.int(colnames(busc) ,index.return = TRUE)$ix]
+busc <- cbind(busc[ , grep("CBDRx|Abacus|Finola", colnames(busc), invert = TRUE)],  busc[ , c("CBDRx", "Abacus", "Finola")])
+myx <- factor(cbdas$sseqid, levels = colnames(busc))
+p <- gg_line_map(busc, check_table = FALSE, size = 1.2, lalpha = 0.2)
+#p
+```
+
+
+## Final graphic
+
+
+```{r}
+p <- p + annotate( geom = "line", x = as.numeric(myx), y = cbdas$sstart, linewidth = 1.2, color = "#1E90FF")
+p <- p + annotate( geom = "point", x = myx, y = cbdas$sstart, shape = 24, bg = "#1E90FF", size = 4)
+p
+
+# ggsave(filename = "ggbusco_lineplot_chrom7_public.png",
+#        device = "png", width = 6.5, height = 4.5, units = "in", dpi = 300)
+```
+
+
+**Figure X.** 
+BUSCO genes for Chromosome 7.
+Lines connect identical BUSCO genes among neighboring chromosomes (samples). 
+Changes in the elevation and spacing among BUSCO genes reflects structural variation within samples, while the lines draw attention to variability among each sample’s immediate neighbor.
+Blue triangles indicate high stringency matches to CBDAS (BLASTN query of NCBI accession “AB292682.1”, percent identity >= 0.98, number of gaps = 0). 
+The samples 'CBDRx', 'Abacus', and 'Finola' were obtained from NCBI (https://www.ncbi.nlm.nih.gov/), the remaining samples were assembled in the present work.
 
 

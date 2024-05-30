@@ -30,6 +30,8 @@ load("BUSCOchrom7.RData")
 
 
 ```{r}
+library(ggplot2)
+#library(ggside)
 p
 ```
 
