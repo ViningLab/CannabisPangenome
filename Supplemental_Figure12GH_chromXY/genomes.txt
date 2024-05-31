@@ -1,0 +1,7 @@
+#file	name	tags
+EH23a.chrXrevcomp.fasta	EH23a_chrX	lw:1.5
+AH3Ma.chrX.fasta	AH3Ma_chrX	lw:1.5
+AH3Mb.chrYrevcomp.fasta	AH3Mb_chrY	lw:1.5
+BCMb.chrYrevcomp.fasta	BCMb_chrY	lw:1.5
+
+
