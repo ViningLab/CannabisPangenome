@@ -17,20 +17,21 @@ Project main GitHub:
 https://github.com/anthony-aylward/CannabisPangenomeShared
 
 
-# Index
+# Contents
 
-- BUSCOchrom7 - Fig 5D - Dot and line plot comparing the organization of BUSCO genes on chromosome 7 illustrating cannabinoid synthase organization
-- BUSCOchrom7public - Supplemental Figure 23 - Dot and line plot comparing the organization of BUSCO genes on chromosome 7 for samples assembled in the present work as well as select samples from NCBI
+- Fig1A_SynChrom
+- Fig5D_BUSCOchrom7 - Dot and line plot comparing the organization of BUSCO genes on chromosome 7 illustrating cannabinoid synthase organization
+- ideograms_scaffolded
 - PAG2024 - presentation made by Brian J. Knaus at PAG2024
-- varinGWAS
+- Supplemental_Figure12GH_chromXY
+- Supplemental_Figure23_BUSCOchrom7public - Dot and line plot comparing the organization of BUSCO genes on chromosome 7 for samples assembled in the present work as well as select samples from NCBI
+- Supplemental_Figure_25_varinGWAS
+- Supplemental_Figure_4C_gene_chrom
 
 
 # Salk Cannabis Pangenome Lines
 
-
 https://resources.michael.salk.edu/resources/cannabis_genomes/index.html
-
-
 
 # CannabisPangenome
 
@@ -38,18 +39,5 @@ Cannabis Pangenome materials
 
 This is a collaboration among the Vining Lab, OregonCBD (https://oregoncbdseeds.com/), and The Michael Lab (https://michael.salk.edu/).
 
-
-Color palette:
-
-- CBDAS Full:        (0,100,225)
-- CBDAS Partial:   (0, 200, 240)
-- THCAS Full:        (180, 25, 100)
-- THCAS Partial:   (225, 100, 240)
-- CBCAS Full:        (225, 120, 0)
-- CBCAS Partial:   (255, 215, 0)
-
-
-RapidTables RGB Color Codes Chart:
-https://www.rapidtables.com/web/color/RGB_Color.html
 
 
