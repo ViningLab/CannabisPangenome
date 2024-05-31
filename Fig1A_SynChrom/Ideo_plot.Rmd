@@ -51,15 +51,15 @@ ggarrange(
   widths = 1, heights = c(2, 1))
 
 
-ggsave( filename = "EH23_chroms_freqs.tiff",
-        device = "tiff",
-        width = 5.0,
-        #width = 6.5,
-        height = 6.5,
-        #height = 9,
-        units = "in",
-        dpi = 300,
-        compression = "lzw")
+# ggsave( filename = "EH23_chroms_freqs.tiff",
+#         device = "tiff",
+#         width = 5.0,
+#         #width = 6.5,
+#         height = 6.5,
+#         #height = 9,
+#         units = "in",
+#         dpi = 300,
+#         compression = "lzw")
 
 # ggsave( filename = "EH23_chroms_freqs.png",
 #         device = "png",
