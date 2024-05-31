@@ -6,9 +6,9 @@ Ryan C. Lynch1*, Lillian K. Padgitt-Cobb1*, Andrea R. Garfinkel2, Brian J. Knaus
 Hartwick1, Nicholas Allsing1, Anthony Aylward1, Allen Mamerto1, Justine K. Kitony1, Kelly Colt1,
 Emily R. Murray1, Tiffany Duong1, Aaron Trippe2, Seth Crawford2, Kelly Vining3, Todd P. Michael1
 
-1 The Plant Molecular and Cellular Biology Laboratory, The Salk Institute for Biological Studies, La Jolla, CA 92037, USA
-2 Oregon CBD, Independence, OR 97351, USA
-3 Department of Horticulture, Oregon State University, Corvallis, OR 97331, USA
+1 The Plant Molecular and Cellular Biology Laboratory, The Salk Institute for Biological Studies, La Jolla, CA 92037, USA    
+2 Oregon CBD, Independence, OR 97351, USA    
+3 Department of Horticulture, Oregon State University, Corvallis, OR 97331, USA    
 
 
 
