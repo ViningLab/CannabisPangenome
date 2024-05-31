@@ -19,14 +19,14 @@ https://github.com/anthony-aylward/CannabisPangenomeShared
 
 # Contents
 
-- Fig1A_SynChrom
+- Fig1A_SynChrom - EH23 haplotype synteny, CpG, and gene density plot
 - Fig5D_BUSCOchrom7 - Dot and line plot comparing the organization of BUSCO genes on chromosome 7 illustrating cannabinoid synthase organization
 - ideograms_scaffolded
 - PAG2024 - presentation made by Brian J. Knaus at PAG2024
 - Supplemental_Figure12GH_chromXY
 - Supplemental_Figure23_BUSCOchrom7public - Dot and line plot comparing the organization of BUSCO genes on chromosome 7 for samples assembled in the present work as well as select samples from NCBI
-- Supplemental_Figure_25_varinGWAS
-- Supplemental_Figure_4C_gene_chrom
+- Supplemental_Figure_25_varinGWAS - GWAS for varin
+- Supplemental_Figure_4C_gene_chrom - Summary of gene counts and chromosome lengths
 
 
 # Salk Cannabis Pangenome Lines
