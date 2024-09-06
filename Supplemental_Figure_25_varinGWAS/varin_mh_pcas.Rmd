@@ -276,7 +276,8 @@ mh_plot <- function(x, main = "main", detail1 = TRUE, detail2 = TRUE ){
 
 
 ```{r}
-#mh_plot(my_mhs[2], main = "Varin content; Blink model; PCA.total = 6")
+#
+mh_plot(my_mhs[2], main = "Varin content; Blink model; PCA.total = 6")
 ```
 
 
@@ -291,7 +292,7 @@ mh_plot <- function(x, main = "main", detail1 = TRUE, detail2 = TRUE ){
 
 
 ```{r}
-mh_plot(my_mhs[5], main = "Varin content; Blink model; PCA.total = 6; Normalized phenotypes")
+#mh_plot(my_mhs[5], main = "Varin content; Blink model; PCA.total = 6; Normalized phenotypes")
 ```
 
 

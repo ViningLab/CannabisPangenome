@@ -181,6 +181,15 @@ gchrom
 ```
 
 
+```{r}
+data_long[ data_long$Chrom == "chr1" & data_long$Length < 55, ]
+data_long[ data_long$Chrom == "chr1" & data_long$Length > 80, ]
+
+data_long[ data_long$Chrom == "chr9" & data_long$Length < 55, ]
+```
+
+
+
 ## Gene counts
 
 

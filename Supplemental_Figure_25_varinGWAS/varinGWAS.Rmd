@@ -73,8 +73,9 @@ t1 <- Sys.time()
 
 ```{r}
 # gwas <- read.csv("/media/knausb/E737-9B48/knausb/allele_hw/GAPIT3/GAPIT.Association.GWAS_Results.FarmCPU.Varin_Total.csv")
+# gwas <- read.csv("/media/knausb/E737-9B48/knausb/allele_hw/GAPIT3_blink/GAPIT.Association.GWAS_Results.BLINK.Varin_Total.csv")
 # 
-gwas <- read.csv("/media/knausb/E737-9B48/knausb/allele_hw/GAPIT3_blink/GAPIT.Association.GWAS_Results.BLINK.Varin_Total.csv")
+gwas <- read.csv("/media/knausb/E737-9B48/knausb/allele_hw/GAPIT3_blink_v3_pca6/GAPIT.Association.GWAS_Results.BLINK.Varin_Total.csv")
 #gwas <- read.csv("GWAS_blink_varin.csv.gz")
 gwas[1:3, ]
 ```
@@ -222,8 +223,10 @@ abline(h = seq(0, 30, by = 5), lty = 1, col = "#C0C0C088")
 
 abline( v = sum(nucs$Length[1:6]) + 1010217 ) # ALT4
 text( x = sum(nucs$Length[1:6]) + 1010217 + 0, y = 20, labels = "ALT4" ) # ALT4
+text( x = sum(nucs$Length[1:6]) + 1010217 + 0, y = 9, labels = "ALT4" ) # ALT4
 abline( v = sum(nucs$Length[1:3]) + 72420315 ) # BKR
 text( x = sum(nucs$Length[1:3]) + 72420315, y = 20, labels = "BKR" ) # BKR
+text( x = sum(nucs$Length[1:3]) + 72420315, y = 9, labels = "BKR" ) # BKR
 
 axis(side = 1, at = nucs$mids, labels = c(1:9, "X"))
 #axis(side = 1, at = nuc$lpos, labels = c(1:9, "X"))
