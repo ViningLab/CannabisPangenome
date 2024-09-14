@@ -3,7 +3,8 @@ get_nucs <- function( sampd ){
   cat("__Processing chromosomes.\n")
   sampn <- unlist(lapply(strsplit(sampd, split = "//"), function(x){x[length(x)]}))
   #cmd <- paste("~/gits/fasta2nuccomp/fasta2nuccomp.py ", 
-  cmd <- paste("~/gits/nuccomp/nuccomp.py ", 
+  #cmd <- paste("~/gits/nuccomp/nuccomp.py ", 
+  cmd <- paste("~/gits/nuccomp/python/nuccomp.py ", 
                sampd,
                "/",
                sampn,
@@ -142,13 +143,14 @@ plot_ideo <- function( sampd ) {
   suppressPackageStartupMessages(require(ggplot2))
   
   sampn <- unlist(lapply(strsplit(sampd, split = "//"), function(x){x[length(x)]}))
-  cat( "Processing ", sampn, ".\n" )
+  cat( "Processing ", sampn, ".\n", sep = "" )
   nucs <- get_nucs( sampd )
   wins <- get_wins( sampd )
   
   blstn <- read.csv( 
     #    paste("/media/knausb/Vining_lab/knausb/blast_projects/todd_rrna/blastn/", sampn, "_blastn.csv", sep = ""),
-    paste("/media/knausb/Vining_lab/knausb/blast_projects/todd_rrna/blastn_uc/", sampn, "_blastn.csv", sep = ""),
+    # paste("/media/knausb/Vining_lab/knausb/blast_projects/todd_rrna/blastn_uc/", sampn, "_blastn.csv", sep = ""),
+    paste("/media/knausb/E737-9B48/knausb/blast_projects/todd_rrna/blastn_uc/", sampn, "_blastn.csv", sep = ""),
     header = FALSE)
   colnames(blstn) <- c("qseqid","qlen","sseqid","slen","qstart","qend",
                        "sstart","send","evalue","bitscore","score","length",
@@ -162,6 +164,32 @@ plot_ideo <- function( sampd ) {
   blstn$chrn[blstn$chrn == "X"] <- 10
   blstn$chrn[blstn$chrn == "Y"] <- 11
   blstn$chrn <- as.numeric(blstn$chrn)  
+  
+  # Orient chromosomes.
+  orient <- read.table("/media/knausb/E737-9B48/releases/scaffolded_csat_orientations.tsv", 
+             header = TRUE, sep = "\t")
+  orient <- orient[orient$Sample == sampn, ]
+  row.names(orient) <- paste(orient$Sample, orient$Chromosome, sep = ".")
+  # orient[1:3, ]
+  for(i in 1:nrow(orient)){
+    if( orient$Flip[i] == "True" ){
+      # nucs =  no action. Contains nucs$Length
+      chrom_len <- nucs$Length[ nucs$Id == rownames(orient)[i] ]
+      tmp <- wins[ wins$Id == rownames(orient)[i], ]
+      #tmp <- wins[ wins$Id == rownames(orient)[i], , drop = FALSE]
+      # tmp[1:3, 1:6]
+      tmp$Start <- chrom_len - tmp$Start
+      tmp$End <- chrom_len - tmp$End
+      wins[ wins$Id == rownames(orient)[i], ] <- tmp
+      #wins[ wins$Id == rownames(orient)[i], , drop = FALSE] <- tmp
+      #blstn
+      tmp <- blstn[ blstn$sseqid == rownames(orient)[i], , drop = FALSE]
+      tmp[1:3, 1:8]
+      tmp$sstart <- chrom_len - tmp$sstart
+      tmp$send <- chrom_len - tmp$send
+      blstn[ blstn$sseqid == rownames(orient)[i], ] <- tmp
+    }
+  }
   
   # blstn[1:3, ]
   # table(blstn$qseqid)
