@@ -119,7 +119,11 @@ for(i in 1:ceiling(length(plist)/4) ){
 
 ```{r, eval=FALSE}
 i <- 1
-ggsave( filename = "", plot = plist[[i]],
+ggsave( filename = "AH3Ma_ideogram.png", plot = plist[[i]],
+        device = "png",
+        width = 3.25, height = 3.25, units = "in", dpi = 300)
+i <- 2
+ggsave( filename = "AH3Mb_ideogram.png", plot = plist[[i]],
         device = "png",
         width = 3.25, height = 3.25, units = "in", dpi = 300)
 ```

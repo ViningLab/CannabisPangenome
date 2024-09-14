@@ -150,7 +150,9 @@ plot_ideo <- function( sampd ) {
   blstn <- read.csv( 
     #    paste("/media/knausb/Vining_lab/knausb/blast_projects/todd_rrna/blastn/", sampn, "_blastn.csv", sep = ""),
     # paste("/media/knausb/Vining_lab/knausb/blast_projects/todd_rrna/blastn_uc/", sampn, "_blastn.csv", sep = ""),
-    paste("/media/knausb/E737-9B48/knausb/blast_projects/todd_rrna/blastn_uc/", sampn, "_blastn.csv", sep = ""),
+    # paste("/media/knausb/E737-9B48/knausb/blast_projects/todd_rrna/blastn_uc/", sampn, "_blastn.csv", sep = ""),
+    # header = FALSE)
+    paste("../blastn_markers/", sampn, "_blastn.csv.gz", sep = ""),
     header = FALSE)
   colnames(blstn) <- c("qseqid","qlen","sseqid","slen","qstart","qend",
                        "sstart","send","evalue","bitscore","score","length",
@@ -166,7 +168,9 @@ plot_ideo <- function( sampd ) {
   blstn$chrn <- as.numeric(blstn$chrn)  
   
   # Orient chromosomes.
-  orient <- read.table("/media/knausb/E737-9B48/releases/scaffolded_csat_orientations.tsv", 
+  # orient <- read.table("/media/knausb/E737-9B48/releases/scaffolded_csat_orientations.tsv", 
+  #                      header = TRUE, sep = "\t")
+  orient <- read.table("../ideograms_scaffolded/scaffolded_csat_orientations.tsv", 
              header = TRUE, sep = "\t")
   orient <- orient[orient$Sample == sampn, ]
   row.names(orient) <- paste(orient$Sample, orient$Chromosome, sep = ".")
