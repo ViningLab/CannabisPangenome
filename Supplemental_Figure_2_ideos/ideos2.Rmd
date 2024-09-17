@@ -24,7 +24,7 @@ sampd <- grep("scaffolded/$", sampd, value = TRUE, invert = TRUE)
 sampd <- grep("EDTAOutput", sampd, value = TRUE, invert = TRUE)
 
 sampd <- grep("AH3M", sampd, value = TRUE, invert = FALSE)
-
+#sampd <- sampd[1]
 #sampd <- sampd[ c(2:5, grep("EH23", sampd)) ]
 #sampd <- sampd[2:5]
 

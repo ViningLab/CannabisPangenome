@@ -237,9 +237,11 @@ plot_ideo <- function( sampd ) {
   )
   
   # Theme
+  chr_names <- sub("^.+\\.", "", chr_df$chr)
   p <- p + ggplot2::scale_x_continuous( 
     breaks = chr_df$chrn,
-    labels = chr_df$chr
+    #labels = chr_df$chr
+    labels = chr_names
   )
   
   p <- p + scale_y_continuous(
