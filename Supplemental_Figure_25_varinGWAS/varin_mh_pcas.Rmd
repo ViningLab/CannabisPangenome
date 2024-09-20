@@ -300,6 +300,7 @@ mh_plot(my_mhs[2], main = "Varin content; Blink model; PCA.total = 6")
 
 
 ```{r}
+i <- 2
 for( i in 1:length(my_mhs)){
   mh_plot(my_mhs[i], main = my_names[i], detail1 = FALSE, detail2 = FALSE)
 }
