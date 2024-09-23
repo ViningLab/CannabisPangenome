@@ -122,6 +122,7 @@ nucs <- read.csv("nucs.csv.gz")
 
 
 ```{r}
+# x <- "/media/knausb/E737-9B48/knausb/allele_hw/GAPIT3_blink_v3_pca6/GAPIT.Association.GWAS_Results.BLINK.Varin_Total.csv"
 
 mh_plot <- function(x, main = "main", detail1 = TRUE, detail2 = TRUE ){
   gwas <- read.csv(x)
@@ -278,6 +279,8 @@ mh_plot <- function(x, main = "main", detail1 = TRUE, detail2 = TRUE ){
 ```{r}
 #
 mh_plot(my_mhs[2], main = "Varin content; Blink model; PCA.total = 6")
+# 
+mh_plot(my_mhs[2], main = "Varin content; Blink model; PCA.total = 6", detail1 = F, detail2 = F)
 ```
 
 
