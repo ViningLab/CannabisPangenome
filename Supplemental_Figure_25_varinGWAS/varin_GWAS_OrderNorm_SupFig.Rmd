@@ -43,7 +43,8 @@ pheno[1:3, ]
 
 ```{r}
 library(ggplot2)
-p <- ggplot( data = pheno, mapping = aes( x = Total) )
+#p <- ggplot( data = pheno, mapping = aes( x = Total) )
+p <- ggplot( data = pheno, mapping = aes( x = OrderNorm_transformed) )
 p <- p + geom_histogram( binwidth = 1.0)
 p <- p + theme_bw()
 p <- p + ylab("Count")
@@ -63,8 +64,14 @@ p_pheno <- p + coord_flip()
 #   "/media/knausb/E737-9B48/knausb/allele_hw/GAPIT3_blink_v3_pca6/GAPIT.Association.GWAS_Results.BLINK.Varin_Total.csv"
 #   )
 #my_mhs <- "/media/knausb/E737-9B48/knausb/allele_hw/GAPIT3_blink_v3_pca6/GAPIT.Association.GWAS_Results.BLINK.Varin_Total.csv"
+#
+my_mhs <- "/media/knausb/E737-9B48/knausb/allele_hw/GAPIT3_blink_v3_pca6_normP/GAPIT.Association.GWAS_Results.BLINK.OrderNorm_transformed.csv"
+
+#  "/media/knausb/E737-9B48/knausb/allele_hw/GAPIT3_blink_v3_pca6_normP/GAPIT.Association.PVE.BLINK.OrderNorm_transformed.csv"
+
 # my_mhs <- "GAPIT.Association.GWAS_Results.BLINK.Varin_Total.csv.gz"
-my_mhs <- "gwas_GAPIT_varin_blink_pca6.csv.gz"
+
+#my_mhs <- "gwas_GAPIT_varin_blink_pca6.csv.gz"
 my_names <- sub("/media/knausb/E737-9B48/knausb/allele_hw/GAPIT3_blink_v3_", "", my_mhs)
 my_names <- sub("/GAPIT.Association.GWAS_Results.", "_", my_names)
 my_names <- sub(".gz", "", my_names)
@@ -84,16 +91,16 @@ nucs <- read.csv("nucs.csv.gz")
 ```{r}
 
 gwas <- read.csv(my_mhs)
-#
+#names(gwas)[3] <- "Position"
 gwas[1:3, 1:6]
 
 if(length(grep("POS", names(gwas))) == 0){
   #is.na(gwas$POS) <- TRUE
-  #gwas$POS <- gwas$Pos
-  gwas$POS <- gwas$Position
+  gwas$POS <- gwas$Pos
+  #gwas$POS <- gwas$Position
   for(i in 2:nrow(nucs)){
-#      gwas$POS[ gwas$Chr == nucs$Id[i] ] <- gwas$Pos[ gwas$Chr == nucs$Id[i] ] + sum( nucs$Length[1:(i - 1)] )
-      gwas$POS[ gwas$Chr == nucs$chrom_num[i] ] <- gwas$Pos[ gwas$Chr == nucs$chrom_num[i] ] + sum( nucs$Length[1:(i - 1)] )
+      gwas$POS[ gwas$Chr == nucs$Id[i] ] <- gwas$Pos[ gwas$Chr == nucs$Id[i] ] + sum( nucs$Length[1:(i - 1)] )
+#      gwas$POS[ gwas$Chr == nucs$chrom_num[i] ] <- gwas$Pos[ gwas$Chr == nucs$chrom_num[i] ] + sum( nucs$Length[1:(i - 1)] )
   }
 }
 gwas$log_pvalue <- -log10(gwas$P.value)
@@ -123,14 +130,30 @@ p <- p + geom_point( color = gwas$col, size = gwas$log_pvalue * 0.6, alpha = gwa
 p <- p + geom_vline(xintercept = nucs$starts[-1], color = "#80808066", linewidth = 0.6)
 p <- p + theme_bw()
 p <- p + ylab( expression("-Log"["10"](italic(p)-value)) )
-p <- p + annotate( geom = "text", x = sum(nucs$Length[1:6]) + 1010217 , y = 11, label = "ALT4")
-p <- p + annotate( geom = "text", x = sum(nucs$Length[1:3]) + 72420315, y = 9.5, label = "BKR")
+#p <- p + annotate( geom = "text", x = sum(nucs$Length[1:6]) + 1010217 , y = 11, label = "ALT4")
+p <- p + annotate( geom = "text", x = sum(nucs$Length[1:6]) + 1010217 , y = 18, label = "ALT4")
+p <- p + annotate( geom = "text", x = sum(nucs$Length[1:3]) + 72420315, y = 19.0, label = "BKR")
+#p <- p + annotate( geom = "text", x = sum(nucs$Length[1:3]) + 72420315, y = 9.5, label = "BKR")
 p <- p + scale_x_continuous( breaks = nucs$mids, labels = nucs$chrom_num)
 p <- p + theme(axis.title.x = element_blank())
+p <- p + ylim(0, 25)
+#p <- p + ylim(0, 22)
 p
 
 p_mh <- p
 ```
+
+
+```{r}
+gwas_top <- gwas[sort.int(gwas$log_pvalue, decreasing = TRUE, index.return = TRUE)$ix[1:10], ]
+#dput(names(gwas_top))
+my_cols <- c("SNP", "Chr", "Pos", "P.value", "MAF", "nobs", "H.B.P.Value", 
+"Effect", "log_pvalue")
+
+knitr::kable(gwas_top[, my_cols], row.names = FALSE)
+```
+
+
 
 
 ## VCF
@@ -181,7 +204,8 @@ all(pheno$ID == colnames(gt))
 
 
 ```{r}
-my_locus <- "4_68382150"
+my_locus <- "4_70745833"
+#my_locus <- "4_68382150"
 # my_locus <- "4_36256098"
 # my_locus <- "7_290913"
 # my_locus <- "X_12488664"
@@ -192,7 +216,8 @@ my_alleles <- paste( "0 = ", getREF(vcf)[my_locus == chr_pos], "; 1 = ", getALT(
 
 my_dat <- data.frame(
   #Varin_Total = pheno$Varin_Total,
-  Varin_Total = pheno$Total,
+  #Varin_Total = pheno$Total,
+  Varin_Total = pheno$OrderNorm_transformed,
   gt = gt2[my_locus, ],
   pcol = "#00000044"
 )
@@ -223,7 +248,7 @@ all(pheno$ID == colnames(gt))
 aggregate(my_dat$Varin_Total, by = list(my_dat$gt), mean)
 pheno[1:3, ]
 
-my_locus <- "4_68382150"
+#my_locus <- "4_68382150"
 my_gt = gt2[my_locus, ]
 
 pheno$Total_adj <- pheno$Total
@@ -254,6 +279,7 @@ summary(lm1)
 ```{r, fig.width=6, fig.cap="**Figure X.** Ability of the genotype to predict the phenotype."}
 library(ggplot2)
 #my_dat$gt <- as.factor(my_dat$gt)
+#p <- ggplot( data = my_dat, mapping = aes( x = gt, y = Varin_Total, fill = gt, group = gt ))
 p <- ggplot( data = my_dat, mapping = aes( x = gt, y = Varin_Total, fill = gt, group = gt ))
 p <- p + theme_bw()
 p <- p + geom_violin()
@@ -266,7 +292,8 @@ p <- p + scale_fill_continuous(type = "viridis", begin = 0.2)
 p <- p + geom_jitter(shape=16, position=position_jitter(0.15), col = my_dat$pcol, size = 1)
 #p <- p + ylab("Varin Total (units???)")
 #p <- p + xlab("Genotype")
-p <- p + xlab("Chr 4, 67.6 Mbp")
+#p <- p + xlab("Chr 4, 67.6 Mbp")
+p <- p + xlab("Chr 4, 70.7 Mbp")
 p <- p + theme(axis.title.y = element_blank())
 #p <- p + ggtitle( paste(my_locus, my_alleles, sep = ": ") )
 #p <- p + ggtitle( "CHROM 4, POS 68,382,150" )
@@ -288,6 +315,7 @@ p_locus1 <- p
 ```{r}
 library(ggplot2)
 p <- ggplot( data = pheno, mapping = aes( x = Total) )
+p <- ggplot( data = pheno, mapping = aes( x = OrderNorm_transformed) )
 p <- p + geom_histogram( binwidth = 1.0)
 p <- p + theme_bw()
 p <- p + ylab("Count")
@@ -307,8 +335,8 @@ p + facet_grid(. ~ as.factor(my_gt))
 # my_locus <- "4_68382150"
 # my_locus <- "4_36256098"
 # my_locus <- "7_290913"
-#
-my_locus <- "7_290840"
+# my_locus <- "7_290840"
+my_locus <- "7_1328482"
 # my_locus <- "9_16275371"
 # my_locus <- "X_12488664"
 # my_locus <- "X_44482355"
@@ -317,7 +345,8 @@ chr_pos <- paste(getCHROM(vcf), getPOS(vcf), sep = "_")
 my_alleles <- paste( "0 = ", getREF(vcf)[my_locus == chr_pos], "; 1 = ", getALT(vcf)[my_locus == chr_pos], sep = "")
 
 my_dat <- data.frame(
-  Varin_Total = pheno$Total,
+  Varin_Total = pheno$OrderNorm_transformed,
+  #Varin_Total = pheno$Total,
   #Varin_Total = pheno$Varin_Total,
   #gt = gt[my_locus, ],
   gt = gt2[my_locus, ],
@@ -360,7 +389,8 @@ p <- p + geom_jitter(shape=16, position=position_jitter(0.15), col = my_dat$pcol
 #p <- p + ylab("Varin Total (units???)")
 p <- p + theme(axis.title.y = element_blank())
 #p <- p + xlab("Genotype")
-p <- p + xlab("Chr 7, 290.8 Kbp")
+#p <- p + xlab("Chr 7, 290.8 Kbp")
+p <- p + xlab("Chr 7, 1.3 Mbp")
 #p <- p + ggtitle( paste(my_locus, my_alleles, sep = ": ") )
 #p <- p + ggtitle( "CHROM 7, POS 290,913" )
 #p <- p + annotate( geom = "text", x = 0, y = 60, label = "Chromosome 7,\nposition 290,913", size=4.0)
@@ -403,7 +433,7 @@ ggarrange( p_mh, ga1,
            labels = c("A", ""),
            widths = 1, heights = c(0.6, 0.4))
 
-# ggsave( filename = "SupFig25.png", device = "png",
+# ggsave( filename = "SupFig25_OrderNorm.png", device = "png",
 #         width = 6.5, height = 6.5,
 #         units = "in", dpi = 300)
 
@@ -453,7 +483,8 @@ chr_pos <- paste(getCHROM(vcf), getPOS(vcf), sep = "_")
 my_alleles <- paste( "0 = ", getREF(vcf)[my_locus == chr_pos], "; 1 = ", getALT(vcf)[my_locus == chr_pos], sep = "")
 
 my_dat <- data.frame(
-  Varin_Total = pheno$Total,
+  Varin_Total = pheno$OrderNorm_transformed,
+  #Varin_Total = pheno$Total,
   #Varin_Total = pheno$Total_adj,
   #Varin_Total = pheno$Varin_Total,
   #gt = gt[my_locus, ],
@@ -508,185 +539,13 @@ p <- p + xlab("Chr 9, 19.2 Mbp")
 
 p <- p + geom_abline( slope = lm1$coefficients[2], intercept = lm1$coefficients[1], linewidth = 1.2, col = "#808080")
 #p <- p + geom_line( data = my_vals, mapping = aes( x = x, y = y ), inherit.aes = F, linewidth = 2, col = "#808080" )
-#p
+#
+p
 
 #p_locus2 <- p
 p_chr9_19 <- p
 ```
 
-
-### Chr X, 44.5 Mbp
-
-```{r}
-# my_locus <- "4_68382150"
-# my_locus <- "4_36256098"
-# my_locus <- "7_290913"
-# my_locus <- "7_290840"
-#my_locus <- "X_12488664"
-# my_locus <- "9_16275371"
-# my_locus <- "9_19245258"
-
-my_locus <- "X_44482355"
-
-chr_pos <- paste(getCHROM(vcf), getPOS(vcf), sep = "_")
-#my_alleles <- paste(getREF(vcf)[my_locus == chr_pos], getALT(vcf)[my_locus == chr_pos], sep = "/")
-my_alleles <- paste( "0 = ", getREF(vcf)[my_locus == chr_pos], "; 1 = ", getALT(vcf)[my_locus == chr_pos], sep = "")
-
-my_dat <- data.frame(
-  Varin_Total = pheno$Total,
-  #Varin_Total = pheno$Total_adj,
-  #Varin_Total = pheno$Varin_Total,
-  #gt = gt[my_locus, ],
-  gt = gt2[my_locus, ],
-  pcol = "#00000044"
-)
-#my_dat$pcol[ my_dat$gt == 2 ] <- "#B22222"
-
-#lm1 <- lm( Varin_Total ~ gt, data = my_dat )
-lm1 <- lm( Varin_Total ~ gt, data = my_dat[ my_dat$gt != 2, ] )
-lm11 <- lm( Varin_Total ~ gt + I(gt^2), data = my_dat )
-
-my_vals <- data.frame(
-  x = seq(0, 2, length.out=10)
-)
-my_vals$y <- lm11$coefficients[1] + my_vals$x * lm11$coefficients[2] + my_vals$x^2 * lm11$coefficients[3]
-```
-
-
-```{r, results='markup'}
-library(pander)
-#pander(lm1)
-pander(summary(lm1))
-pander(summary(lm11))
-```
-
-
-```{r, fig.width=6, fig.cap="**Figure X.** Ability of the genotype to predict the phenotype."}
-library(ggplot2)
-#my_dat$gt <- as.factor(my_dat$gt)
-p <- ggplot( data = my_dat, mapping = aes( x = gt, y = Varin_Total, fill = gt, group = gt ))
-p <- p + theme_bw()
-p <- p + geom_violin()
-p <- p + scale_x_continuous( 
-  breaks = c(0, 1, 2),
-  labels = c("0/0", "0/1", "1/1")
-)
-p <- p + theme(legend.position="none")
-p <- p + scale_fill_continuous(type = "viridis", begin = 0.2)
-p <- p + geom_jitter(shape=16, position=position_jitter(0.15), col = my_dat$pcol, size = 1)
-#p <- p + ylab("Varin Total (units???)")
-p <- p + theme(axis.title.y = element_blank())
-#p <- p + xlab("Genotype")
-#p <- p + xlab("Chr 7, 290.8 Kbp")
-#p <- p + ggtitle(my_locus)
-#p <- p + xlab("Chr X, 12.5 Mbp")
-p <- p + xlab("Chr X, 44.5 Mbp")
-#p <- p + ggtitle( paste(my_locus, my_alleles, sep = ": ") )
-#p <- p + ggtitle( "CHROM 7, POS 290,913" )
-#p <- p + annotate( geom = "text", x = 0, y = 60, label = "Chromosome 7,\nposition 290,913", size=4.0)
-#
-# p <- p + annotate( geom = "text", x = -0.4, y = 55, label = "Chromosome 7,\nposition 290,913", size=3.0, adj=0)
-
-p <- p + geom_abline( slope = lm1$coefficients[2], intercept = lm1$coefficients[1], linewidth = 1.2, col = "#808080")
-#p <- p + geom_line( data = my_vals, mapping = aes( x = x, y = y ), inherit.aes = F, linewidth = 2, col = "#808080" )
-#p
-
-#p_locus2 <- p
-p_chrX_12 <- p
-```
-
-
-### Multipanel
-
-
-```{r}
-library(ggpubr)
-
-#ggarrange( p_mh, , nrow = 2)
-#ggarrange( p_pheno, p_locus1, nrow = 1, ncol = 2)
-
-ga1 <- ggarrange( p_pheno, p_locus1, 
-                  nrow = 1, ncol = 2, 
-                  vjust = 0.3,
-                  labels = c("B", "C"))
-#ga1
-
-
-p_locus2 <- p_locus2 + theme(axis.title.y = element_text(angle = 90)) + ylab("Varin Content")
-
-
-ga2 <- ggarrange( p_locus2, p_chr9_19, p_chrX_12, 
-                  nrow = 1, ncol = 3, 
-                  #label.y = 1.0,
-                  vjust = 0.3,
-                  labels = c("D", "E", "F"))
-#ga2
-
-
-```
-
-
-
-```{r}
-# ggarrange( p_mh, ga1, 
-#            nrow = 2, ncol = 1,
-#            labels = c("A", ""),
-#            widths = 1, heights = c(0.6, 0.4))
-
-ggarrange( p_mh, ga1, ga2,
-           nrow = 3, ncol = 1,
-           labels = c("A", ""),
-           #label.y = 1,
-           #vjust = 2.5,
-           widths = 1, heights = c(0.4, 0.3, 0.3))
-
-
-# ggsave( filename = "SupFig25.png", device = "png",
-#         width = 6.5, height = 6.5,
-#         units = "in", dpi = 300)
-
-```
-
-
-
-
-## Annotations
-
-
-```{r}
-gff <- read.table("/media/knausb/E737-9B48/releases/scaffolded/EH23b/EH23b.primary_high_confidence.gff3.gz", sep = "\t", quote = "\"")
-#gff[1:3, 1:8]
-mRNA <- gff[ gff[ ,3] == "mRNA" , ]
-#mRNA[1:3,]
-mRNA[,10] <- unlist(lapply(strsplit(mRNA[, 9], split = ";"), function(x){ grep("eggnog_free_text_desc=", x, value = TRUE) }))
-mRNA[,10] <- sub("eggnog_free_text_desc=", "", mRNA[,10])
-mRNA[,11] <- unlist(lapply(strsplit(mRNA[, 9], split = ";"), function(x){ grep("^ID=", x, value = TRUE) }))
-mRNA[,11] <- sub("^ID=", "", mRNA[,11])
-
-#mRNA[1:3,]
-
-#i <- 1
-# my_buffer <- 1e5
-# 
-my_buf <- 2.5e5
-#my_buffer <- 5e5
-#my_buf <- 6e5
-# my_buffer <- 1e6
-
-for(i in 1:4){
-  my_chrom <- mRNA[ mRNA[, 1] == gwas_top$Chr[i], ]
-  if( any(i == c(2, 3)) ){
-    my_buffer <- 1e5
-  } else {
-    my_buffer <- my_buf
-  }
-  my_win <- my_chrom[ my_chrom[, 4] >= gwas_top$Pos[i] - my_buffer & my_chrom[, 5] <= gwas_top$Pos[i] + my_buffer, ]
-  
-  print(knitr::kable(gwas_top[i, c(2:6, 8, 10)], row.names = FALSE, digits=3, format.args = list(big.mark=",")))
-  print(knitr::kable(my_win[, c(1,4, 10)], row.names = FALSE))
-}
-
-```
 
 
 
