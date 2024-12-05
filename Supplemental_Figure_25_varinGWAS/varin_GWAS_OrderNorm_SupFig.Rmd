@@ -12,9 +12,9 @@ editor_options:
 
 
 ```{r setup, include=FALSE}
-#knitr::opts_chunk$set(echo = TRUE)
 #
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = TRUE)
+#knitr::opts_chunk$set(echo = FALSE)
 knitr::opts_chunk$set(fig.align = "center")
 knitr::opts_chunk$set(fig.width = 6)
 #
@@ -45,7 +45,9 @@ pheno[1:3, ]
 library(ggplot2)
 #p <- ggplot( data = pheno, mapping = aes( x = Total) )
 p <- ggplot( data = pheno, mapping = aes( x = OrderNorm_transformed) )
-p <- p + geom_histogram( binwidth = 1.0)
+#p <- p + geom_histogram( binwidth = 1.0)
+p <- p + geom_histogram( binwidth = 0.2)
+#p <- p + geom_histogram( binwidth = 0.15)
 p <- p + theme_bw()
 p <- p + ylab("Count")
 p <- p + xlab("Varin Content")
@@ -223,8 +225,9 @@ my_dat <- data.frame(
 )
 #my_dat$pcol[ my_dat$gt == 2 ] <- "#B22222"
 
-#lm1 <- lm( Varin_Total ~ gt, data = my_dat )
-lm1 <- lm( Varin_Total ~ gt, data = my_dat[ my_dat$gt != 2, ] )
+#
+lm1 <- lm( Varin_Total ~ gt, data = my_dat )
+#lm1 <- lm( Varin_Total ~ gt, data = my_dat[ my_dat$gt != 2, ] )
 lm11 <- lm( Varin_Total ~ gt + I(gt^2), data = my_dat )
 
 my_vals <- data.frame(
@@ -307,9 +310,16 @@ p
 
 #p <- p + ggtitle( "CHROM 4, POS 68,382,150" )
 
-
 p_locus1 <- p
 ```
+
+
+```{r, results='markup'}
+#cor(my_dat$Varin_Total, my_dat$gt)
+#cor.test(my_dat$Varin_Total, my_dat$gt, alternative = "greater")
+cor.test(my_dat$Varin_Total, my_dat$gt, alternative = "two.sided")
+```
+
 
 
 ```{r}
@@ -321,7 +331,7 @@ p <- p + theme_bw()
 p <- p + ylab("Count")
 p <- p + xlab("Varin Content")
 #p <- p + ggtitle("Phenotype")
-p
+#p
 
 p + facet_grid(. ~ as.factor(my_gt))
 # p_pheno <- p + coord_flip()
@@ -401,10 +411,17 @@ p <- p + geom_abline( slope = lm1$coefficients[2], intercept = lm1$coefficients[
 #p <- p + geom_line( data = my_vals, mapping = aes( x = x, y = y ), inherit.aes = F, linewidth = 2, col = "#808080" )
 p
 
+cor.test(my_dat$Varin_Total, my_dat$gt, alternative = "greater")
+
 p_locus2 <- p
 ```
 
 
+```{r, results='markup'}
+#cor(my_dat$Varin_Total, my_dat$gt)
+#cor.test(my_dat$Varin_Total, my_dat$gt, alternative = "greater")
+cor.test(my_dat$Varin_Total, my_dat$gt, alternative = "two.sided")
+```
 
 
 
@@ -416,6 +433,8 @@ library(ggpubr)
 
 #ggarrange( p_mh, , nrow = 2)
 #ggarrange( p_pheno, p_locus1, nrow = 1, ncol = 2)
+
+p_pheno <- p_pheno + scale_x_continuous( limits = c(-3, 3), breaks = seq(-3,3, by=1))
 
 ga1 <- ggarrange( p_pheno, p_locus1, p_locus2, 
                   nrow = 1, ncol = 3, 
