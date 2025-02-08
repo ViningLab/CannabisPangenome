@@ -20,6 +20,8 @@ load("EH23ideo.RData")
 # pEH23
 # ggsave( filename = "EH23_chroms.png", device = "png", 
 #         width = 6.5, height = 6.5, units = "in", dpi = 300 )
+ggsave( filename = "EH23_chroms.svg", device = "svg",
+        width = 6.5, height = 6.5, units = "in", dpi = 300 )
 ```
 
 
@@ -29,6 +31,8 @@ load("ahplot.RData")
 # ahplot
 # ggsave( filename = "EH23_freqs.png", device = "png",
 #         width = 6.5, height = 6.5, units = "in", dpi = 300 )
+ggsave( filename = "EH23_freqs.svg", device = "svg",
+        width = 6.5, height = 6.5, units = "in", dpi = 300 )
 
 t2 <- Sys.time()
 t2 - t1

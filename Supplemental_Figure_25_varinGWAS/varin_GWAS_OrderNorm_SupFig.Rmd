@@ -153,6 +153,24 @@ my_cols <- c("SNP", "Chr", "Pos", "P.value", "MAF", "nobs", "H.B.P.Value",
 "Effect", "log_pvalue")
 
 knitr::kable(gwas_top[, my_cols], row.names = FALSE)
+
+my_cols <- c("SNP", "P.value", "log_pvalue", "MAF", "nobs",
+             "H.B.P.Value", "Effect", "Pos")
+gwas_top2 <- gwas_top[, my_cols]
+names(gwas_top2)[2] <- "P-value"
+names(gwas_top2)[3] <- "-Log10(p-value)"
+
+gwas_top2$`P-value` <- format(gwas_top2$`P-value`, digits = 3)
+gwas_top2$`-Log10(p-value)` <- format(gwas_top2$`-Log10(p-value)`, digits = 3)
+gwas_top2$MAF <- format(gwas_top2$MAF, digits = 3)
+gwas_top2$H.B.P.Value <- format(gwas_top2$H.B.P.Value, digits = 3)
+gwas_top2$Effect <- format(gwas_top2$Effect, digits = 3)
+gwas_top2$Pos <- format(gwas_top2$Pos, big.mark = ",")
+
+write.csv( x = gwas_top2, 
+           file = "varinGWAS_OrderedQuantile.csv",
+           row.names = FALSE)
+
 ```
 
 
