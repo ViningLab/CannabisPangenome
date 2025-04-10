@@ -115,6 +115,7 @@ busc <- cbind(type1, type2, type3, type4)
 
 
 ```{r}
+# https://github.com/knausb/BUSCOplot
 library(BUSCOplot)
 library(ggplot2)
 #p <- gg_line_map(busc, check_table = FALSE)
@@ -298,6 +299,11 @@ p2 <- p2 + theme(axis.text.x = element_text( size = 6 ))
 p2
 
 # ggsave(filename = "BUSCOlineplot_zerozoom.png", device = "png",
+#        width = 6.5,
+# #       width = 4.5,
+#        height = 4.5, units = "in", dpi = 300)
+
+# ggsave(filename = "BUSCOlineplot_zerozoom.svg", device = "svg",
 #        width = 6.5,
 # #       width = 4.5,
 #        height = 4.5, units = "in", dpi = 300)

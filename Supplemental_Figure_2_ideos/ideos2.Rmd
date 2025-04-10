@@ -18,7 +18,10 @@ knitr::opts_chunk$set(fig.align = "center")
 
 ```{r}
 t1 <- Sys.time()
+```
 
+
+```{r}
 sampd <- list.dirs("/media/knausb/E737-9B48/releases/scaffolded/")
 sampd <- grep("scaffolded/$", sampd, value = TRUE, invert = TRUE)
 sampd <- grep("EDTAOutput", sampd, value = TRUE, invert = TRUE)
@@ -30,7 +33,6 @@ sampd <- grep("AH3M", sampd, value = TRUE, invert = FALSE)
 
 #sub(".+//", "", sampd)
 sampn <- unlist(lapply(strsplit(sampd, split = "//"), function(x){x[2]}))
-
 ```
 
 
@@ -44,7 +46,6 @@ my_queries <- data.frame(
   Length = c(9382, 1544, 157, 1552, 259, 557, 237, 370 )
   )
 knitr::kable(my_queries)
-
 ```
 
 
@@ -61,7 +62,7 @@ source("../ideograms_scaffolded/Rfunctions.R")
 
 
 
-```{r, results='hide', message=FALSE}
+```{r, results='hide', message=FALSE, eval=FALSE}
 t4 <- Sys.time()
 
 plist <- vector( mode = "list", length = length(sampd) )
@@ -70,10 +71,18 @@ for( i in 1:length(sampd) ){
   plist[[i]] <- plot_ideo( sampd[i] )
 }
 
+#save(plist, file = "AH3M_plist.RData")
+
 # plist[[1]]
 
 #sub(".+//", "", sampd)
 #sampn <- unlist(lapply(strsplit(sampd, split = "//"), function(x){x[2]}))
+```
+
+
+
+```{r}
+load("AH3M_plist.RData")
 ```
 
 
@@ -125,6 +134,18 @@ ggsave( filename = "AH3Ma_ideogram.png", plot = plist[[i]],
 i <- 2
 ggsave( filename = "AH3Mb_ideogram.png", plot = plist[[i]],
         device = "png",
+        width = 3.25, height = 3.25, units = "in", dpi = 300)
+```
+
+
+```{r, eval=FALSE}
+i <- 1
+ggsave( filename = "AH3Ma_ideogram.svg", plot = plist[[i]],
+        device = "svg",
+        width = 3.25, height = 3.25, units = "in", dpi = 300)
+i <- 2
+ggsave( filename = "AH3Mb_ideogram.svg", plot = plist[[i]],
+        device = "svg",
         width = 3.25, height = 3.25, units = "in", dpi = 300)
 ```
 
