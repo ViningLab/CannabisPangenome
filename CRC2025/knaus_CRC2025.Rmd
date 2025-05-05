@@ -1,0 +1,43 @@
+---
+title: "CRC2025"
+output: html_document
+date: "2025-05-05"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Guidelines
+
+- September 23 - Wyatt's birthday
+- October 4 - Dad's Birthday
+- October 12 - Darin's birthday
+- October 4 - MI vs WI football
+- October 6-8 Mon. - Wed.
+
+
+
+https://www.cannabisresearchconference.net/abstract-guidelines
+
+- Each conference presentation is 25 minutes (20 minutes for presentation and 5 minutes for questions).
+- The Conference Research Abstract should not exceed 350 words.
+
+The abstract must include the following five (5) components:
+
+- TITLE: A concise and descriptive title
+- BACKGROUND: Explain the context and WHY this research is significant.
+- METHODS (if applicable): How the study was performed and statistical tests used
+- RESULTS & DISCUSSION (if applicable): The key study results and findings
+- CONCLUSIONS: A summary and potential implications.
+
+
+
+## Abstract
+
+
+
+
+
+
