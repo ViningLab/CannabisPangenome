@@ -178,6 +178,12 @@ gchrom
 #        #width = 3.25, height = 3.25, 
 #        width = 6.5, height = 3.25, 
 #        units = "in", dpi = 300, compression = "lzw")
+
+# ggsave(filename = "gene_by_chrom.svg",
+#        device = "svg",
+#        width = 6.5, height = 3.25,
+#        units = "in", dpi = 300)
+
 ```
 
 
