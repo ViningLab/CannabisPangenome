@@ -37,6 +37,15 @@ The abstract must include the following five (5) components:
 ## Abstract
 
 
+Cannabis pangenome
+
+A Cannabis pangenome provides perspectives on genomic variation we may expect within a species.
+We present 39 diploid, chromosome level assemblies to illustrate large inversions and insertions within these genomes.
+The locus containing the genes for THCA and CBDA synthase occur within a ~2 Mbp cassette that includes many copies of CBCA synthase as well as numerous imperfect copies of these genes.
+Chromosome 1 consistently includes the greatest number of genes even though it is not the longest chromosome.
+Use of the EH23 assembled genome to survey allele frequencies in an F2 population demonstrated segregation distortion where alleles and genotypes were observed beyond Mendelian expectations.
+
+
 
 
 
